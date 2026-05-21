@@ -480,10 +480,12 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
   </div>
 </main>
 <!-- EQUIPMENT MODAL -->
-<div class="modal-overlay" id="equip-modal"><div class="modal" autocomplete="off" style="display:flex;flex-direction:column;padding:0;overflow:hidden;">
-  <div style="padding:24px 26px 0;flex-shrink:0;"><div class="modal-title" id="equip-modal-title">Add Equipment</div></div>
-  <div style="padding:0 26px;overflow-y:auto;flex:1;">
-  <div class="form-grid">
+<div class="modal-overlay" id="equip-modal"><div class="modal" autocomplete="off" style="display:flex;flex-direction:column;padding:0;overflow:hidden;max-height:92vh;">
+  <div style="padding:24px 26px 16px;flex-shrink:0;border-bottom:1px solid var(--border);">
+    <div class="modal-title" id="equip-modal-title" style="margin-bottom:0;padding-bottom:0;border-bottom:none;">Add Equipment</div>
+  </div>
+  <div style="padding:20px 26px;overflow-y:auto;flex:1;">
+<div class="form-grid">
     <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select></div>
     <div class="form-group"><label>Brand</label><select id="f-brand"><option value="">— Select Brand —</option><option>Lenovo</option></select></div>
     <div class="form-group full"><label>Model</label>
@@ -507,8 +509,10 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="form-group"><label>Purchase Price (&#8369;)</label><input autocomplete="off" type="number" id="f-price" placeholder="0.00"></div>
     <div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="2" placeholder="Any additional notes..."></textarea></div>
   </div>
-  </div><!-- end scroll -->
-  <div class="modal-footer" style="padding:18px 26px 24px;border-top:1px solid var(--border);flex-shrink:0;margin:0;"><button class="btn btn-outline" onclick="closeModal('equip-modal')">Cancel</button><button class="btn btn-primary" onclick="saveEquipment()">Save Equipment</button></div>
+  <div style="padding:16px 26px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px;justify-content:flex-end;">
+    <button class="btn btn-outline" onclick="closeModal('equip-modal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveEquipment()">Save Equipment</button>
+  </div>
 </div></div>
 <!-- PURCHASE MODAL -->
 <div class="modal-overlay" id="purchase-modal"><div class="modal" style="width:min(680px,95vw)">

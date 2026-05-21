@@ -281,6 +281,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="nav-item" onclick="showView('analytics')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</div>
     <div class="nav-item" onclick="exportCSV()"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV</div>
     <div class="nav-item" onclick="window.open('qr.html','_blank')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="5" y="5" width="3" height="3" fill="currentColor"/><rect x="16" y="5" width="3" height="3" fill="currentColor"/><rect x="5" y="16" width="3" height="3" fill="currentColor"/></svg>App QR Code</div>
+    <div class="nav-item" onclick="manualBackup()"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Backup Now</div>
   </nav>
   <div style="padding:12px 12px 6px">
     <div onclick="openLogoutOverlay()" style="display:flex;align-items:center;gap:9px;padding:9px 10px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:13px;transition:all 0.15s;border:1px solid rgba(255,255,255,0.08)" onmouseover="this.style.background='rgba(255,255,255,0.07)';this.style.color='rgba(255,255,255,0.85)'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.45)'">
@@ -494,7 +495,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     </div>
     <div class="form-group"><label>Site</label><select id="f-location"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div>
     <div class="form-group"><label>Purchase Date</label><input autocomplete="off" type="date" id="f-purchase-date"></div>
-    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label><input autocomplete="off" type="text" id="f-warranty" placeholder="e.g. 05/2027" maxlength="7" oninput="formatWarrantyInput(this)"></div>
+    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label><input autocomplete="off" type="month" id="f-warranty" style="color-scheme:dark;"></div>
     <div class="form-group"><label>Purchase Price (&#8369;)</label><input autocomplete="off" type="number" id="f-price" placeholder="0.00"></div>
     <div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="2" placeholder="Any additional notes..."></textarea></div>
   </div>
@@ -1118,11 +1119,11 @@ function editEquipment(id){
   const _emp=employees.find(e=>e.id===eq.assignedTo);
   document.getElementById('f-assigned').value=eq.assignedTo||'';document.getElementById('f-assigned-search').value=_emp?_emp.name:'';
   document.getElementById('f-location').value=eq.location||'';document.getElementById('f-purchase-date').value=eq.purchaseDate||'';
-  document.getElementById('f-warranty').value=eq.warrantyExpiry||'';document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
+  document.getElementById('f-warranty').value=(()=>{const v=eq.warrantyExpiry||'';if(!v||!v.includes('/'))return'';const[m,y]=v.split('/');return y+'-'+m.padStart(2,'0');})();document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
   document.getElementById('equip-modal').classList.add('open');
 }
 function saveEquipment(){
-  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:document.getElementById('f-warranty').value||'',price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
+  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:(()=>{const v=document.getElementById('f-warranty').value;if(!v)return'';const[y,m]=v.split('-');return m+'/'+y;})(),price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
   if(data.serial){
     const dup=equipment.find(e=>e.serial&&e.serial.trim().toLowerCase()===data.serial.toLowerCase()&&e.id!==editingId);
     if(dup)return alert('Serial number "'+data.serial+'" is already assigned to '+dup.brand+' '+dup.model+' ('+dup.type+'). Please use a unique serial number.');
@@ -1655,6 +1656,31 @@ function closeMobileMenu(){const sb=document.querySelector('.sidebar'),ov=docume
 
 // ── INIT ─────────────────────────────────────────────────────────
 // initMSAL called after MSAL library loads (see script load order below)
+
+// ── MANUAL BACKUP ─────────────────────────────────────────────────
+async function manualBackup(){
+  if(!accessToken){alert('You must be signed in to OneDrive to create a backup.');return;}
+  const btn=document.querySelector('.nav-item[onclick="manualBackup()"]');
+  if(btn){btn.style.color='var(--gold)';btn.innerHTML=btn.innerHTML.replace('Backup Now','Backing up...');}
+  try{
+    const timestamp=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+    const fileName='Dedale-Inventory-Backup-'+timestamp+'.json';
+    const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,backedUpAt:new Date().toISOString()},null,2);
+    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/Dedale-Inventory-Backups/'+fileName+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
+    if(r.ok){
+      logActivity('Manual backup created: '+fileName);
+      saveData();
+      if(btn){btn.style.color='var(--green)';btn.innerHTML=btn.innerHTML.replace('Backing up...','✓ Backed Up!');}
+      setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('✓ Backed Up!','Backup Now');}},3000);
+    }else{
+      if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Backup Failed');}
+      setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Backup Failed','Backup Now');}},3000);
+    }
+  }catch(e){
+    if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Backup Failed');}
+    setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Backup Failed','Backup Now');}},3000);
+  }
+}
 
 // Force reload when browser restores page from back/forward cache
 window.addEventListener('pageshow',function(e){if(e.persisted)window.location.reload();});

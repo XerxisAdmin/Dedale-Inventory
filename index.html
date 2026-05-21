@@ -195,10 +195,9 @@ body{overflow-x:hidden;}
 @media(max-width:400px){.stats-grid{grid-template-columns:1fr !important;}#stat-employees-breakdown{grid-template-columns:1fr !important;}}
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.emp-grid{grid-template-columns:repeat(2,1fr);}.purchase-summary{grid-template-columns:repeat(2,1fr);}}
 ::-webkit-scrollbar{width:4px;background:var(--navy-mid);}
-input[type="month"].empty-month::-webkit-datetime-edit{color:transparent;}
 input[type="month"].empty-month::-webkit-datetime-edit-month-field,
-input[type="month"].empty-month::-webkit-datetime-edit-year-field,
-input[type="month"].empty-month::-webkit-datetime-edit-text{color:transparent;}
+input[type="month"].empty-month::-webkit-datetime-edit-year-field{color:var(--text3);}
+input[type="month"].empty-month::-webkit-datetime-edit-text{color:var(--text3);}
 ::-webkit-scrollbar-thumb{background:var(--crimson-dark);}
 .po-item-qty::-webkit-inner-spin-button,.po-item-qty::-webkit-outer-spin-button,.po-item-price::-webkit-inner-spin-button,.po-item-price::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .po-item-qty,.po-item-price{-moz-appearance:textfield;}
@@ -499,7 +498,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     </div>
     <div class="form-group"><label>Site</label><select id="f-location"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div>
     <div class="form-group"><label>Purchase Date</label><input autocomplete="off" type="date" id="f-purchase-date"></div>
-    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label><div style="position:relative;width:100%"><input autocomplete="off" type="month" id="f-warranty-month" class="empty-month" style="color-scheme:dark;width:100%;padding:10px 14px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none;" oninput="syncWarrantyHidden();const _wp=document.getElementById('f-warranty-placeholder');if(_wp)_wp.style.display=this.value?'none':'flex';this.classList.toggle('empty-month',!this.value)"><div id="f-warranty-placeholder" style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;padding:0 14px;color:var(--text3);font-family:'Share Tech Mono',monospace;font-size:13px;pointer-events:none;letter-spacing:1px;">MM/YYYY</div></div><input type="hidden" id="f-warranty"><input type="hidden" id="f-warranty-mm"><input type="hidden" id="f-warranty-yy"></div>
+    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label><input autocomplete="off" type="month" id="f-warranty-month" class="empty-month" style="color-scheme:dark;width:100%;padding:10px 14px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none;" oninput="syncWarrantyHidden();this.classList.toggle('empty-month',!this.value)"></div><input type="hidden" id="f-warranty"><input type="hidden" id="f-warranty-mm"><input type="hidden" id="f-warranty-yy"></div>
     <div class="form-group"><label>Purchase Price (&#8369;)</label><input autocomplete="off" type="number" id="f-price" placeholder="0.00"></div>
     <div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="2" placeholder="Any additional notes..."></textarea></div>
   </div>
@@ -1117,7 +1116,7 @@ function setModelValue(type,val){toggleModelField(type);if(type==='Laptop')docum
 function openAddModal(){
   editingId=null;document.getElementById('equip-modal-title').textContent='Add Equipment';
   ['f-type','f-brand','f-serial','f-condition','f-status','f-assigned','f-location','f-purchase-date','f-price','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.tagName==='SELECT'?el.options[0].value:'';});
-  document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';document.getElementById('f-warranty-month').value='';const wp=document.getElementById('f-warranty-placeholder');if(wp)wp.style.display='flex';const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.add('empty-month');
+  document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';document.getElementById('f-warranty-month').value='';const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.add('empty-month');
   document.getElementById('f-condition').value='New';document.getElementById('f-status').value='In Stock';
   toggleModelField('Laptop');document.getElementById('equip-modal').classList.add('open');
 }
@@ -1129,7 +1128,7 @@ function editEquipment(id){
   const _emp=employees.find(e=>e.id===eq.assignedTo);
   document.getElementById('f-assigned').value=eq.assignedTo||'';document.getElementById('f-assigned-search').value=_emp?_emp.name:'';
   document.getElementById('f-location').value=eq.location||'';document.getElementById('f-purchase-date').value=eq.purchaseDate||'';
-  (()=>{const v=eq.warrantyExpiry||'';if(v&&v.includes('/')){const[m,y]=v.split('/');document.getElementById('f-warranty-month').value=y+'-'+m.padStart(2,'0');const wp=document.getElementById('f-warranty-placeholder');if(wp)wp.style.display='none';const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.remove('empty-month');}else{document.getElementById('f-warranty-month').value='';const wp=document.getElementById('f-warranty-placeholder');if(wp)wp.style.display='flex';const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.add('empty-month');}})();document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
+  (()=>{const v=eq.warrantyExpiry||'';if(v&&v.includes('/')){const[m,y]=v.split('/');document.getElementById('f-warranty-month').value=y+'-'+m.padStart(2,'0');const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.remove('empty-month');}else{document.getElementById('f-warranty-month').value='';const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.add('empty-month');}})();document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
   document.getElementById('equip-modal').classList.add('open');
 }
 function saveEquipment(){

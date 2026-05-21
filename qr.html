@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dedale — App QR Code</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Rajdhani',sans-serif;background:#141628;color:#e4e8ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;}
+.card{background:#222646;border:1px solid #383d72;padding:40px 44px;text-align:center;max-width:480px;width:100%;position:relative;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#cc2244,#d4a830 66%,transparent);}
+.logo{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:#fff;letter-spacing:3px;margin-bottom:4px;}
+.sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:#cc2244;letter-spacing:3px;text-transform:uppercase;margin-bottom:32px;}
+canvas{display:block;margin:0 auto 20px;border:6px solid #fff;}
+.url{font-family:'Share Tech Mono',monospace;font-size:11px;color:#9aa2cc;letter-spacing:1px;margin-bottom:28px;word-break:break-all;}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;font-family:'Orbitron',monospace;font-size:9px;font-weight:600;letter-spacing:2px;cursor:pointer;border:none;text-transform:uppercase;transition:all 0.15s;}
+.btn-primary{background:linear-gradient(135deg,#881630,#cc2244);color:#fff;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));}
+.btn-primary:hover{background:linear-gradient(135deg,#cc2244,#ff2255);}
+.btn-outline{background:transparent;color:#d4a830;border:1px solid #8a6e18;}
+.btn-outline:hover{background:rgba(212,168,48,0.1);}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">DEDALE INTELLIGENCE</div>
+  <div class="sub">INTEL-SYS // IT ASSET MANAGEMENT</div>
+  <canvas id="qr-canvas"></canvas>
+  <div class="url" id="app-url"></div>
+  <div class="btns">
+    <button class="btn btn-primary" onclick="downloadQR()">⬇ Download PNG</button>
+    <button class="btn btn-outline" onclick="window.print()">⎙ Print</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script>
+const APP_URL='https://xerxisadmin.github.io/Dedale-Inventory/';
+document.getElementById('app-url').textContent=APP_URL;
+const qr=new QRious({element:document.getElementById('qr-canvas'),value:APP_URL,size:280,background:'#ffffff',foreground:'#141628',level:'M',padding:10});
+function downloadQR(){
+  const canvas=document.getElementById('qr-canvas');
+  const padded=document.createElement('canvas');const pad=24;
+  padded.width=canvas.width+pad*2;padded.height=canvas.height+pad*2;
+  const ctx=padded.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,padded.width,padded.height);
+  ctx.drawImage(canvas,pad,pad);
+  const a=document.createElement('a');a.download='DEDALE-INTEL-SYS-QR.png';a.href=padded.toDataURL('image/png');a.click();
+}
+</script>
+</body>
+</html>

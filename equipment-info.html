@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dedale — Equipment Info</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Rajdhani',sans-serif;background:#0e0f1a;color:#e4e8ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background-image:repeating-linear-gradient(0deg,rgba(26,42,58,0.3) 0px,rgba(26,42,58,0.3) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,rgba(26,42,58,0.3) 0px,rgba(26,42,58,0.3) 1px,transparent 1px,transparent 40px);}
+.card{background:#1a1d38;border:1px solid #383d72;padding:36px 40px;width:520px;max-width:95vw;position:relative;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#cc2244,#d4a830 66%,transparent);}
+.logo{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:#fff;letter-spacing:3px;margin-bottom:4px;}
+.sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:#cc2244;letter-spacing:3px;margin-bottom:28px;}
+.type-badge{display:inline-block;background:rgba(204,34,68,0.15);color:#cc2244;padding:3px 12px;font-size:10px;font-family:'Share Tech Mono',monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.device-name{font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;}
+.serial{font-family:'Share Tech Mono',monospace;font-size:12px;color:#9aa2cc;margin-bottom:24px;letter-spacing:1px;}
+.divider{height:1px;background:#383d72;margin:20px 0;}
+.assigned-box{background:rgba(212,168,48,0.06);border:1px solid rgba(212,168,48,0.25);padding:14px 18px;margin-bottom:20px;}
+.assigned-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:#d4a830;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.assigned-name{font-size:20px;font-weight:700;color:#fff;}
+.assigned-role{font-size:13px;color:#9aa2cc;font-family:'Share Tech Mono',monospace;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.info-box{background:#141628;border:1px solid #2a2e58;padding:12px 14px;}
+.info-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:#d4a830;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.info-value{font-size:15px;font-weight:600;color:#e4e8ff;}
+.unassigned{background:rgba(34,204,136,0.06);border:1px solid rgba(34,204,136,0.2);padding:14px 18px;margin-bottom:20px;font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#22cc88;letter-spacing:2px;}
+.error{text-align:center;padding:40px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#cc2244;letter-spacing:2px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">DEDALE INTELLIGENCE</div>
+  <div class="sub">EQUIPMENT INFORMATION</div>
+  <div id="content"></div>
+</div>
+<script>
+const params=new URLSearchParams(window.location.search);
+const encoded=params.get('d');
+if(!encoded){document.getElementById('content').innerHTML='<div class="error">NO DATA FOUND</div>';}
+else{
+  try{
+    const data=JSON.parse(atob(encoded));
+    const statusColors={
+      'In Use':'#4488ff','In Stock':'#22cc88','Under Repair':'#e07030','Retired':'#565e90'
+    };
+    const condColors={
+      'New':'#22ccdd','Good':'#22cc88','Fair':'#d4a830','Damaged':'#cc2244'
+    };
+    const content=`
+      <div class="type-badge">${data.t||'Equipment'}</div>
+      <div class="device-name">${data.b||''} ${data.m||''}</div>
+      <div class="serial">S/N: ${data.s||'N/A'}</div>
+      ${data.an?`<div class="assigned-box"><div class="assigned-label">Assigned To</div><div class="assigned-name">${data.an}</div>${data.ar?`<div class="assigned-role">${data.ar}</div>`:''}</div>`:`<div class="unassigned">UNASSIGNED</div>`}
+      <div class="grid">
+        <div class="info-box"><div class="info-label">Status</div><div class="info-value" style="color:${statusColors[data.st]||'#e4e8ff'}">${data.st||'—'}</div></div>
+        <div class="info-box"><div class="info-label">Condition</div><div class="info-value" style="color:${condColors[data.c]||'#e4e8ff'}">${data.c||'—'}</div></div>
+        <div class="info-box"><div class="info-label">Location</div><div class="info-value">${data.l||'—'}</div></div>
+        <div class="info-box"><div class="info-label">Purchase Date</div><div class="info-value">${data.pd||'—'}</div></div>
+        ${data.ae?`<div class="info-box" style="grid-column:1/-1"><div class="info-label">Employee Email</div><div class="info-value" style="font-size:13px;font-family:'Share Tech Mono',monospace">${data.ae}</div></div>`:''}
+        ${data.as?`<div class="info-box"><div class="info-label">Site</div><div class="info-value">${data.as}</div></div>`:''}
+        ${data.n?`<div class="info-box" style="grid-column:1/-1"><div class="info-label">Notes</div><div class="info-value" style="font-size:13px">${data.n}</div></div>`:''}
+      </div>`;
+    document.getElementById('content').innerHTML=content;
+  }catch(e){document.getElementById('content').innerHTML='<div class="error">INVALID DATA</div>';}
+}
+</script>
+</body>
+</html>

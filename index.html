@@ -347,7 +347,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Status</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:14%;">Assigned To</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Location</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Warranty</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;text-align:center;">Warranty</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
             </tr>
           </thead>
@@ -863,7 +863,7 @@ function renderEquipment(list){
     +'<td>'+statusBadge(eq.status)+'</td>'
     +'<td style="font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.location||'—')+'</td>'
-    +'<td style="font-size:11px;font-family:\'Share Tech Mono\',monospace">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
+    +'<td style="font-size:11px;font-family:\'Share Tech Mono\',monospace;text-align:center">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
     +'<td><div class="actions"><button class="btn btn-outline btn-sm" onclick="editEquipment(\''+eq.id+'\')">Edit</button><button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\''+eq.id+'\')">History</button><button class="btn btn-outline btn-sm" onclick="showQRCode(\''+eq.id+'\')">QR</button><button class="btn btn-danger btn-sm" onclick="deleteEquipment(\''+eq.id+'\')">Delete</button></div></td>'
     +'</tr>').join(''):'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
 }

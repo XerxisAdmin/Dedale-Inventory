@@ -51,8 +51,8 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .btn-danger:hover{background:rgba(196,18,48,0.35);}
 .btn-success{background:rgba(0,184,96,0.15);color:var(--green);border:1px solid rgba(0,184,96,0.4);clip-path:none;}
 .btn-success:hover{background:rgba(0,184,96,0.25);}
-.content{padding:0 30px 26px 30px;flex:1;overflow-y:auto;overflow-x:hidden;}
-.view{display:none;}.view.active{display:block;}
+.content{padding:0 30px 26px 30px;flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;}
+.view{display:none;}.view.active{display:block;flex:1;}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .stat-card{background:var(--surface);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:border-color 0.2s;}
 .stat-card:hover{border-color:var(--border2);}
@@ -302,96 +302,6 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add Equipment</button>
     </div>
   </div>
-  <div id="equip-sticky-header" style="background:var(--bg);box-shadow:0 4px 12px rgba(20,22,40,0.9);flex-shrink:0;">
-        <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <input autocomplete="off" class="search-input" placeholder="Search by name, brand, serial number..." oninput="filterEquipment()" id="equip-search">
-          <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
-          <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
-          <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
-          <select class="filter-select" onchange="filterEquipment()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
-          <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
-          <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
-        </div>
-        <div style="border:1px solid var(--border);border-bottom:none;margin:0;padding:0;"><table style="width:100%;border-collapse:collapse;table-layout:fixed;margin:0;">
-          <colgroup>
-            <col style="width:7%">
-            <col style="width:17%">
-            <col style="width:9%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:14%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:21%">
-          </colgroup>
-          <thead>
-            <tr>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Brand / Model</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Serial No.</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Condition</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Status</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Assigned To</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Location</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Warranty</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
-            </tr>
-          </thead>
-        </table></div>
-      </div>
-    <div id="assign-freeze-bar" style="display:none;background:var(--bg);box-shadow:0 4px 12px rgba(20,22,40,0.9);flex-shrink:0;">
-      <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;">
-        <input autocomplete="off" class="search-input" placeholder="Search assignments..." oninput="filterAssignments()" id="assign-search" style="width:100%">
-      </div>
-      <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
-        <colgroup>
-          <col style="width:200px"><col style="width:200px"><col style="width:100px">
-          <col style="width:120px"><col style="width:130px"><col style="width:110px"><col>
-        </colgroup>
-        <thead>
-          <tr>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Employee</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Equipment</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Type</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Serial No.</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Date Assigned</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Status</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
-          </tr>
-        </thead>
-      </table>
-    </div>
-    <div id="emp-freeze-bar" style="display:none;background:var(--bg);box-shadow:0 6px 16px rgba(20,22,40,1);flex-shrink:0;position:relative;z-index:100;border-bottom:2px solid var(--border);">
-<div style="background:var(--bg);padding:16px 30px 12px;position:relative;z-index:100;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <span class="section-title">Employee Directory</span>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-outline btn-sm" onclick="triggerImportExcel()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Import Excel</button>
-            <button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">+ Add Employee</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <div style="position:relative;flex:1;max-width:420px"><svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:0.4" width="14" height="14" fill="none" stroke="var(--text)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input autocomplete="off" id="emp-search" class="search-input" style="padding-left:34px" placeholder="Search by name, role, email, ID or serial..." oninput="filterEmployees()"></div>
-          <select id="emp-site-filter" class="filter-select" onchange="filterEmployees()"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
-          <select id="emp-sort" class="filter-select" onchange="filterEmployees()"><option value="id-asc" selected>ID: A → Z</option><option value="id-desc">ID: Z → A</option><option value="name-asc">Name: A → Z</option><option value="name-desc">Name: Z → A</option></select>
-          <span id="emp-count" style="font-size:12px;color:var(--text3);font-family:'Share Tech Mono',monospace;white-space:nowrap"></span>
-        </div>
-      </div>
-    </div>
-    <div id="po-freeze-bar" style="display:none;background:var(--bg);flex-shrink:0;position:relative;z-index:100;">
-<div id="po-sticky-header" style="position:sticky;top:0;z-index:40;background:var(--bg);padding:4px 30px 14px 30px;box-shadow:0 6px 20px rgba(20,22,40,1)">
-        <div class="section-header" style="padding-top:4px"><span class="section-title">Purchase Orders</span><div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="downloadPOHistory()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download History</button><button class="btn btn-primary btn-sm" onclick="openPOModal()">+ New Purchase Request</button></div></div>
-        <div class="stats-grid" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr)">
-          <div class="stat-card" id="po-card-pending" onclick="filterPOByStatus('Pending')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Pending</div><div class="stat-value" id="po-stat-pending">0</div><div class="stat-sub">Awaiting approval</div></div>
-          <div class="stat-card" id="po-card-approved" onclick="filterPOByStatus('Approved')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Approved</div><div class="stat-value" id="po-stat-approved">0</div><div class="stat-sub">Finance approved</div></div>
-          <div class="stat-card" id="po-card-rejected" onclick="filterPOByStatus('Rejected')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Rejected</div><div class="stat-value" id="po-stat-rejected">0</div><div class="stat-sub">Not approved</div></div>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <select class="filter-select" id="po-filter-status" onchange="renderPurchaseOrders()"><option value="">All Statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
-          <select class="filter-select" id="po-filter-urgency" onchange="renderPurchaseOrders()"><option value="">All Urgency Levels</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select>
-        </div>
-      </div>
-    </div>
   <div class="content">
     <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
@@ -416,15 +326,31 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
     </div>
     <!-- EQUIPMENT -->
-    <div class="view" id="view-equipment">
-  
-      <div style="border:1px solid var(--border);border-top:none;background:var(--surface);margin:0;padding:0;">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;margin:0;">
-          <colgroup>
-            <col style="width:7%"><col style="width:17%"><col style="width:9%">
-            <col style="width:8%"><col style="width:8%"><col style="width:14%">
-            <col style="width:8%"><col style="width:8%"><col style="width:21%">
-          </colgroup>
+    <div class="view" id="view-equipment" style="display:flex;flex-direction:column;height:100%;">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;">
+        <input autocomplete="off" class="search-input" placeholder="Search by name, brand, serial number..." oninput="filterEquipment()" id="equip-search">
+        <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
+        <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
+        <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
+        <select class="filter-select" onchange="filterEquipment()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
+        <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
+        <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
+      </div>
+      <div style="flex:1;overflow-y:auto;border:1px solid var(--border);border-top:none;background:var(--surface);">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead style="position:sticky;top:0;z-index:10;">
+            <tr>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:7%;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:17%;">Brand / Model</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Condition</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Status</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:14%;">Assigned To</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Location</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Warranty</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+            </tr>
+          </thead>
           <tbody id="equipment-tbody"></tbody>
         </table>
       </div>

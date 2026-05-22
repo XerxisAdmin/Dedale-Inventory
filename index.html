@@ -305,6 +305,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
   <div id="equip-sticky-header" style="display:none;background:var(--bg);box-shadow:0 4px 12px rgba(20,22,40,0.9);flex-shrink:0;">
         <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <input autocomplete="off" class="search-input" placeholder="Search by name, brand, serial number..." oninput="filterEquipment()" id="equip-search">
+          <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
           <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
           <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
           <select class="filter-select" onchange="filterEquipment()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
@@ -313,13 +314,13 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         </div>
         <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
           <colgroup>
-            <col style="width:90px">
-            <col style="width:200px">
-            <col style="width:120px">
-            <col style="width:100px">
+            <col style="width:80px">
+            <col style="width:220px">
             <col style="width:110px">
-            <col style="width:160px">
+            <col style="width:95px">
             <col style="width:100px">
+            <col style="width:170px">
+            <col style="width:90px">
             <col style="width:90px">
             <col>
           </colgroup>
@@ -420,13 +421,13 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div style="border:1px solid var(--border);border-top:none;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
           <colgroup>
-            <col style="width:90px">
-            <col style="width:200px">
-            <col style="width:120px">
-            <col style="width:100px">
+            <col style="width:80px">
+            <col style="width:220px">
             <col style="width:110px">
-            <col style="width:160px">
+            <col style="width:95px">
             <col style="width:100px">
+            <col style="width:170px">
+            <col style="width:90px">
             <col style="width:90px">
             <col>
           </colgroup>
@@ -948,6 +949,32 @@ function renderEquipment(list){
     +'<td><div class="actions"><button class="btn btn-outline btn-sm" onclick="editEquipment(\''+eq.id+'\')">Edit</button><button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\''+eq.id+'\')">History</button><button class="btn btn-outline btn-sm" onclick="showQRCode(\''+eq.id+'\')">QR</button><button class="btn btn-danger btn-sm" onclick="deleteEquipment(\''+eq.id+'\')">Delete</button></div></td>'
     +'</tr>').join(''):'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
 }
+function downloadEquipmentCSV(){
+  const s=document.getElementById('equip-search').value.toLowerCase();
+  const t=document.getElementById('equip-type-filter').value;
+  const st=document.getElementById('equip-status-filter').value;
+  const si=document.getElementById('equip-site-filter').value||'';
+  const filtered=equipment.filter(e=>
+    (!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&
+    (!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si)
+  );
+  if(!filtered.length){alert('No equipment to export.');return;}
+  const headers=['Type','Brand','Model','Serial Number','Condition','Status','Assigned To','Site','Purchase Date','Warranty Expiry (MM/YYYY)','Purchase Price (PHP)','Notes'];
+  const rows=filtered.map(e=>[
+    e.type,e.brand,e.model,e.serial||'',e.condition,e.status,
+    getEmployeeName(e.assignedTo),e.location||'',e.purchaseDate||'',
+    e.warrantyExpiry||'',e.price||0,e.notes||''
+  ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
+  const csv=[headers.map(h=>'"'+h+'"').join(','),...rows].join('
+');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  const filterLabel=[t,st,si].filter(Boolean).join('-')||'all';
+  a.download='dedale-equipment-'+filterLabel+'-'+new Date().toISOString().split('T')[0]+'.csv';
+  a.href=URL.createObjectURL(blob);a.click();
+  logActivity('Equipment CSV exported: '+filtered.length+' records (filter: '+filterLabel+')');
+}
+
 function filterEquipment(){
   const s=document.getElementById('equip-search').value.toLowerCase(),t=document.getElementById('equip-type-filter').value,st=document.getElementById('equip-status-filter').value,si=document.getElementById('equip-site-filter').value||'';
   renderEquipment(equipment.filter(e=>(!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&(!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si)));

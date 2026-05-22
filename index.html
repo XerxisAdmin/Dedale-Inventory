@@ -332,9 +332,11 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
         <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
         <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
-        <select class="filter-select" onchange="filterEquipment()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
+        <select class="filter-select" onchange="filterEquipment();updateModelFilter()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
+        <select class="filter-select" onchange="filterEquipment()" id="equip-model-filter" style="display:none"><option value="">All Models</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
+        <select class="filter-select" onchange="filterEquipment()" id="equip-date-warranty-filter"><option value="">All Dates &amp; Warranty</option><option value="purchased-this-year">Purchased This Year</option><option value="purchased-last-year">Purchased Last Year</option><option value="warranty-active">Warranty Active</option><option value="warranty-expiring">Warranty Expiring Soon</option><option value="warranty-expired">Warranty Expired</option><option value="no-warranty">No Warranty Set</option></select>
       </div>
       <div style="flex:1;overflow-y:auto;overflow-x:hidden;border:1px solid var(--border);border-top:none;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;">
@@ -418,9 +420,28 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Equipment</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Supplier</th></tr></thead><tbody id="purchases-tbody"></tbody></table></div>
     </div>
     <!-- PURCHASE ORDERS -->
-    <div class="view" id="view-purchase-orders" style="overflow-y:auto;overflow-x:hidden;">
-      
-      <div id="po-list"></div>
+    <div class="view" id="view-purchase-orders" style="display:flex;flex-direction:column;">
+      <div style="background:var(--bg);padding:16px 0 14px;flex-shrink:0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span class="section-title">Purchase Orders</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="downloadPOHistory()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download History</button>
+            <button class="btn btn-primary btn-sm" onclick="openPOModal()">+ New Purchase Request</button>
+          </div>
+        </div>
+        <div class="stats-grid" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr);">
+          <div class="stat-card" id="po-card-pending" onclick="filterPOByStatus('Pending')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Pending</div><div class="stat-value" id="po-stat-pending">0</div><div class="stat-sub">Awaiting approval</div></div>
+          <div class="stat-card" id="po-card-approved" onclick="filterPOByStatus('Approved')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Approved</div><div class="stat-value" id="po-stat-approved">0</div><div class="stat-sub">Finance approved</div></div>
+          <div class="stat-card" id="po-card-rejected" onclick="filterPOByStatus('Rejected')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Rejected</div><div class="stat-value" id="po-stat-rejected">0</div><div class="stat-sub">Not approved</div></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <select class="filter-select" id="po-filter-status" onchange="renderPurchaseOrders()"><option value="">All Statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+          <select class="filter-select" id="po-filter-urgency" onchange="renderPurchaseOrders()"><option value="">All Urgency Levels</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 0;">
+        <div id="po-list"></div>
+      </div>
     </div>
     <!-- ANALYTICS -->
     <div class="view" id="view-analytics" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;">
@@ -428,9 +449,25 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div id="analytics-content"></div>
     </div>
     <!-- EMPLOYEES -->
-    <div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;padding-bottom:26px;">
-      
-      <div class="emp-grid" id="employees-grid"></div>
+    <div class="view" id="view-employees" style="display:flex;flex-direction:column;">
+      <div style="background:var(--bg);padding:16px 0 12px;flex-shrink:0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <span class="section-title">Employee Directory</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="triggerImportExcel()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Import Excel</button>
+            <button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">+ Add Employee</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <div style="position:relative;flex:1;max-width:420px;"><svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:0.4" width="14" height="14" fill="none" stroke="var(--text)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input autocomplete="off" id="emp-search" class="search-input" style="padding-left:34px" placeholder="Search by name, role, email, ID or serial..." oninput="filterEmployees()"></div>
+          <select id="emp-site-filter" class="filter-select" onchange="filterEmployees()"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
+          <select id="emp-sort" class="filter-select" onchange="filterEmployees()"><option value="id-asc" selected>ID: A → Z</option><option value="id-desc">ID: Z → A</option><option value="name-asc">Name: A → Z</option><option value="name-desc">Name: Z → A</option></select>
+          <span id="emp-count" style="font-size:12px;color:var(--text3);font-family:'Share Tech Mono',monospace;white-space:nowrap;"></span>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 0;">
+        <div class="emp-grid" id="employees-grid"></div>
+      </div>
     </div>
   </div>
 </main>
@@ -456,11 +493,13 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     </div>
     <div class="form-group"><label>Site</label><select id="f-location"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div>
     <div class="form-group"><label>Purchase Date</label><input autocomplete="off" type="date" id="f-purchase-date"></div>
-    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label><div style="position:relative;width:100%">
-  <input autocomplete="off" type="text" id="f-warranty-display" readonly placeholder="MM/YYYY" style="width:100%;padding:10px 40px 10px 14px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none;cursor:pointer;" onclick="document.getElementById('f-warranty-month').showPicker()">
-  <input autocomplete="off" type="month" id="f-warranty-month" class="empty-month" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;" oninput="syncWarrantyHidden();const v=this.value;if(v){const[y,m]=v.split('-');document.getElementById('f-warranty-display').value=m+'/'+y;}else{document.getElementById('f-warranty-display').value='';}">
-  <svg onclick="document.getElementById('f-warranty-month').showPicker()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;opacity:0.5;pointer-events:all;" width="16" height="16" fill="none" stroke="var(--text)" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-</div></div><input type="hidden" id="f-warranty"><input type="hidden" id="f-warranty-mm"><input type="hidden" id="f-warranty-yy"></div>
+    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label>
+<div style="display:flex;gap:6px;align-items:center">
+  <select id="f-warranty-mm" style="flex:0 0 80px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none"><option value="">MM</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+  <span style="color:var(--text3);font-family:'Share Tech Mono',monospace">/</span>
+  <select id="f-warranty-yy" style="flex:0 0 100px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none"><option value="">YYYY</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option></select>
+</div>
+<input type="hidden" id="f-warranty"></div><input type="hidden" id="f-warranty"><input type="hidden" id="f-warranty-mm"><input type="hidden" id="f-warranty-yy"></div>
     <div class="form-group"><label>Purchase Price (&#8369;)</label><input autocomplete="off" type="number" id="f-price" placeholder="0.00"></div>
     <div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="2" placeholder="Any additional notes..."></textarea></div>
   </div>
@@ -770,18 +809,13 @@ function showView(name){
   document.getElementById('view-'+name).classList.add('active');
   event.currentTarget.classList.add('active');
 
-  const assignBar=document.getElementById('assign-freeze-bar');
-  if(assignBar)assignBar.style.display=(name==='assignments')?'block':'none';
-  const empBar=document.getElementById('emp-freeze-bar');
-  if(empBar)empBar.style.display=(name==='employees')?'block':'none';
-  const poBar=document.getElementById('po-freeze-bar');
-  if(poBar)poBar.style.display=(name==='purchase-orders')?'block':'none';
+
   const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS'};
   document.getElementById('page-title').textContent=titles[name]||name;
   if(name==='dashboard')renderDashboard();
-  if(name==='equipment')renderEquipment();
-  if(name==='assignments')renderAssignments();
-  if(name==='repairs')renderRepairs();
+  if(name==='equipment'){document.getElementById('equip-search').value='';document.getElementById('equip-type-filter').value='';document.getElementById('equip-model-filter').value='';document.getElementById('equip-model-filter').style.display='none';document.getElementById('equip-status-filter').value='';document.getElementById('equip-site-filter').value='';document.getElementById('equip-date-warranty-filter').value='';renderEquipment();}
+  if(name==='assignments'){const as=document.getElementById('assign-search');if(as)as.value='';const at=document.getElementById('assign-type-filter');if(at)at.value='';const ast=document.getElementById('assign-status-filter');if(ast)ast.value='';const asi=document.getElementById('assign-site-filter');if(asi)asi.value='';renderAssignments();}
+  if(name==='repairs'){const rs=document.getElementById('repair-search');if(rs)rs.value='';const rf=document.getElementById('repair-status-filter');if(rf)rf.value='';renderRepairs();}
   if(name==='purchases')renderPurchases();
   if(name==='purchase-orders'){const sf=document.getElementById('po-filter-status');if(sf&&sf.value==='')sf.value='Pending';renderPurchaseOrders();setTimeout(()=>filterPOByStatus('Pending'),50);}
   if(name==='employees')initEmployeeView();
@@ -795,16 +829,11 @@ function navigateFromStat(view,statusFilter){
   document.getElementById('view-'+view).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+view+"'"))n.classList.add('active');});
 
-  const assignFb=document.getElementById('assign-freeze-bar');
-  if(assignFb)assignFb.style.display=(view==='assignments')?'block':'none';
-  const empFb=document.getElementById('emp-freeze-bar');
-  if(empFb)empFb.style.display=(view==='employees')?'block':'none';
-  const poFb=document.getElementById('po-freeze-bar');
-  if(poFb)poFb.style.display=(view==='purchase-orders')?'block':'none';
+
   const titles={equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG'};
   document.getElementById('page-title').textContent=titles[view]||view;
-  if(view==='equipment'){renderEquipment();if(statusFilter){setTimeout(()=>{document.getElementById('equip-status-filter').value=statusFilter;filterEquipment();},50);}}
-  if(view==='assignments')renderAssignments();
+  if(view==='equipment'){document.getElementById('equip-search').value='';document.getElementById('equip-type-filter').value='';document.getElementById('equip-model-filter').value='';document.getElementById('equip-model-filter').style.display='none';document.getElementById('equip-status-filter').value='';document.getElementById('equip-site-filter').value='';document.getElementById('equip-date-warranty-filter').value='';renderEquipment();if(statusFilter){setTimeout(()=>{document.getElementById('equip-status-filter').value=statusFilter;filterEquipment();},50);}}
+  if(view==='assignments'){const as=document.getElementById('assign-search');if(as)as.value='';const at=document.getElementById('assign-type-filter');if(at)at.value='';const ast=document.getElementById('assign-status-filter');if(ast)ast.value='';const asi=document.getElementById('assign-site-filter');if(asi)asi.value='';renderAssignments();}
   if(view==='repairs')renderRepairs();
 }
 
@@ -823,12 +852,7 @@ function conditionBadge(c){const m={'New':'badge-teal','Good':'badge-green','Fai
 function logActivity(text){const now=new Date();const time=now.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})+' '+now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'});activity.unshift({text,time});if(activity.length>50)activity.pop();}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-function syncWarrantyHidden(){
-  const v=document.getElementById('f-warranty-month').value;
-  const hidden=document.getElementById('f-warranty');
-  if(hidden&&v){const[y,m]=v.split('-');hidden.value=m+'/'+y;}
-  else if(hidden)hidden.value='';
-}
+function syncWarrantyHidden(){}
 function warrantyColor(mmyyyy){
   if(!mmyyyy)return'var(--text2)';
   const parts=mmyyyy.split('/');
@@ -926,9 +950,40 @@ function downloadEquipmentCSV(){
   logActivity('Equipment CSV exported: '+filtered.length+' records (filter: '+filterLabel+')');
 }
 
+function updateModelFilter(){
+  const type=document.getElementById('equip-type-filter').value;
+  const modelFilter=document.getElementById('equip-model-filter');
+  const modelsByType={"Laptop": ["14ALC7", "15IAU7 (Type 82RK)", "LOQ 15IAX9E (Type 83LK)", "15IRH10 (Type 83K1)", "16IAH8 (Type 83BG)"], "Monitor": ["N-Vision"], "Headset": ["Jabra Evolve2 75", "Jabra Evolve2 55", "Jabra Engage 55"], "Mouse": ["Rapoo MT750S", "Rapoo MT550", "Rapoo M500"]};
+  if(type&&modelsByType[type]){
+    modelFilter.innerHTML='<option value="">All Models</option>'+modelsByType[type].map(m=>'<option>'+m+'</option>').join('');
+    modelFilter.style.display='';
+  }else{
+    modelFilter.innerHTML='<option value="">All Models</option>';
+    modelFilter.style.display='none';
+    modelFilter.value='';
+  }
+}
+
 function filterEquipment(){
   const s=document.getElementById('equip-search').value.toLowerCase(),t=document.getElementById('equip-type-filter').value,st=document.getElementById('equip-status-filter').value,si=document.getElementById('equip-site-filter').value||'';
-  renderEquipment(equipment.filter(e=>(!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&(!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si)));
+  const model=document.getElementById('equip-model-filter')?.value||'';
+  const dw=document.getElementById('equip-date-warranty-filter')?.value||'';
+  const now=new Date();const thisYear=now.getFullYear();const lastYear=thisYear-1;
+  const soon=new Date();soon.setMonth(soon.getMonth()+2);
+  renderEquipment(equipment.filter(e=>{
+    if(s&&!(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))return false;
+    if(t&&e.type!==t)return false;
+    if(model&&e.model!==model)return false;
+    if(st&&e.status!==st)return false;
+    if(si&&e.location!==si)return false;
+    if(dw==='purchased-this-year'&&(!e.purchaseDate||new Date(e.purchaseDate).getFullYear()!==thisYear))return false;
+    if(dw==='purchased-last-year'&&(!e.purchaseDate||new Date(e.purchaseDate).getFullYear()!==lastYear))return false;
+    if(dw==='warranty-active'){const d=warrantyToDate(e.warrantyExpiry);if(!d||d<now)return false;}
+    if(dw==='warranty-expiring'){const d=warrantyToDate(e.warrantyExpiry);if(!d||d<now||d>soon)return false;}
+    if(dw==='warranty-expired'){const d=warrantyToDate(e.warrantyExpiry);if(!d||d>=now)return false;}
+    if(dw==='no-warranty'&&e.warrantyExpiry)return false;
+    return true;
+  }));
 }
 
 function renderAssignments(list){
@@ -1113,7 +1168,7 @@ function setModelValue(type,val){toggleModelField(type);if(type==='Laptop')docum
 function openAddModal(){
   editingId=null;document.getElementById('equip-modal-title').textContent='Add Equipment';
   ['f-type','f-brand','f-serial','f-condition','f-status','f-assigned','f-location','f-purchase-date','f-price','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.tagName==='SELECT'?el.options[0].value:'';});
-  document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';document.getElementById('f-warranty-month').value='';document.getElementById('f-warranty-display').value='';const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.add('empty-month');
+  document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';document.getElementById('f-warranty-mm').value='';document.getElementById('f-warranty-yy').value='';
   document.getElementById('f-condition').value='New';document.getElementById('f-status').value='In Stock';
   toggleModelField('Laptop');document.getElementById('equip-modal').classList.add('open');
 }
@@ -1125,11 +1180,11 @@ function editEquipment(id){
   const _emp=employees.find(e=>e.id===eq.assignedTo);
   document.getElementById('f-assigned').value=eq.assignedTo||'';document.getElementById('f-assigned-search').value=_emp?_emp.name:'';
   document.getElementById('f-location').value=eq.location||'';document.getElementById('f-purchase-date').value=eq.purchaseDate||'';
-  (()=>{const v=eq.warrantyExpiry||'';if(v&&v.includes('/')){const[m,y]=v.split('/');document.getElementById('f-warranty-month').value=y+'-'+m.padStart(2,'0');document.getElementById('f-warranty-display').value=m.padStart(2,'0')+'/'+y;const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.remove('empty-month');}else{document.getElementById('f-warranty-month').value='';document.getElementById('f-warranty-display').value='';const wm=document.getElementById('f-warranty-month');if(wm)wm.classList.add('empty-month');}})();document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
+  (()=>{const v=eq.warrantyExpiry||'';if(v&&v.includes('/')){const[m,y]=v.split('/');document.getElementById('f-warranty-mm').value=m.padStart(2,'0');document.getElementById('f-warranty-yy').value=y;}else{document.getElementById('f-warranty-mm').value='';document.getElementById('f-warranty-yy').value='';}})();document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
   document.getElementById('equip-modal').classList.add('open');
 }
 function saveEquipment(){
-  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:(()=>{const v=document.getElementById('f-warranty-month').value;if(!v)return'';const[y,m]=v.split('-');return m+'/'+y;})(),price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
+  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:(()=>{const mm=document.getElementById('f-warranty-mm').value,yy=document.getElementById('f-warranty-yy').value;return(mm&&yy)?mm+'/'+yy:''})(),price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
   if(data.serial){
     const dup=equipment.find(e=>e.serial&&e.serial.trim().toLowerCase()===data.serial.toLowerCase()&&e.id!==editingId);
     if(dup)return alert('Serial number "'+data.serial+'" is already assigned to '+dup.brand+' '+dup.model+' ('+dup.type+'). Please use a unique serial number.');

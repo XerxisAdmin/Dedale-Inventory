@@ -51,8 +51,8 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .btn-danger:hover{background:rgba(196,18,48,0.35);}
 .btn-success{background:rgba(0,184,96,0.15);color:var(--green);border:1px solid rgba(0,184,96,0.4);clip-path:none;}
 .btn-success:hover{background:rgba(0,184,96,0.25);}
-.content{padding:0 30px 26px 30px;flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;}
-.view{display:none;}.view.active{display:block;flex:1;}
+.content{padding:0;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.view{display:none;}.view.active{display:flex;flex-direction:column;flex:1;overflow:hidden;}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .stat-card{background:var(--surface);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:border-color 0.2s;}
 .stat-card:hover{border-color:var(--border2);}
@@ -304,7 +304,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
   </div>
   <div class="content">
     <!-- DASHBOARD -->
-    <div class="view active" id="view-dashboard">
+    <div class="view active" id="view-dashboard" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;">
       <div id="alerts-bar" class="alerts-bar hidden"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span><strong id="alerts-count">0</strong> items require attention — damaged or under repair</span></div>
       <div id="low-stock-bar" class="alerts-bar hidden" style="background:rgba(204,34,68,0.06);border-left-color:var(--crimson);color:var(--crimson)"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><span id="low-stock-msg">Some equipment types are low in stock</span></div>
       <div class="stats-grid">
@@ -326,7 +326,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
     </div>
     <!-- EQUIPMENT -->
-    <div class="view" id="view-equipment" style="display:flex;flex-direction:column;height:100%;">
+    <div class="view" id="view-equipment" style="display:flex;flex-direction:column;">
       <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;">
         <input autocomplete="off" class="search-input" placeholder="Search by name, brand, serial number..." oninput="filterEquipment()" id="equip-search">
         <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
@@ -336,7 +336,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
       </div>
-      <div style="flex:1;overflow-y:auto;border:1px solid var(--border);border-top:none;background:var(--surface);">
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;border:1px solid var(--border);border-top:none;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;">
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>
@@ -356,7 +356,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
     </div>
     <!-- ASSIGNMENTS -->
-    <div class="view" id="view-assignments">
+    <div class="view" id="view-assignments" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;">
       <div style="border:1px solid var(--border);border-top:none;background:var(--surface);margin:0;padding:0;">
         <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;margin:0;">
           <colgroup>
@@ -368,7 +368,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
     </div>
     <!-- REPAIRS -->
-    <div class="view" id="view-repairs">
+    <div class="view" id="view-repairs" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;">
       <div class="table-wrap">
         <div class="table-toolbar">
           <input autocomplete="off" class="search-input" placeholder="Search repairs and issues..." id="repair-search" oninput="filterRepairs()">
@@ -378,23 +378,23 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
     </div>
     <!-- PURCHASES -->
-    <div class="view" id="view-purchases">
+    <div class="view" id="view-purchases" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;">
       <div class="section-header"><span class="section-title">Purchase History</span><button class="btn btn-primary btn-sm" onclick="openPurchaseModal()">+ Log Purchase</button></div>
       <div class="purchase-summary" id="purchase-summary"></div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Equipment</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Supplier</th></tr></thead><tbody id="purchases-tbody"></tbody></table></div>
     </div>
     <!-- PURCHASE ORDERS -->
-    <div class="view" id="view-purchase-orders">
+    <div class="view" id="view-purchase-orders" style="overflow-y:auto;overflow-x:hidden;">
       
       <div id="po-list"></div>
     </div>
     <!-- ANALYTICS -->
-    <div class="view" id="view-analytics">
+    <div class="view" id="view-analytics" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;">
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
       <div id="analytics-content"></div>
     </div>
     <!-- EMPLOYEES -->
-    <div class="view" id="view-employees">
+    <div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;padding-bottom:26px;">
       
       <div class="emp-grid" id="employees-grid"></div>
     </div>

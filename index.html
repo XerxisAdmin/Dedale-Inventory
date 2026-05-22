@@ -481,7 +481,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select></div>
     <div class="form-group"><label>Brand</label><select id="f-brand"><option value="">— Select Brand —</option><option>Lenovo</option></select></div>
     <div class="form-group full"><label>Model</label>
-      <select id="f-model-select" style="display:none"><option value="">— Select Model —</option><option>14ALC7</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>15IRH10 (Type 83K1)</option><option>16IAH8 (Type 83BG)</option><option>15IRU8 (Type 82X7)</option></select>
+      <select id="f-model-select" style="display:none"><option value="">— Select Model —</option><option>14ALC7</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>15IRH10 (Type 83K1)</option><option>16IAH8 (Type 83BG)</option><option>15IRU8 (Type 82X7)</option><option>LOQ 15IAX9 (Type 83GS)</option></select>
       <input autocomplete="off" id="f-model" placeholder="e.g. XPS 15, MX Master 3">
     </div>
     <div class="form-group"><label>Serial Number</label><input id="f-serial" autocomplete="off" placeholder="e.g. SN-001234"></div>
@@ -953,7 +953,7 @@ function downloadEquipmentCSV(){
 function updateModelFilter(){
   const type=document.getElementById('equip-type-filter').value;
   const modelFilter=document.getElementById('equip-model-filter');
-  const modelsByType={"Laptop": ["14ALC7", "15IAU7 (Type 82RK)", "LOQ 15IAX9E (Type 83LK)", "15IRH10 (Type 83K1)", "16IAH8 (Type 83BG)","15IRU8 (Type 82X7)"], "Monitor": ["N-Vision"], "Headset": ["Jabra Evolve2 75", "Jabra Evolve2 55", "Jabra Engage 55"], "Mouse": ["Rapoo MT750S", "Rapoo MT550", "Rapoo M500"]};
+  const modelsByType={"Laptop": ["14ALC7", "15IAU7 (Type 82RK)", "LOQ 15IAX9E (Type 83LK)", "15IRH10 (Type 83K1)", "16IAH8 (Type 83BG)","15IRU8 (Type 82X7)","LOQ 15IAX9 (Type 83GS)"], "Monitor": ["N-Vision"], "Headset": ["Jabra Evolve2 75", "Jabra Evolve2 55", "Jabra Engage 55"], "Mouse": ["Rapoo MT750S", "Rapoo MT550", "Rapoo M500"]};
   if(type&&modelsByType[type]){
     modelFilter.innerHTML='<option value="">All Models</option>'+modelsByType[type].map(m=>'<option>'+m+'</option>').join('');
     modelFilter.style.display='';
@@ -1427,7 +1427,7 @@ function showPODropdown(){const q=document.getElementById('po-employee-search').
 function hidePODropdown(){document.getElementById('po-employee-dropdown').style.display='none';}
 
 const PO_BRANDS={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo'],'Memory':['Kingston'],'Other':[]};
-const PO_MODELS={'Lenovo':['14ALC7','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','15IRH10 (Type 83K1)','16IAH8 (Type 83BG)','15IRU8 (Type 82X7)'],'N-Vision':[],'Jabra':['Evolve2 75','Evolve2 55','Engage 55'],'Rapoo':['MT750S','MT550','M500'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','NV2 256GB SSD','NV2 512GB SSD']};
+const PO_MODELS={'Lenovo':['14ALC7','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','15IRH10 (Type 83K1)','16IAH8 (Type 83BG)','15IRU8 (Type 82X7)','LOQ 15IAX9 (Type 83GS)'],'N-Vision':[],'Jabra':['Evolve2 75','Evolve2 55','Engage 55'],'Rapoo':['MT750S','MT550','M500'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','NV2 256GB SSD','NV2 512GB SSD']};
 
 function updatePOBrands(typeSelect){
   const row=typeSelect.closest('.po-item-row'),type=typeSelect.value;

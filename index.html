@@ -479,7 +479,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
   <div style="padding:20px 26px;overflow-y:auto;flex:1;">
 <div class="form-grid">
     <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select></div>
-    <div class="form-group"><label>Brand</label><select id="f-brand"><option value="">— Select Brand —</option><option>Lenovo</option></select></div>
+    <div class="form-group"><label>Brand</label><select id="f-brand" onchange="updateModelOnBrand()"><option value="">— Select Brand —</option><option>Lenovo</option></select></div>
     <div class="form-group full"><label>Model</label>
       <select id="f-model-select" style="display:none"><option value="">— Select Model —</option><option>14ALC7</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>15IRH10 (Type 83K1)</option><option>16IAH8 (Type 83BG)</option><option>15IRU8 (Type 82X7)</option><option>LOQ 15IAX9 (Type 83GS)</option></select>
       <input autocomplete="off" id="f-model" placeholder="e.g. XPS 15, MX Master 3">
@@ -1143,12 +1143,23 @@ function openEmployeeDetail(id){
 function toggleModelField(val){
   const type=val||document.getElementById('f-type').value;
   const input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
-  if(type==='Laptop'){input.style.display='none';select.style.display='';input.value='';}
-  else{input.style.display='';select.style.display='none';select.value='';}
   const brandMap={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo']};
   const brandSelect=document.getElementById('f-brand');
   const brands=brandMap[type]||[];
   brandSelect.innerHTML='<option value="">— Select Brand —</option>'+brands.map(b=>'<option>'+b+'</option>').join('');
+  // Hide model until brand is selected
+  input.style.display='none';select.style.display='none';input.value='';select.value='';
+  if(type==='Laptop'){select.style.display='none';}
+}
+
+function updateModelOnBrand(){
+  const type=document.getElementById('f-type').value;
+  const brand=document.getElementById('f-brand').value;
+  const input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
+  input.style.display='none';select.style.display='none';input.value='';select.value='';
+  if(!brand)return;
+  if(type==='Laptop'){select.style.display='';}
+  else{input.style.display='';}
 }
 function buildAssignedDropdown(filter){
   const dd=document.getElementById('f-assigned-dropdown');if(!dd)return;
@@ -1175,7 +1186,7 @@ function openAddModal(){
 function editEquipment(id){
   const eq=equipment.find(e=>e.id===id);if(!eq)return;
   editingId=id;document.getElementById('equip-modal-title').textContent='Edit Equipment';
-  document.getElementById('f-type').value=eq.type;toggleModelField(eq.type);document.getElementById('f-brand').value=eq.brand;setModelValue(eq.type,eq.model);
+  document.getElementById('f-type').value=eq.type;toggleModelField(eq.type);document.getElementById('f-brand').value=eq.brand;updateModelOnBrand();setModelValue(eq.type,eq.model);
   document.getElementById('f-serial').value=eq.serial;document.getElementById('f-condition').value=eq.condition;document.getElementById('f-status').value=eq.status;
   const _emp=employees.find(e=>e.id===eq.assignedTo);
   document.getElementById('f-assigned').value=eq.assignedTo||'';document.getElementById('f-assigned-search').value=_emp?_emp.name:'';

@@ -365,9 +365,9 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <select class="filter-select" onchange="filterAssignments()" id="assign-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
         <select class="filter-select" onchange="filterAssignments()" id="assign-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-top:none;flex-shrink:0;">
-        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
-          <colgroup><col style="width:16%"><col style="width:18%"><col style="width:9%"><col style="width:10%"><col style="width:11%"><col style="width:9%"><col></colgroup>
+      <div style="border:1px solid var(--border);border-top:none;flex-shrink:0;margin:0;">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;margin:0;">
+          <colgroup><col style="width:18%"><col style="width:20%"><col style="width:8%"><col style="width:10%"><col style="width:11%"><col style="width:8%"><col></colgroup>
           <thead><tr>
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Employee</th>
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Equipment</th>
@@ -379,9 +379,9 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
           </tr></thead>
         </table>
       </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;border:1px solid var(--border);border-top:none;background:var(--surface);">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
-          <colgroup><col style="width:16%"><col style="width:18%"><col style="width:9%"><col style="width:10%"><col style="width:11%"><col style="width:9%"><col></colgroup>
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;border:1px solid var(--border);border-top:none;background:var(--surface);margin:0;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;margin:0;">
+          <colgroup><col style="width:18%"><col style="width:20%"><col style="width:8%"><col style="width:10%"><col style="width:11%"><col style="width:8%"><col></colgroup>
           <tbody id="assignments-tbody"></tbody>
         </table>
       </div>
@@ -392,8 +392,8 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <input autocomplete="off" class="search-input" placeholder="Search repairs and issues..." id="repair-search" oninput="filterRepairs()">
         <select class="filter-select" id="repair-status-filter" onchange="filterRepairs()"><option value="">All Conditions</option><option>Damaged</option><option>Under Repair</option></select>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-top:none;flex-shrink:0;">
-        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <div style="border:1px solid var(--border);border-top:none;flex-shrink:0;margin:0;">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;margin:0;">
           <colgroup><col style="width:18%"><col style="width:9%"><col style="width:10%"><col style="width:22%"><col style="width:9%"><col style="width:11%"><col></colgroup>
           <thead><tr>
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Equipment</th>

@@ -965,8 +965,7 @@ function downloadEquipmentCSV(){
     getEmployeeName(e.assignedTo),e.location||'',e.purchaseDate||'',
     e.warrantyExpiry||'',e.price||0,e.notes||''
   ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
-  const csv=[headers.map(h=>'"'+h+'"').join(','),...rows].join('
-');
+  const csv=[headers.map(h=>'"'+h+'"').join(','),...rows].join('\n');
   const blob=new Blob([csv],{type:'text/csv'});
   const a=document.createElement('a');
   const filterLabel=[t,st,si].filter(Boolean).join('-')||'all';

@@ -51,8 +51,8 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .btn-danger:hover{background:rgba(196,18,48,0.35);}
 .btn-success{background:rgba(0,184,96,0.15);color:var(--green);border:1px solid rgba(0,184,96,0.4);clip-path:none;}
 .btn-success:hover{background:rgba(0,184,96,0.25);}
-.content{padding:0;flex:1;overflow:hidden;display:flex;flex-direction:column;}
-.view{display:none !important;}.view.active{display:flex !important;flex-direction:column;flex:1;overflow:hidden;}
+.content{padding:0;flex:1;overflow:clip;display:flex;flex-direction:column;}
+.view{display:none !important;}.view.active{display:flex !important;flex-direction:column;flex:1;min-height:0;}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .stat-card{background:var(--surface);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:border-color 0.2s;}
 .stat-card:hover{border-color:var(--border2);}

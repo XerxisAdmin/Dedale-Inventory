@@ -909,12 +909,12 @@ function renderEquipment(list){
     +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
     +'<td><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
     +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
-    +'<td>'+conditionBadge(eq.condition)+'</td>'
-    +'<td>'+statusBadge(eq.status)+'</td>'
+    +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
+    +'<td style="text-align:left">'+statusBadge(eq.status)+'</td>'
     +'<td style="font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.location||'—')+'</td>'
     +'<td style="font-size:11px;font-family:\'Share Tech Mono\',monospace;text-align:center">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
-    +'<td><div class="actions"><button class="btn btn-outline btn-sm" onclick="editEquipment(\''+eq.id+'\')">Edit</button><button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\''+eq.id+'\')">History</button><button class="btn btn-outline btn-sm" onclick="showQRCode(\''+eq.id+'\')">QR</button><button class="btn btn-danger btn-sm" onclick="deleteEquipment(\''+eq.id+'\')">Delete</button></div></td>'
+    +'<td style="text-align:left"><div class="actions"><button class="btn btn-outline btn-sm" onclick="editEquipment(\''+eq.id+'\')">Edit</button><button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\''+eq.id+'\')">History</button><button class="btn btn-outline btn-sm" onclick="showQRCode(\''+eq.id+'\')">QR</button><button class="btn btn-danger btn-sm" onclick="deleteEquipment(\''+eq.id+'\')">Delete</button></div></td>'
     +'</tr>').join(''):'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
 }
 function downloadEquipmentCSV(){
@@ -986,8 +986,8 @@ function renderAssignments(list){
     +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
     +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.purchaseDate||'—')+'</td>'
-    +'<td>'+statusBadge(eq.status)+'</td>'
-    +'<td><button class="btn btn-outline btn-sm" onclick="unassign(\''+eq.id+'\')">Unassign</button></td></tr>').join('')
+    +'<td style="text-align:left">'+statusBadge(eq.status)+'</td>'
+    +'<td style="text-align:left"><button class="btn btn-outline btn-sm" onclick="unassign(\''+eq.id+'\')">Unassign</button></td></tr>').join('')
     :'<tr><td colspan="7"><div class="empty-state"><p>No assignments on record</p></div></td></tr>';
 }
 function filterAssignments(){
@@ -1009,7 +1009,7 @@ function renderRepairs(list){
     +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
     +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.notes?'<span style="color:var(--gold)">'+eq.notes+'</span>':'<span style="color:var(--text3);font-style:italic">Tap to add notes</span>')+'</td>'
-    +'<td>'+conditionBadge(eq.condition)+'</td>'
+    +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.purchaseDate||'—')+'</td>'
     +'<td onclick="event.stopPropagation()"><button class="btn btn-success btn-sm" onclick="markRepaired(\''+eq.id+'\')">Mark as Fixed</button></td></tr>').join('')
     :'<tr><td colspan="7"><div class="empty-state"><p>No items under repair or damaged</p></div></td></tr>';

@@ -47,8 +47,8 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold-dark);clip-path:none;}
 .btn-outline:hover{background:rgba(192,136,32,0.1);border-color:var(--gold);}
 .btn-sm{padding:6px 12px !important;font-size:10px !important;line-height:1 !important;height:30px !important;letter-spacing:1.5px;clip-path:none;flex-shrink:0;}
-.btn-danger{background:rgba(196,18,48,0.2);color:var(--crimson);border:1px solid var(--crimson-dark);clip-path:none;}
-.btn-danger:hover{background:rgba(196,18,48,0.35);}
+.btn-danger{background:transparent;color:var(--crimson);border:1px solid var(--crimson-dark);clip-path:none;}
+.btn-danger:hover{background:rgba(196,18,48,0.2);}
 .btn-success{background:rgba(0,184,96,0.15);color:var(--green);border:1px solid rgba(0,184,96,0.4);clip-path:none;}
 .btn-success:hover{background:rgba(0,184,96,0.25);}
 .content{padding:0;flex:1;overflow:hidden;display:flex;flex-direction:column;}
@@ -86,7 +86,7 @@ td{padding:10px 14px;color:var(--text);vertical-align:middle;font-size:14px;text
 .badge-blue{background:rgba(0,184,212,0.15);color:var(--teal);}
 .badge-teal{background:rgba(0,184,212,0.15);color:var(--teal);}
 .badge-gray{background:rgba(48,72,88,0.3);color:var(--text2);}
-.actions{display:flex;gap:5px;justify-content:flex-start;padding:0;margin:0;flex-wrap:nowrap;}
+.actions{display:flex;gap:5px;justify-content:center;padding:0;margin:0;flex-wrap:nowrap;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,5,10,0.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);padding:24px 26px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 0.2s ease;border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));position:relative;}
@@ -345,7 +345,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Assigned To</th>
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Location</th>
             <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Warranty</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+            <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
           </tr></thead>
           <tbody id="equipment-tbody"></tbody>
         </table>
@@ -387,7 +387,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Issue Notes</th>
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Condition</th>
             <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Date Logged</th>
-            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+            <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
           </tr></thead>
           <tbody id="repairs-tbody"></tbody>
         </table>

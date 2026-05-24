@@ -420,17 +420,19 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       
       <div style="border:1px solid var(--border);border-top:none;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
-          <colgroup>
-            <col style="width:90px">
-            <col style="width:200px">
-            <col style="width:120px">
-            <col style="width:100px">
-            <col style="width:110px">
-            <col style="width:160px">
-            <col style="width:100px">
-            <col style="width:90px">
-            <col>
-          </colgroup>
+          <thead style="position:sticky;top:0;z-index:10;">
+            <tr>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:90px;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:200px;">Brand / Model</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:120px;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:100px;">Condition</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:110px;">Status</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:160px;">Assigned To</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:100px;">Location</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:90px;">Warranty</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+            </tr>
+          </thead>
           <tbody id="equipment-tbody"></tbody>
         </table>
       </div>
@@ -439,10 +441,17 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="view" id="view-assignments">
       <div style="border:1px solid var(--border);border-top:none;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
-          <colgroup>
-            <col style="width:200px"><col style="width:200px"><col style="width:100px">
-            <col style="width:120px"><col style="width:130px"><col style="width:110px"><col>
-          </colgroup>
+          <thead style="position:sticky;top:0;z-index:10;">
+            <tr>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:200px;">Employee</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:200px;">Equipment</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:100px;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:120px;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:130px;">Date Assigned</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:110px;">Status</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+            </tr>
+          </thead>
           <tbody id="assignments-tbody"></tbody>
         </table>
       </div>
@@ -454,7 +463,20 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
           <input autocomplete="off" class="search-input" placeholder="Search repairs and issues..." id="repair-search" oninput="filterRepairs()">
           <select class="filter-select" id="repair-status-filter" onchange="filterRepairs()"><option value="">All Conditions</option><option>Damaged</option><option>Under Repair</option></select>
         </div>
-        <table><thead><tr><th>Equipment</th><th>Type</th><th>Serial No.</th><th>Issue Notes</th><th>Condition</th><th>Date Logged</th><th>Actions</th></tr></thead><tbody id="repairs-tbody"></tbody></table>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
+          <thead style="position:sticky;top:0;z-index:10;">
+            <tr>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:20%;">Equipment</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:25%;">Issue Notes</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Condition</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:11%;">Date Logged</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="repairs-tbody"></tbody>
+        </table></table>
       </div>
     </div>
     <!-- PURCHASES -->

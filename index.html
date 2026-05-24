@@ -799,22 +799,7 @@ window.addEventListener('offline',function(){
     addNotif('📵','You are offline — changes will sync when reconnected','sync');
   }
 });
-/* Periodic connection check — more reliable than browser events alone */
-setInterval(function(){
-  var nowOnline=navigator.onLine;
-  if(nowOnline&&!_isOnline){
-    /* Just came online */
-    _isOnline=true;
-    flushOnReconnect();
-  }else if(!nowOnline&&_isOnline){
-    /* Just went offline */
-    _isOnline=false;
-    updateOnlineUI();
-  }else if(nowOnline!==_isOnline){
-    _isOnline=nowOnline;
-    updateOnlineUI();
-  }
-},3000);
+/* Connection state driven by sync success/failure — no navigator.onLine poll */
 
 function showApp(){
   setTimeout(applyRolePermissions,200);
@@ -866,7 +851,7 @@ setInterval(async()=>{
     const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});
     if(!r.ok)return;
     const data=await r.json();
-    if(data.equipment){equipment=data.equipment;localStorage.setItem('dd_equipment',JSON.stringify(equipment));}
+    _isOnline=true;updateOnlineUI();if(data.equipment){equipment=data.equipment;localStorage.setItem('dd_equipment',JSON.stringify(equipment));}
     if(data.employees){employees=data.employees;localStorage.setItem('dd_employees',JSON.stringify(employees));}
     if(data.roleConfig){roleConfig=data.roleConfig;localStorage.setItem('dd_roles',JSON.stringify(roleConfig));}
     if(data.purchaseOrders&&(Date.now()-_localSaveTime>10000)){purchaseOrders=data.purchaseOrders;localStorage.setItem('dd_purchase_orders',JSON.stringify(purchaseOrders));}
@@ -901,8 +886,8 @@ async function syncToOneDrive(){
       const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig},null,2);
       const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
       if(r.status===401){accessToken=null;updateSyncStatus('disconnected');return;}
-      if(r.ok){updateSyncStatus('saved');_lastSyncTime=Date.now();_pendingSync=false;}else updateSyncStatus('error');
-    }catch(e){_pendingSync=true;updateSyncStatus('offline');}finally{isSyncing=false;}
+      if(r.ok){_isOnline=true;updateOnlineUI();updateSyncStatus('saved');_lastSyncTime=Date.now();_pendingSync=false;}else updateSyncStatus('error');
+    }catch(e){_isOnline=false;_pendingSync=true;updateOnlineUI();}finally{isSyncing=false;}
   },1500);
 }
 

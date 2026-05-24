@@ -340,8 +340,8 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-date-warranty-filter"><option value="">All Dates &amp; Warranty</option><option value="purchased-this-year">Purchased This Year</option><option value="purchased-last-year">Purchased Last Year</option><option value="warranty-active">Warranty Active</option><option value="warranty-expiring">Warranty Expiring Soon</option><option value="warranty-expired">Warranty Expired</option><option value="no-warranty">No Warranty Set</option></select>
       </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;border:1px solid var(--border);border-top:none;background:var(--surface);">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
+      <div style="flex:1;overflow-y:auto;overflow-x:auto;border:1px solid var(--border);border-top:none;background:var(--surface);">
+        <table style="width:100%;min-width:900px;border-collapse:collapse;font-size:13px;table-layout:fixed;">
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:7%;">Type</th>
@@ -367,7 +367,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <select class="filter-select" onchange="filterAssignments()" id="assign-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
         <select class="filter-select" onchange="filterAssignments()" id="assign-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
       </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;background:var(--surface);">
+      <div style="flex:1;overflow-y:auto;overflow-x:auto;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>
@@ -390,7 +390,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <input autocomplete="off" class="search-input" placeholder="Search repairs and issues..." id="repair-search" oninput="filterRepairs()">
         <select class="filter-select" id="repair-status-filter" onchange="filterRepairs()"><option value="">All Conditions</option><option>Damaged</option><option>Under Repair</option></select>
       </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;background:var(--surface);">
+      <div style="flex:1;overflow-y:auto;overflow-x:auto;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>

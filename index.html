@@ -863,10 +863,15 @@ function formatHistoryDate(iso){
 }
 
 function showView(name){
+  // Clean up mobile sheet if open
+  var _ms=document.getElementById('mobile-equip-sheet');if(_ms)_ms.remove();
+  var _mb=document.getElementById('mobile-equip-backdrop');if(_mb)_mb.remove();
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
-  event.currentTarget.classList.add('active');
+  // Highlight correct nav item safely (works from both click and programmatic calls)
+  var _navItems=document.querySelectorAll('.nav-item');
+  _navItems.forEach(function(n){if(n.getAttribute('onclick')&&n.getAttribute('onclick').indexOf(name)>-1)n.classList.add('active');});
   const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS'};
   document.getElementById('page-title').textContent=titles[name]||name;
   if(name==='dashboard')renderDashboard();

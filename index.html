@@ -193,6 +193,26 @@ body{overflow-x:hidden;}
 #po-sticky-header{padding:4px 14px 14px !important;}
 #stat-employees-breakdown{grid-template-columns:repeat(2,1fr) !important;}
 
+
+/* ── PURCHASE ORDERS MOBILE FIXES ── */
+/* PO header row: stack title above buttons */
+#view-purchase-orders>div:first-child>div:first-child{flex-direction:column !important;align-items:flex-start !important;gap:8px !important;}
+/* PO buttons: full width stacked */
+#view-purchase-orders>div:first-child>div:first-child>div{flex-direction:column !important;width:100% !important;gap:6px !important;}
+#view-purchase-orders>div:first-child>div:first-child>div .btn{width:100% !important;justify-content:center !important;}
+/* PO stat cards: 3 equal columns on mobile */
+#view-purchase-orders .stats-grid{grid-template-columns:repeat(3,1fr) !important;gap:8px !important;}
+#view-purchase-orders .stats-grid .stat-card{padding:10px 8px !important;}
+#view-purchase-orders .stats-grid .stat-value{font-size:24px !important;}
+#view-purchase-orders .stats-grid .stat-label{font-size:8px !important;letter-spacing:1px !important;}
+/* PO container padding */
+#view-purchase-orders>div:first-child{padding:12px 14px 10px !important;}
+/* PO cards */
+.po-card{padding:12px !important;}
+.po-card-header{flex-wrap:wrap;gap:6px !important;}
+/* PO items table inside card — scrollable */
+.po-items-table{overflow-x:auto;-webkit-overflow-scrolling:touch;display:block;width:100%;}
+.po-items-table table{min-width:320px;}
 /* ── EMPLOYEES MOBILE FIXES ── */
 /* Hide topbar Add Equipment button — accessible from Equipment view */
 .topbar-right .btn.btn-primary{display:none !important;}

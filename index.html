@@ -323,6 +323,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <div class="dash-card"><div class="dash-card-title">Recent Activity</div><div id="recent-activity"></div></div>
         <div class="dash-card"><div class="dash-card-title">Status Overview</div><div id="status-overview"></div></div>
         <div class="dash-card"><div class="dash-card-title">Items Requiring Attention</div><div id="attention-list"></div></div>
+        <div class="dash-card" style="grid-column:1/-1"><div class="dash-card-title">Employees Without a Laptop</div><div id="no-laptop-list"></div></div>
       </div>
     </div>
     <!-- EQUIPMENT -->
@@ -893,6 +894,12 @@ function renderDashboard(){
   document.getElementById('status-overview').innerHTML=['In Use','In Stock','Under Repair','Retired'].map(s=>'<div class="equip-type-row"><span>'+statusBadge(s)+'</span><span class="equip-count">'+equipment.filter(e=>e.status===s).length+'</span></div>').join('');
   const attn=equipment.filter(e=>e.status==='Under Repair'||e.condition==='Damaged');
   document.getElementById('attention-list').innerHTML=attn.length?attn.map(e=>'<div class="recent-row"><span>'+e.type+' — '+e.brand+' '+e.model+'</span>'+conditionBadge(e.condition)+'</div>').join(''):'<div class="empty-state"><p>No items require attention</p></div>';
+  const noLaptop=employees.filter(emp=>!equipment.some(e=>e.type==='Laptop'&&e.assignedTo===emp.id));
+  const noLaptopEl=document.getElementById('no-laptop-list');
+  if(noLaptopEl){
+    if(noLaptop.length===0){noLaptopEl.innerHTML='<div class="empty-state"><p>All employees have a laptop assigned</p></div>';}
+    else{noLaptopEl.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">'+noLaptop.map(emp=>'<div onclick="navigateToSiteEmployees(\''+emp.site+'\');setTimeout(()=>{const s=document.getElementById(\'emp-search\');if(s){s.value=\''+emp.name+'\';filterEmployees();}},100)" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border);cursor:pointer" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">'+'<div style="width:34px;height:34px;border-radius:50%;background:rgba(196,18,48,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:700;color:var(--crimson);font-family:'Orbitron',monospace">'+emp.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)+'</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">'+emp.name+'</div><div style="font-size:11px;color:var(--text3);font-family:'Share Tech Mono',monospace">'+( emp.role||'No role')+'&nbsp;·&nbsp;<span style="color:var(--crimson)">'+emp.site+'</span></div></div></div>').join('')+'</div>';}
+  }
   document.getElementById('stat-employees').textContent=employees.length;
   const _sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'];
   const _siteColors={'PH - Ceb':'#cc2244','PH - MNL':'#d4a830','PH - DVO':'#4488ff','PAR':'#8866ff','VN':'#22cc88'};

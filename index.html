@@ -41,7 +41,7 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--crimson)66,var(--gold)44,var(--blue)22,transparent);pointer-events:none;}
 .topbar-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:3px;font-family:'Orbitron',monospace;}
 .topbar-right{display:flex;align-items:center;gap:10px;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;font-size:11px;font-family:'Orbitron',monospace;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;font-size:11px;font-family:'Orbitron',monospace;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.15s;white-space:nowrap;-webkit-appearance:none;appearance:none;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));}
 .btn-primary{background:linear-gradient(135deg,var(--crimson-dark),var(--crimson));color:#fff;box-shadow:0 2px 12px rgba(196,18,48,0.35);}
 .btn-primary:hover{background:linear-gradient(135deg,var(--crimson),var(--crimson-glow));}
 .btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold-dark);clip-path:none;}
@@ -178,7 +178,7 @@ thead th{padding:8px;font-size:8px;}
 .filter-select{width:100%;}
 .modal{width:95vw !important;max-width:95vw !important;padding:18px 16px !important;}
 .form-grid{grid-template-columns:1fr !important;}
-.btn{padding:12px 16px !important;font-size:10px !important;}
+.btn{padding:12px 16px !important;font-size:10px !important;-webkit-appearance:none !important;appearance:none !important;}
 .btn.btn-sm{padding:9px 12px !important;font-size:10px !important;}
 .po-card-footer{flex-direction:column;gap:10px;align-items:flex-start !important;}
 .section-header{flex-direction:column;gap:10px;align-items:flex-start !important;}

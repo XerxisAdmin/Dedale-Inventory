@@ -46,7 +46,7 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .btn-primary:hover{background:linear-gradient(135deg,var(--crimson),var(--crimson-glow));}
 .btn-outline{background:transparent;color:var(--gold);border:1px solid var(--gold-dark);clip-path:none;}
 .btn-outline:hover{background:rgba(192,136,32,0.1);border-color:var(--gold);}
-.btn-sm{padding:6px 12px;font-size:10px;letter-spacing:1.5px;clip-path:none;flex-shrink:0;}
+.btn-sm{padding:6px 12px !important;font-size:10px !important;line-height:1 !important;letter-spacing:1.5px;clip-path:none;flex-shrink:0;}
 .btn-danger{background:rgba(196,18,48,0.2);color:var(--crimson);border:1px solid var(--crimson-dark);clip-path:none;}
 .btn-danger:hover{background:rgba(196,18,48,0.35);}
 .btn-success{background:rgba(0,184,96,0.15);color:var(--green);border:1px solid rgba(0,184,96,0.4);clip-path:none;}
@@ -86,7 +86,7 @@ td{padding:10px 14px;color:var(--text);vertical-align:middle;font-size:14px;text
 .badge-blue{background:rgba(0,184,212,0.15);color:var(--teal);}
 .badge-teal{background:rgba(0,184,212,0.15);color:var(--teal);}
 .badge-gray{background:rgba(48,72,88,0.3);color:var(--text2);}
-.actions{display:flex;gap:5px;justify-content:flex-start;padding:0;margin:0;flex-wrap:nowrap;}
+.actions{display:flex;gap:5px;justify-content:flex-start;align-items:center;padding:0;margin:0;flex-wrap:nowrap;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,5,10,0.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);padding:24px 26px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 0.2s ease;border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));position:relative;}
@@ -182,7 +182,7 @@ thead th{padding:8px;font-size:8px;}
 .btn.btn-sm{padding:9px 12px !important;font-size:10px !important;}
 .po-card-footer{flex-direction:column;gap:10px;align-items:flex-start !important;}
 .section-header{flex-direction:column;gap:10px;align-items:flex-start !important;}
-.actions{flex-wrap:nowrap;gap:4px;}
+.actions{flex-wrap:nowrap;gap:4px;align-items:center;}
 .topbar::after{display:none;}
 #view-employees .emp-grid{padding-top:0 !important;}
 .po-card{padding:14px;}

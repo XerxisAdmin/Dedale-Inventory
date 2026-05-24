@@ -77,7 +77,7 @@ thead th{padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text
 tbody tr{border-bottom:1px solid rgba(26,42,58,0.5);transition:background 0.1s;}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:var(--surface2);}.nolaptop-card:hover{border-color:var(--gold) !important;}
-td{padding:11px 16px;color:var(--text);vertical-align:middle;font-size:14px;}
+td{padding:11px 16px;color:var(--text);vertical-align:middle;font-size:14px;text-align:left;}
 .badge{display:inline-flex;align-items:center;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;white-space:nowrap;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
 .badge-green{background:rgba(0,184,96,0.15);color:var(--green);}
 .badge-yellow{background:rgba(192,136,32,0.15);color:var(--gold);}
@@ -955,6 +955,48 @@ function renderDashboard(){
 
 function getEmployeeName(id){const e=employees.find(e=>e.id===id);return e?e.name:'—';}
 
+// ── RENDER HELPER FUNCTIONS ─────────────────────────────────────
+function buildEquipRow(eq){
+  var id=eq.id;
+  return '<tr>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+    +'<td><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
+    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
+    +'<td>'+conditionBadge(eq.condition)+'</td>'
+    +'<td>'+statusBadge(eq.status)+'</td>'
+    +'<td style="font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
+    +'<td style="color:var(--text2);font-size:12px">'+(eq.location||'&mdash;')+'</td>'
+    +'<td style="font-size:11px;text-align:center">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
+    +'<td><div class="actions">'
+    +'<button class="btn btn-outline btn-sm equip-edit-btn" data-id="'+id+'">Edit</button>'
+    +'<button class="btn btn-outline btn-sm equip-hist-btn" data-id="'+id+'">History</button>'
+    +'<button class="btn btn-outline btn-sm equip-qr-btn" data-id="'+id+'">QR</button>'
+    +'<button class="btn btn-danger btn-sm equip-del-btn" data-id="'+id+'">Delete</button>'
+    +'</div></td></tr>';
+}
+function buildAssignRow(eq){
+  return '<tr>'
+    +'<td><span style="font-weight:600">'+getEmployeeName(eq.assignedTo)+'</span></td>'
+    +'<td>'+eq.brand+' '+eq.model+'</td>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
+    +'<td style="color:var(--text2);font-size:12px;text-align:center">'+(eq.purchaseDate||'&mdash;')+'</td>'
+    +'<td style="text-align:center">'+statusBadge(eq.status)+'</td>'
+    +'<td style="text-align:center"><button class="btn btn-outline btn-sm assign-unassign-btn" data-id="'+eq.id+'">Unassign</button></td>'
+    +'</tr>';
+}
+function buildRepairRow(eq){
+  return '<tr class="repair-row" data-id="'+eq.id+'" style="cursor:pointer">'
+    +'<td><span style="font-weight:600">'+eq.brand+' '+eq.model+'</span></td>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
+    +'<td style="color:var(--text2);font-size:12px">'+(eq.notes?'<span style="color:var(--gold)">'+eq.notes+'</span>':'<span style="color:var(--text3);font-style:italic">Tap to add notes</span>')+'</td>'
+    +'<td>'+conditionBadge(eq.condition)+'</td>'
+    +'<td style="color:var(--text2);font-size:12px;text-align:center">'+(eq.purchaseDate||'—')+'</td>'
+    +'<td><button class="btn btn-success btn-sm mark-fixed-btn" data-id="'+eq.id+'">Mark as Fixed</button></td>'
+    +'</tr>';
+}
+
 function renderEquipment(list){
   const rows=list||equipment;
   document.getElementById('equipment-tbody').innerHTML=rows.length?rows.map(eq=>'<tr>'
@@ -1518,6 +1560,16 @@ function renderPurchaseOrders(){
 document.addEventListener('click',function(e){
   var nlCard=e.target.closest('.nolaptop-card');
   if(nlCard){openNoLaptopProfile(nlCard.getAttribute('data-empid'));return;}
+  var editBtn=e.target.closest('.equip-edit-btn');
+  if(editBtn){editEquipment(editBtn.getAttribute('data-id'));return;}
+  var histBtn=e.target.closest('.equip-hist-btn');
+  if(histBtn){showEquipmentHistory(histBtn.getAttribute('data-id'));return;}
+  var qrBtn=e.target.closest('.equip-qr-btn');
+  if(qrBtn){showQRCode(qrBtn.getAttribute('data-id'));return;}
+  var delBtn=e.target.closest('.equip-del-btn');
+  if(delBtn){deleteEquipment(delBtn.getAttribute('data-id'));return;}
+  var unassignBtn=e.target.closest('.assign-unassign-btn');
+  if(unassignBtn){unassign(unassignBtn.getAttribute('data-id'));return;}
 
   const approveBtn=e.target.closest('.po-btn-approve');if(approveBtn){const id=approveBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Approved');return;}
   const rejectBtn=e.target.closest('.po-btn-reject');if(rejectBtn){const id=rejectBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Rejected');return;}

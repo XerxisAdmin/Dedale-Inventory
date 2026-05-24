@@ -998,18 +998,10 @@ function buildRepairRow(eq){
 }
 
 function renderEquipment(list){
-  const rows=list||equipment;
-  document.getElementById('equipment-tbody').innerHTML=rows.length?rows.map(eq=>'<tr>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
-    +'<td><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
-    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
-    +'<td>'+conditionBadge(eq.condition)+'</td>'
-    +'<td>'+statusBadge(eq.status)+'</td>'
-    +'<td style="font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
-    +'<td style="color:var(--text2);font-size:12px">'+(eq.location||'—')+'</td>'
-    +'<td style="font-size:11px;font-family:\'Share Tech Mono\',monospace">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
-    +'<td><div class="actions"><button class="btn btn-outline btn-sm" onclick="editEquipment(\''+eq.id+'\')">Edit</button><button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\''+eq.id+'\')">History</button><button class="btn btn-outline btn-sm" onclick="showQRCode(\''+eq.id+'\')">QR</button><button class="btn btn-danger btn-sm" onclick="deleteEquipment(\''+eq.id+'\')">Delete</button></div></td>'
-    +'</tr>').join(''):'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
+  var rows=list||equipment;
+  document.getElementById('equipment-tbody').innerHTML=rows.length
+    ?rows.map(buildEquipRow).join('')
+    :'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
 }
 function downloadEquipmentCSV(){
   const s=document.getElementById('equip-search').value.toLowerCase();
@@ -1039,30 +1031,18 @@ function filterEquipment(){
 }
 
 function renderAssignments(list){
-  const assigned=(list||equipment).filter(e=>e.assignedTo);
-  document.getElementById('assignments-tbody').innerHTML=assigned.length?assigned.map(eq=>'<tr>'
-    +'<td><span style="font-weight:600">'+getEmployeeName(eq.assignedTo)+'</span></td>'
-    +'<td>'+eq.brand+' '+eq.model+'</td>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
-    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
-    +'<td style="color:var(--text2);font-size:12px">'+(eq.purchaseDate||'—')+'</td>'
-    +'<td>'+statusBadge(eq.status)+'</td>'
-    +'<td><button class="btn btn-outline btn-sm" onclick="unassign(\''+eq.id+'\')">Unassign</button></td></tr>').join('')
+  var assigned=(list||equipment).filter(function(e){return e.assignedTo;});
+  document.getElementById('assignments-tbody').innerHTML=assigned.length
+    ?assigned.map(buildAssignRow).join('')
     :'<tr><td colspan="7"><div class="empty-state"><p>No assignments on record</p></div></td></tr>';
 }
 function filterAssignments(){const s=document.getElementById('assign-search').value.toLowerCase();renderAssignments(equipment.filter(e=>e.assignedTo&&(getEmployeeName(e.assignedTo)+' '+e.brand+' '+e.model).toLowerCase().includes(s)));}
 function unassign(id){const eq=equipment.find(e=>e.id===id);if(eq&&confirm('Unassign '+eq.brand+' '+eq.model+' from '+getEmployeeName(eq.assignedTo)+'?')){const _prev=getEmployeeName(eq.assignedTo);logAssignmentHistory(eq.id,'unassigned','',_prev,'');logActivity(eq.brand+' '+eq.model+' unassigned from '+_prev);eq.assignedTo='';eq.status='In Stock';saveData();renderAssignments();if(document.getElementById('view-employees').classList.contains('active'))filterEmployees();}}
 
 function renderRepairs(list){
-  const repairs=(list||equipment).filter(e=>e.status==='Under Repair'||e.condition==='Damaged');
-  document.getElementById('repairs-tbody').innerHTML=repairs.length?repairs.map(eq=>'<tr style="cursor:pointer" onclick="openRepairNotes(\''+eq.id+'\')" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">'
-    +'<td><span style="font-weight:600">'+eq.brand+' '+eq.model+'</span></td>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
-    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
-    +'<td style="color:var(--text2);font-size:12px">'+(eq.notes?'<span style="color:var(--gold)">'+eq.notes+'</span>':'<span style="color:var(--text3);font-style:italic">Tap to add notes</span>')+'</td>'
-    +'<td>'+conditionBadge(eq.condition)+'</td>'
-    +'<td style="color:var(--text2);font-size:12px">'+(eq.purchaseDate||'—')+'</td>'
-    +'<td onclick="event.stopPropagation()"><button class="btn btn-success btn-sm" onclick="markRepaired(\''+eq.id+'\')">Mark as Fixed</button></td></tr>').join('')
+  var repairs=(list||equipment).filter(function(e){return e.status==='Under Repair'||e.condition==='Damaged';});
+  document.getElementById('repairs-tbody').innerHTML=repairs.length
+    ?repairs.map(buildRepairRow).join('')
     :'<tr><td colspan="7"><div class="empty-state"><p>No items under repair or damaged</p></div></td></tr>';
 }
 function filterRepairs(){const s=document.getElementById('repair-search').value.toLowerCase(),st=document.getElementById('repair-status-filter').value;renderRepairs(equipment.filter(e=>(e.status==='Under Repair'||e.condition==='Damaged')&&(!s||(e.brand+' '+e.model).toLowerCase().includes(s))&&(!st||e.condition===st||e.status===st)));}

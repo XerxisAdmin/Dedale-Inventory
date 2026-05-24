@@ -1565,15 +1565,33 @@ function downloadPOHistory(){
 }
 
 async function sendApprovalEmail(po){
-  if(!accessToken)return;
+  // Refresh token before sending — critical on mobile where tokens expire faster
+  try{
+    const r=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:currentUser,forceRefresh:false});
+    if(r&&r.accessToken)accessToken=r.accessToken;
+  }catch(e1){
+    try{
+      const r2=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:currentUser,forceRefresh:true});
+      if(r2&&r2.accessToken)accessToken=r2.accessToken;
+    }catch(e2){}
+  }
+  if(!accessToken){alert('Session expired. Please log out and log back in, then resubmit the purchase request.');return;}
   try{
     const itemsHtml=po.items.map(i=>'<tr style="border-bottom:1px solid #2a2a3a"><td style="padding:8px 12px;color:#e4e8ff">'+i.desc+'</td><td style="padding:8px 12px;color:#9aa2cc;font-family:monospace">'+i.type+'</td><td style="padding:8px 12px;color:#9aa2cc;font-family:monospace;text-align:center">'+i.qty+'</td><td style="padding:8px 12px;color:#9aa2cc;font-family:monospace">\u20b1'+i.price.toLocaleString()+'</td><td style="padding:8px 12px;color:#d4a830;font-family:monospace;font-weight:600">\u20b1'+(i.qty*i.price).toLocaleString()+'</td></tr>').join('');
     const approveUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=approve';
     const rejectUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=reject';
     const htmlBody='<!DOCTYPE html><html><body style="margin:0;padding:0;background:#0e0f1a;font-family:Arial,sans-serif"><div style="max-width:600px;margin:0 auto;padding:28px 20px"><div style="background:#141628;border:1px solid #383d72;padding:28px 32px;border-radius:2px"><div style="text-align:center;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #383d72"><div style="font-size:20px;font-weight:900;color:#fff;letter-spacing:3px">DEDALE INTELLIGENCE</div><div style="font-size:11px;color:#cc2244;letter-spacing:3px;margin-top:4px">PURCHASE REQUEST APPROVAL</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">REQUESTED BY</span><div style="font-size:16px;color:#e4e8ff;margin-top:4px;font-weight:600">'+po.requester+'</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">REQUEST TITLE</span><div style="font-size:16px;color:#e4e8ff;margin-top:4px">'+po.title+'</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">JUSTIFICATION</span><div style="font-size:15px;color:#9aa2cc;margin-top:4px">'+po.justification+(po.forEmployee?' \u2014 For: '+po.forEmployee:'')+'</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">URGENCY</span><div style="font-size:15px;color:#e07030;margin-top:4px;font-weight:600">'+po.urgency+'</div></div><table style="width:100%;border-collapse:collapse;margin-bottom:16px;background:#1a1d38"><thead><tr style="background:#282c52"><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">DESCRIPTION</th><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">TYPE</th><th style="padding:8px 12px;text-align:center;font-size:10px;color:#d4a830;letter-spacing:1px">QTY</th><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">UNIT</th><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">SUBTOTAL</th></tr></thead><tbody>'+itemsHtml+'</tbody></table><div style="text-align:right;font-size:18px;font-weight:700;color:#d4a830;margin-bottom:24px;font-family:monospace">TOTAL: \u20b1'+po.total.toLocaleString()+'</div><div style="display:flex;gap:12px;justify-content:center"><a href="'+approveUrl+'" style="display:inline-block;padding:13px 32px;background:#15803d;color:#fff;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;border-radius:2px">\u2713 APPROVE</a><a href="'+rejectUrl+'" style="display:inline-block;padding:13px 32px;background:#881630;color:#fff;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;border-radius:2px">\u2717 REJECT</a></div></div></div></body></html>';
-    await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:'[ITEM REQUEST] Purchase Approval Required \u2014 '+po.requester,body:{contentType:'HTML',content:htmlBody},toRecipients:[{emailAddress:{address:FINANCE_EMAIL,name:FINANCE_NAME}}]},saveToSentItems:false})});
+    const mailResp=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:'[ITEM REQUEST] Purchase Approval Required \u2014 '+po.requester,body:{contentType:'HTML',content:htmlBody},toRecipients:[{emailAddress:{address:FINANCE_EMAIL,name:FINANCE_NAME}}]},saveToSentItems:false})});
+    if(!mailResp.ok){
+      var errText=await mailResp.text();
+      throw new Error('Graph API returned '+mailResp.status+': '+errText);
+    }
     po.approvalSent=true;po.sentAt=new Date().toISOString();saveData();
-  }catch(e){console.error('Email send failed',e);}
+    alert('\u2705 Approval email sent to '+FINANCE_NAME+' ('+FINANCE_EMAIL+').');
+  }catch(e){
+    console.error('Email send failed',e);
+    alert('Purchase request was saved but the approval email could not be sent. Error: '+e.message+'. Please check your connection and try again, or ask Xerxis to resend.');
+  }
 }
 
 function showEquipmentHistory(id){

@@ -51,8 +51,8 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .btn-danger:hover{background:rgba(196,18,48,0.35);}
 .btn-success{background:rgba(0,184,96,0.15);color:var(--green);border:1px solid rgba(0,184,96,0.4);clip-path:none;}
 .btn-success:hover{background:rgba(0,184,96,0.25);}
-.content{padding:0;flex:1;overflow:hidden;display:flex;flex-direction:column;}
-.view{display:none !important;}.view.active{display:flex !important;flex-direction:column;flex:1;min-height:0;}
+.content{padding:0 30px 26px 30px;flex:1;overflow-y:auto;overflow-x:hidden;}
+.view{display:none;}.view.active{display:block;}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .stat-card{background:var(--surface);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:border-color 0.2s;}
 .stat-card:hover{border-color:var(--border2);}
@@ -76,8 +76,8 @@ table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
 tbody tr{border-bottom:1px solid rgba(26,42,58,0.5);transition:background 0.1s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--surface2);}.repair-row:hover{background:var(--surface2) !important;}
-td{padding:10px 14px;color:var(--text);vertical-align:middle;font-size:14px;text-align:left;}
+tbody tr:hover{background:var(--surface2);}
+td{padding:11px 16px;color:var(--text);vertical-align:middle;font-size:14px;}
 .badge{display:inline-flex;align-items:center;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;white-space:nowrap;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
 .badge-green{background:rgba(0,184,96,0.15);color:var(--green);}
 .badge-yellow{background:rgba(192,136,32,0.15);color:var(--gold);}
@@ -89,7 +89,7 @@ td{padding:10px 14px;color:var(--text);vertical-align:middle;font-size:14px;text
 .actions{display:flex;gap:5px;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,5,10,0.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface);padding:24px 26px;width:560px;max-width:95vw;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 0.2s ease;border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));position:relative;}
+.modal{background:var(--surface);padding:24px 26px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 0.2s ease;border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));position:relative;}
 .modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--crimson),var(--gold)66,transparent);}
 .modal-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:20px;letter-spacing:2px;padding-bottom:14px;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
@@ -118,7 +118,7 @@ select option{background:var(--navy-mid);color:var(--text);}
 .progress-fill{height:100%;background:var(--crimson);box-shadow:0 0 6px rgba(196,18,48,0.8);transition:width 0.4s ease;}
 .recent-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(46,50,96,0.5);font-size:14px;color:var(--text2);}
 .recent-row:last-child{border-bottom:none;}
-.emp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;min-width:0;}
+.emp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .emp-card{background:var(--surface);border:1px solid var(--border);padding:16px 18px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));position:relative;transition:border-color 0.15s;}
 .emp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--crimson)88,transparent);}
 .emp-card:hover{border-color:var(--border2);}
@@ -195,9 +195,6 @@ body{overflow-x:hidden;}
 @media(max-width:400px){.stats-grid{grid-template-columns:1fr !important;}#stat-employees-breakdown{grid-template-columns:1fr !important;}}
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.emp-grid{grid-template-columns:repeat(2,1fr);}.purchase-summary{grid-template-columns:repeat(2,1fr);}}
 ::-webkit-scrollbar{width:4px;background:var(--navy-mid);}
-input[type="month"].empty-month::-webkit-datetime-edit-month-field,
-input[type="month"].empty-month::-webkit-datetime-edit-year-field{color:var(--text3);}
-input[type="month"].empty-month::-webkit-datetime-edit-text{color:var(--text3);}
 ::-webkit-scrollbar-thumb{background:var(--crimson-dark);}
 .po-item-qty::-webkit-inner-spin-button,.po-item-qty::-webkit-outer-spin-button,.po-item-price::-webkit-inner-spin-button,.po-item-price::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .po-item-qty,.po-item-price{-moz-appearance:textfield;}
@@ -302,9 +299,101 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add Equipment</button>
     </div>
   </div>
+  <div id="equip-sticky-header" style="display:none;background:var(--bg);box-shadow:0 4px 12px rgba(20,22,40,0.9);flex-shrink:0;">
+        <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input autocomplete="off" class="search-input" placeholder="Search by name, brand, serial number..." oninput="filterEquipment()" id="equip-search">
+          <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
+          <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
+          <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
+          <select class="filter-select" onchange="filterEquipment();updateModelFilter()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
+          <select class="filter-select" onchange="filterEquipment()" id="equip-model-filter" style="display:none"><option value="">All Models</option></select>
+          <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
+          <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
+          <select class="filter-select" onchange="filterEquipment()" id="equip-date-warranty-filter"><option value="">All Dates &amp; Warranty</option><option value="purchased-this-year">Purchased This Year</option><option value="purchased-last-year">Purchased Last Year</option><option value="warranty-active">Warranty Active</option><option value="warranty-expiring">Warranty Expiring Soon</option><option value="warranty-expired">Warranty Expired</option><option value="no-warranty">No Warranty Set</option></select>
+        </div>
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+          <colgroup>
+            <col style="width:90px">
+            <col style="width:200px">
+            <col style="width:120px">
+            <col style="width:100px">
+            <col style="width:110px">
+            <col style="width:160px">
+            <col style="width:100px">
+            <col style="width:90px">
+            <col>
+          </colgroup>
+          <thead>
+            <tr>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Brand / Model</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Condition</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Status</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Assigned To</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Location</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Warranty</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    <div id="assign-freeze-bar" style="display:none;background:var(--bg);box-shadow:0 4px 12px rgba(20,22,40,0.9);flex-shrink:0;">
+      <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;">
+        <input autocomplete="off" class="search-input" placeholder="Search assignments..." oninput="filterAssignments()" id="assign-search" style="width:100%">
+      </div>
+      <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+        <colgroup>
+          <col style="width:200px"><col style="width:200px"><col style="width:100px">
+          <col style="width:120px"><col style="width:130px"><col style="width:110px"><col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Employee</th>
+            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Equipment</th>
+            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Type</th>
+            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Serial No.</th>
+            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Date Assigned</th>
+            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Status</th>
+            <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:2px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div id="emp-freeze-bar" style="display:none;background:var(--bg);box-shadow:0 6px 16px rgba(20,22,40,1);flex-shrink:0;position:relative;z-index:100;border-bottom:2px solid var(--border);">
+<div style="background:var(--bg);padding:16px 30px 12px;position:relative;z-index:100;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span class="section-title">Employee Directory</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="triggerImportExcel()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Import Excel</button>
+            <button class="btn btn-primary btn-sm" onclick="openEmployeeModal()">+ Add Employee</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div style="position:relative;flex:1;max-width:420px"><svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:0.4" width="14" height="14" fill="none" stroke="var(--text)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input autocomplete="off" id="emp-search" class="search-input" style="padding-left:34px" placeholder="Search by name, role, email, ID or serial..." oninput="filterEmployees()"></div>
+          <select id="emp-site-filter" class="filter-select" onchange="filterEmployees()"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
+          <select id="emp-sort" class="filter-select" onchange="filterEmployees()"><option value="id-asc" selected>ID: A → Z</option><option value="id-desc">ID: Z → A</option><option value="name-asc">Name: A → Z</option><option value="name-desc">Name: Z → A</option></select>
+          <span id="emp-count" style="font-size:12px;color:var(--text3);font-family:'Share Tech Mono',monospace;white-space:nowrap"></span>
+        </div>
+      </div>
+    </div>
+    <div id="po-freeze-bar" style="display:none;background:var(--bg);flex-shrink:0;position:relative;z-index:100;">
+<div id="po-sticky-header" style="position:sticky;top:0;z-index:40;background:var(--bg);padding:4px 30px 14px 30px;box-shadow:0 6px 20px rgba(20,22,40,1)">
+        <div class="section-header" style="padding-top:4px"><span class="section-title">Purchase Orders</span><div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" onclick="downloadPOHistory()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download History</button><button class="btn btn-primary btn-sm" onclick="openPOModal()">+ New Purchase Request</button></div></div>
+        <div class="stats-grid" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card" id="po-card-pending" onclick="filterPOByStatus('Pending')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Pending</div><div class="stat-value" id="po-stat-pending">0</div><div class="stat-sub">Awaiting approval</div></div>
+          <div class="stat-card" id="po-card-approved" onclick="filterPOByStatus('Approved')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Approved</div><div class="stat-value" id="po-stat-approved">0</div><div class="stat-sub">Finance approved</div></div>
+          <div class="stat-card" id="po-card-rejected" onclick="filterPOByStatus('Rejected')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Rejected</div><div class="stat-value" id="po-stat-rejected">0</div><div class="stat-sub">Not approved</div></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select class="filter-select" id="po-filter-status" onchange="renderPurchaseOrders()"><option value="">All Statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+          <select class="filter-select" id="po-filter-urgency" onchange="renderPurchaseOrders()"><option value="">All Urgency Levels</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select>
+        </div>
+      </div>
+    </div>
   <div class="content">
     <!-- DASHBOARD -->
-    <div class="view active" id="view-dashboard" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
+    <div class="view active" id="view-dashboard">
       <div id="alerts-bar" class="alerts-bar hidden"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span><strong id="alerts-count">0</strong> items require attention — damaged or under repair</span></div>
       <div id="low-stock-bar" class="alerts-bar hidden" style="background:rgba(204,34,68,0.06);border-left-color:var(--crimson);color:var(--crimson)"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><span id="low-stock-msg">Some equipment types are low in stock</span></div>
       <div class="stats-grid">
@@ -327,124 +416,66 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
     </div>
     <!-- EQUIPMENT -->
-    <div class="view" id="view-equipment" style="display:flex;flex-direction:column;min-height:0;">
-      <div style="background:var(--surface2);border:1px solid var(--border);padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;">
-        <input autocomplete="off" class="search-input" placeholder="Search by name, brand, serial number..." oninput="filterEquipment()" id="equip-search">
-        <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
-        <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
-        <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
-        <select class="filter-select" onchange="filterEquipment();updateModelFilter()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
-        <select class="filter-select" onchange="filterEquipment()" id="equip-model-filter" style="display:none"><option value="">All Models</option></select>
-        <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
-        <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
-        <select class="filter-select" onchange="filterEquipment()" id="equip-date-warranty-filter"><option value="">All Dates &amp; Warranty</option><option value="purchased-this-year">Purchased This Year</option><option value="purchased-last-year">Purchased Last Year</option><option value="warranty-active">Warranty Active</option><option value="warranty-expiring">Warranty Expiring Soon</option><option value="warranty-expired">Warranty Expired</option><option value="no-warranty">No Warranty Set</option></select>
-      </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;border:1px solid var(--border);border-top:none;background:var(--surface);">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;">
-          <thead style="position:sticky;top:0;z-index:10;">
-            <tr>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:7%;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:17%;">Brand / Model</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Serial No.</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Condition</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Status</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:14%;">Assigned To</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Location</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;text-align:center;">Warranty</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
-            </tr>
-          </thead>
+    <div class="view" id="view-equipment">
+      
+      <div style="border:1px solid var(--border);border-top:none;background:var(--surface);">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
+          <colgroup>
+            <col style="width:90px">
+            <col style="width:200px">
+            <col style="width:120px">
+            <col style="width:100px">
+            <col style="width:110px">
+            <col style="width:160px">
+            <col style="width:100px">
+            <col style="width:90px">
+            <col>
+          </colgroup>
           <tbody id="equipment-tbody"></tbody>
         </table>
       </div>
     </div>
     <!-- ASSIGNMENTS -->
-    <div class="view" id="view-assignments" style="display:flex;flex-direction:column;min-height:0;">
-      <div style="background:var(--surface2);padding:12px 16px;flex-shrink:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <input autocomplete="off" class="search-input" placeholder="Search assignments..." oninput="filterAssignments()" id="assign-search" style="flex:1;min-width:160px;max-width:400px;">
-        <select class="filter-select" onchange="filterAssignments()" id="assign-type-filter" style="flex-shrink:0;"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
-        <select class="filter-select" onchange="filterAssignments()" id="assign-status-filter" style="flex-shrink:0;"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
-        <select class="filter-select" onchange="filterAssignments()" id="assign-site-filter" style="flex-shrink:0;"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
-      </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;background:var(--surface);">
+    <div class="view" id="view-assignments">
+      <div style="border:1px solid var(--border);border-top:none;background:var(--surface);">
         <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
-          <thead style="position:sticky;top:0;z-index:10;">
-            <tr>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:16%;">Employee</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:18%;">Equipment</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:7%;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Serial No.</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:13%;text-align:center;">Date Assigned</th>
-              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Status</th>
-              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
-            </tr>
-          </thead>
+          <colgroup>
+            <col style="width:200px"><col style="width:200px"><col style="width:100px">
+            <col style="width:120px"><col style="width:130px"><col style="width:110px"><col>
+          </colgroup>
           <tbody id="assignments-tbody"></tbody>
         </table>
       </div>
     </div>
     <!-- REPAIRS -->
-    <div class="view" id="view-repairs" style="display:flex;flex-direction:column;min-height:0;">
-      <div style="background:var(--surface2);padding:12px 16px;flex-shrink:0;display:flex;gap:8px;flex-wrap:wrap;">
-        <input autocomplete="off" class="search-input" placeholder="Search repairs and issues..." id="repair-search" oninput="filterRepairs()">
-        <select class="filter-select" id="repair-status-filter" onchange="filterRepairs()"><option value="">All Conditions</option><option>Damaged</option><option>Under Repair</option></select>
-      </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;background:var(--surface);">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
-          <thead style="position:sticky;top:0;z-index:10;">
-            <tr>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:20%;">Equipment</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Serial No.</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:25%;">Issue Notes</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Condition</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:11%;">Date Logged</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="repairs-tbody"></tbody>
-        </table>
+    <div class="view" id="view-repairs">
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input autocomplete="off" class="search-input" placeholder="Search repairs and issues..." id="repair-search" oninput="filterRepairs()">
+          <select class="filter-select" id="repair-status-filter" onchange="filterRepairs()"><option value="">All Conditions</option><option>Damaged</option><option>Under Repair</option></select>
+        </div>
+        <table><thead><tr><th>Equipment</th><th>Type</th><th>Serial No.</th><th>Issue Notes</th><th>Condition</th><th>Date Logged</th><th>Actions</th></tr></thead><tbody id="repairs-tbody"></tbody></table>
       </div>
     </div>
     <!-- PURCHASES -->
-    <div class="view" id="view-purchases" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
+    <div class="view" id="view-purchases">
       <div class="section-header"><span class="section-title">Purchase History</span><button class="btn btn-primary btn-sm" onclick="openPurchaseModal()">+ Log Purchase</button></div>
       <div class="purchase-summary" id="purchase-summary"></div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Equipment</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Supplier</th></tr></thead><tbody id="purchases-tbody"></tbody></table></div>
     </div>
     <!-- PURCHASE ORDERS -->
-    <div class="view" id="view-purchase-orders" style="display:flex;flex-direction:column;min-height:0;">
-      <div style="background:var(--bg);padding:16px 30px 14px;flex-shrink:0;border-bottom:1px solid var(--border);">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <span class="section-title">Purchase Orders</span>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-outline btn-sm" onclick="downloadPOHistory()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download History</button>
-            <button class="btn btn-primary btn-sm" onclick="openPOModal()">+ New Purchase Request</button>
-          </div>
-        </div>
-        <div class="stats-grid" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr);">
-          <div class="stat-card" id="po-card-pending" onclick="filterPOByStatus('Pending')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Pending</div><div class="stat-value" id="po-stat-pending">0</div><div class="stat-sub">Awaiting approval</div></div>
-          <div class="stat-card" id="po-card-approved" onclick="filterPOByStatus('Approved')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Approved</div><div class="stat-value" id="po-stat-approved">0</div><div class="stat-sub">Finance approved</div></div>
-          <div class="stat-card" id="po-card-rejected" onclick="filterPOByStatus('Rejected')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Rejected</div><div class="stat-value" id="po-stat-rejected">0</div><div class="stat-sub">Not approved</div></div>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <select class="filter-select" id="po-filter-status" onchange="renderPurchaseOrders()"><option value="">All Statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
-          <select class="filter-select" id="po-filter-urgency" onchange="renderPurchaseOrders()"><option value="">All Urgency Levels</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select>
-        </div>
-      </div>
-      <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 30px 26px;">
-        <div id="po-list"></div>
-      </div>
+    <div class="view" id="view-purchase-orders">
+      
+      <div id="po-list"></div>
     </div>
     <!-- ANALYTICS -->
-    <div class="view" id="view-analytics" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
+    <div class="view" id="view-analytics">
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
       <div id="analytics-content"></div>
     </div>
     <!-- EMPLOYEES -->
     <div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;min-height:0;">
       <div style="background:var(--bg);padding:16px 30px 12px;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);">
-
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
           <span class="section-title">Employee Directory</span>
           <div style="display:flex;gap:8px;">
@@ -455,7 +486,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <div style="position:relative;flex:1;max-width:420px;"><svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:0.4" width="14" height="14" fill="none" stroke="var(--text)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input autocomplete="off" id="emp-search" class="search-input" style="padding-left:34px" placeholder="Search by name, role, email, ID or serial..." oninput="filterEmployees()"></div>
           <select id="emp-site-filter" class="filter-select" onchange="filterEmployees()"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
-          <select id="emp-sort" class="filter-select" onchange="filterEmployees()"><option value="id-asc" selected>ID: A → Z</option><option value="id-desc">ID: Z → A</option><option value="name-asc">Name: A → Z</option><option value="name-desc">Name: Z → A</option></select>
+          <select id="emp-sort" class="filter-select" onchange="filterEmployees()"><option value="id-asc" selected>ID: A to Z</option><option value="id-desc">ID: Z to A</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option></select>
           <span id="emp-count" style="font-size:12px;color:var(--text3);font-family:'Share Tech Mono',monospace;white-space:nowrap;"></span>
         </div>
       </div>
@@ -466,16 +497,13 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
   </div>
 </main>
 <!-- EQUIPMENT MODAL -->
-<div class="modal-overlay" id="equip-modal"><div class="modal" autocomplete="off" style="display:flex;flex-direction:column;padding:0;overflow:hidden;max-height:92vh;">
-  <div style="padding:24px 26px 16px;flex-shrink:0;border-bottom:1px solid var(--border);">
-    <div class="modal-title" id="equip-modal-title" style="margin-bottom:0;padding-bottom:0;border-bottom:none;">Add Equipment</div>
-  </div>
-  <div style="padding:20px 26px;overflow-y:auto;flex:1;">
-<div class="form-grid">
+<div class="modal-overlay" id="equip-modal"><div class="modal" autocomplete="off">
+  <div class="modal-title" id="equip-modal-title">Add Equipment</div>
+  <div class="form-grid">
     <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select></div>
-    <div class="form-group"><label>Brand</label><select id="f-brand" onchange="updateModelOnBrand()"><option value="">— Select Brand —</option><option>Lenovo</option></select></div>
+    <div class="form-group"><label>Brand</label><select id="f-brand"><option value="">— Select Brand —</option><option>Lenovo</option></select></div>
     <div class="form-group full"><label>Model</label>
-      <select id="f-model-select" style="display:none"><option value="">— Select Model —</option><option>14ALC7</option><option>15IAH8 (Type 83ER)</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>LOQ 15IAX9 (Type 83GS)</option><option>15IRH8 (Type 83EM)</option><option>15IRH10 (Type 83K1)</option><option>15IRU8 (Type 82X7)</option><option>16IAH8 (Type 83BG)</option></select>
+      <select id="f-model-select" style="display:none"><option value="">- Select Model -</option><option>14ALC7</option><option>15IAH8 (Type 83ER)</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>LOQ 15IAX9 (Type 83GS)</option><option>15IRH8 (Type 83EM)</option><option>15IRH10 (Type 83K1)</option><option>15IRU8 (Type 82X7)</option><option>16IAH8 (Type 83BG)</option></select>
       <input autocomplete="off" id="f-model" placeholder="e.g. XPS 15, MX Master 3">
     </div>
     <div class="form-group"><label>Serial Number</label><input id="f-serial" autocomplete="off" placeholder="e.g. SN-001234"></div>
@@ -487,20 +515,11 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     </div>
     <div class="form-group"><label>Site</label><select id="f-location"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div>
     <div class="form-group"><label>Purchase Date</label><input autocomplete="off" type="date" id="f-purchase-date"></div>
-    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label>
-<div style="display:flex;gap:6px;align-items:center">
-  <select id="f-warranty-mm" style="flex:0 0 80px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none"><option value="">MM</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
-  <span style="color:var(--text3);font-family:'Share Tech Mono',monospace">/</span>
-  <select id="f-warranty-yy" style="flex:0 0 100px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none"><option value="">YYYY</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option></select>
-</div>
-<input type="hidden" id="f-warranty"></div><input type="hidden" id="f-warranty"><input type="hidden" id="f-warranty-mm"><input type="hidden" id="f-warranty-yy"></div>
+    <div class="form-group"><label>Warranty Expiry (MM/YYYY)</label><div style="display:flex;gap:6px;align-items:center"><select id="f-warranty-mm" style="flex:0 0 80px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none"><option value="">MM</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select><span style="color:var(--text3)">/</span><select id="f-warranty-yy" style="flex:0 0 100px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none"><option value="">YYYY</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option></select></div><input type="hidden" id="f-warranty"></div>
     <div class="form-group"><label>Purchase Price (&#8369;)</label><input autocomplete="off" type="number" id="f-price" placeholder="0.00"></div>
     <div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="2" placeholder="Any additional notes..."></textarea></div>
   </div>
-  <div style="padding:16px 26px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px;justify-content:flex-end;">
-    <button class="btn btn-outline" onclick="closeModal('equip-modal')">Cancel</button>
-    <button class="btn btn-primary" onclick="saveEquipment()">Save Equipment</button>
-  </div>
+  <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('equip-modal')">Cancel</button><button class="btn btn-primary" onclick="saveEquipment()">Save Equipment</button></div>
 </div></div>
 <!-- PURCHASE MODAL -->
 <div class="modal-overlay" id="purchase-modal"><div class="modal" style="width:min(680px,95vw)">
@@ -802,14 +821,20 @@ function showView(name){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   event.currentTarget.classList.add('active');
-
-
+  const equipBar=document.getElementById('equip-sticky-header');
+  if(equipBar)equipBar.style.display=(name==='equipment')?'block':'none';
+  const assignBar=document.getElementById('assign-freeze-bar');
+  if(assignBar)assignBar.style.display=(name==='assignments')?'block':'none';
+  const empBar=document.getElementById('emp-freeze-bar');
+  if(empBar)empBar.style.display=(name==='employees')?'block':'none';
+  const poBar=document.getElementById('po-freeze-bar');
+  if(poBar)poBar.style.display=(name==='purchase-orders')?'block':'none';
   const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS'};
   document.getElementById('page-title').textContent=titles[name]||name;
   if(name==='dashboard')renderDashboard();
-  if(name==='equipment'){document.getElementById('equip-search').value='';document.getElementById('equip-type-filter').value='';document.getElementById('equip-model-filter').value='';document.getElementById('equip-model-filter').style.display='none';document.getElementById('equip-status-filter').value='';document.getElementById('equip-site-filter').value='';document.getElementById('equip-date-warranty-filter').value='';renderEquipment();}
-  if(name==='assignments'){const as=document.getElementById('assign-search');if(as)as.value='';const at=document.getElementById('assign-type-filter');if(at)at.value='';const ast=document.getElementById('assign-status-filter');if(ast)ast.value='';const asi=document.getElementById('assign-site-filter');if(asi)asi.value='';renderAssignments();}
-  if(name==='repairs'){const rs=document.getElementById('repair-search');if(rs)rs.value='';const rf=document.getElementById('repair-status-filter');if(rf)rf.value='';renderRepairs();}
+  if(name==='equipment')renderEquipment();
+  if(name==='assignments')renderAssignments();
+  if(name==='repairs')renderRepairs();
   if(name==='purchases')renderPurchases();
   if(name==='purchase-orders'){const sf=document.getElementById('po-filter-status');if(sf&&sf.value==='')sf.value='Pending';renderPurchaseOrders();setTimeout(()=>filterPOByStatus('Pending'),50);}
   if(name==='employees')initEmployeeView();
@@ -822,12 +847,18 @@ function navigateFromStat(view,statusFilter){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+view+"'"))n.classList.add('active');});
-
-
+  const equipFb=document.getElementById('equip-sticky-header');
+  if(equipFb)equipFb.style.display=(view==='equipment')?'block':'none';
+  const assignFb=document.getElementById('assign-freeze-bar');
+  if(assignFb)assignFb.style.display=(view==='assignments')?'block':'none';
+  const empFb=document.getElementById('emp-freeze-bar');
+  if(empFb)empFb.style.display=(view==='employees')?'block':'none';
+  const poFb=document.getElementById('po-freeze-bar');
+  if(poFb)poFb.style.display=(view==='purchase-orders')?'block':'none';
   const titles={equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG'};
   document.getElementById('page-title').textContent=titles[view]||view;
-  if(view==='equipment'){document.getElementById('equip-search').value='';document.getElementById('equip-type-filter').value='';document.getElementById('equip-model-filter').value='';document.getElementById('equip-model-filter').style.display='none';document.getElementById('equip-status-filter').value='';document.getElementById('equip-site-filter').value='';document.getElementById('equip-date-warranty-filter').value='';renderEquipment();if(statusFilter){setTimeout(()=>{document.getElementById('equip-status-filter').value=statusFilter;filterEquipment();},50);}}
-  if(view==='assignments'){const as=document.getElementById('assign-search');if(as)as.value='';const at=document.getElementById('assign-type-filter');if(at)at.value='';const ast=document.getElementById('assign-status-filter');if(ast)ast.value='';const asi=document.getElementById('assign-site-filter');if(asi)asi.value='';renderAssignments();}
+  if(view==='equipment'){renderEquipment();if(statusFilter){setTimeout(()=>{document.getElementById('equip-status-filter').value=statusFilter;filterEquipment();},50);}}
+  if(view==='assignments')renderAssignments();
   if(view==='repairs')renderRepairs();
 }
 
@@ -846,7 +877,6 @@ function conditionBadge(c){const m={'New':'badge-teal','Good':'badge-green','Fai
 function logActivity(text){const now=new Date();const time=now.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})+' '+now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'});activity.unshift({text,time});if(activity.length>50)activity.pop();}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-function syncWarrantyHidden(){}
 function warrantyColor(mmyyyy){
   if(!mmyyyy)return'var(--text2)';
   const parts=mmyyyy.split('/');
@@ -880,56 +910,120 @@ document.addEventListener('change',function(e){
     if(e.target.value==='other'){o.style.display='block';o.focus();}else{o.style.display='none';}
   }
 });
-// ── RENDER HELPER FUNCTIONS ─────────────────────────────────────
-function buildNoLaptopCard(emp){
-  var ini=emp.name.split(' ').map(function(n){return n[0]||'';}).join('').toUpperCase().slice(0,2);
-  return '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)">'
-    +'<div style="width:34px;height:34px;border-radius:50%;background:rgba(196,18,48,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--crimson)">'+ini+'</div>'
-    +'<div><div style="font-size:14px;font-weight:600;color:var(--text)">'+emp.name+'</div>'
-    +'<div style="font-size:11px;color:var(--text3)">'+(emp.role||'No role')+' · <span style="color:var(--crimson)">'+emp.site+'</span></div>'
-    +'</div></div>';
+function renderDashboard(){
+  const total=equipment.length,inUse=equipment.filter(e=>e.status==='In Use').length,inStock=equipment.filter(e=>e.status==='In Stock').length,issues=equipment.filter(e=>e.status==='Under Repair'||e.condition==='Damaged').length;
+  document.getElementById('stat-total').textContent=total;document.getElementById('stat-inuse').textContent=inUse;document.getElementById('stat-instock').textContent=inStock;document.getElementById('stat-issues').textContent=issues;
+  const bar=document.getElementById('alerts-bar');if(issues>0){bar.classList.remove('hidden');document.getElementById('alerts-count').textContent=issues;}else bar.classList.add('hidden');
+  const types=['Laptop','Monitor','Headset','Mouse'];
+  const lowTypes=types.filter(t=>equipment.filter(e=>e.type===t&&e.status==='In Stock').length===0);
+  const lowBar=document.getElementById('low-stock-bar');
+  if(lowBar){if(lowTypes.length>0){lowBar.classList.remove('hidden');document.getElementById('low-stock-msg').textContent='Low stock alert: '+lowTypes.join(', ')+' '+(lowTypes.length===1?'has':'have')+' no units in stock';}else lowBar.classList.add('hidden');}
+  const ti={'Laptop':'💻','Monitor':'🖥','Headset':'🎧','Mouse':'🖱'};
+  document.getElementById('type-breakdown').innerHTML=types.map(t=>{const cnt=equipment.filter(e=>e.type===t).length,pct=total?Math.round(cnt/total*100):0;return'<div class="equip-type-row"><div class="equip-type-name">'+ti[t]+' <span>'+t+'</span></div><div style="display:flex;align-items:center;gap:10px"><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div><span class="equip-count">'+cnt+'</span></div></div>';}).join('');
+  document.getElementById('recent-activity').innerHTML=activity.slice(0,5).map(a=>'<div class="recent-row"><span>'+a.text+'</span><span style="color:var(--text3);font-size:11px;font-family:\'Share Tech Mono\',monospace">'+a.time+'</span></div>').join('')||'<div class="empty-state"><p>No recent activity</p></div>';
+  document.getElementById('status-overview').innerHTML=['In Use','In Stock','Under Repair','Retired'].map(s=>'<div class="equip-type-row"><span>'+statusBadge(s)+'</span><span class="equip-count">'+equipment.filter(e=>e.status===s).length+'</span></div>').join('');
+  const attn=equipment.filter(e=>e.status==='Under Repair'||e.condition==='Damaged');
+  document.getElementById('attention-list').innerHTML=attn.length?attn.map(e=>'<div class="recent-row"><span>'+e.type+' — '+e.brand+' '+e.model+'</span>'+conditionBadge(e.condition)+'</div>').join(''):'<div class="empty-state"><p>No items require attention</p></div>';
+  var noLaptop=employees.filter(function(emp){return !equipment.some(function(e){return e.type==='Laptop'&&e.assignedTo===emp.id;});});
+  var noLaptopEl=document.getElementById('no-laptop-list');
+  if(noLaptopEl){
+    if(noLaptop.length===0){noLaptopEl.innerHTML='<div class="empty-state"><p>All employees have a laptop assigned</p></div>';}
+    else{
+      var nlh='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">';
+      noLaptop.forEach(function(emp){
+        var ini=emp.name.split(' ').map(function(n){return n[0]||'';}).join('').toUpperCase().slice(0,2);
+        nlh+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)">';
+        nlh+='<div style="width:34px;height:34px;border-radius:50%;background:rgba(196,18,48,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--crimson)">'+ini+'</div>';
+        nlh+='<div><div style="font-size:14px;font-weight:600;color:var(--text)">'+emp.name+'</div>';
+        nlh+='<div style="font-size:11px;color:var(--text3)">'+(emp.role||'No role')+' - '+emp.site+'</div></div></div>';
+      });
+      nlh+='</div>';
+      noLaptopEl.innerHTML=nlh;
+    }
+  }
+  document.getElementById('stat-employees').textContent=employees.length;
+  const _sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'];
+  const _siteColors={'PH - Ceb':'#cc2244','PH - MNL':'#d4a830','PH - DVO':'#4488ff','PAR':'#8866ff','VN':'#22cc88'};
+  const _siteBg={'PH - Ceb':'rgba(204,34,68,0.08)','PH - MNL':'rgba(212,168,48,0.08)','PH - DVO':'rgba(68,136,255,0.08)','PAR':'rgba(136,102,255,0.08)','VN':'rgba(34,204,136,0.08)'};
+  const breakdown=document.getElementById('stat-employees-breakdown');
+  const _maxEmp=Math.max(..._sites.map(s=>employees.filter(e=>e.site===s).length),1);
+  if(breakdown){breakdown.innerHTML=_sites.map(s=>{const cnt=employees.filter(e=>e.site===s).length,pct=Math.round(cnt/_maxEmp*100);return'<div onclick="navigateToSiteEmployees(\''+s+'\')" style="background:'+_siteBg[s]+';padding:12px 14px;border:1px solid '+_siteColors[s]+'22;cursor:pointer;transition:transform 0.15s" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:'+_siteColors[s]+';display:inline-block"></span><span style="font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:'+_siteColors[s]+';font-family:\'Share Tech Mono\',monospace">'+s+'</span></div><span style="font-size:20px;font-weight:800;color:'+_siteColors[s]+';font-family:\'Share Tech Mono\',monospace">'+cnt+'</span></div><div style="height:5px;background:'+_siteColors[s]+'25;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:'+pct+'%;background:'+_siteColors[s]+';transition:width 0.4s"></div></div><div style="font-size:11px;color:'+_siteColors[s]+'">'+( cnt===1?'1 employee':cnt+' employees')+'</div></div>';}).join('');}
 }
-function buildEquipRow(eq){
-  return '<tr>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+
+function getEmployeeName(id){const e=employees.find(e=>e.id===id);return e?e.name:'—';}
+
+function renderEquipment(list){
+  const rows=list||equipment;
+  document.getElementById('equipment-tbody').innerHTML=rows.length?rows.map(eq=>'<tr>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
     +'<td><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
-    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
+    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
     +'<td>'+conditionBadge(eq.condition)+'</td>'
     +'<td>'+statusBadge(eq.status)+'</td>'
     +'<td style="font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.location||'—')+'</td>'
-    +'<td style="font-size:11px;text-align:center">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
-    +'<td><div class="actions">'
-    +'<button class="btn btn-outline btn-sm" onclick="editEquipment(\'' +eq.id+ '\')">Edit</button>'
-    +'<button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\'' +eq.id+ '\')">History</button>'
-    +'<button class="btn btn-outline btn-sm" onclick="showQRCode(\'' +eq.id+ '\')">QR</button>'
-    +'<button class="btn btn-danger btn-sm" onclick="deleteEquipment(\'' +eq.id+ '\')">Delete</button>'
-    +'</div></td></tr>';
+    +'<td style="font-size:11px;font-family:\'Share Tech Mono\',monospace">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
+    +'<td><div class="actions"><button class="btn btn-outline btn-sm" onclick="editEquipment(\''+eq.id+'\')">Edit</button><button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\''+eq.id+'\')">History</button><button class="btn btn-outline btn-sm" onclick="showQRCode(\''+eq.id+'\')">QR</button><button class="btn btn-danger btn-sm" onclick="deleteEquipment(\''+eq.id+'\')">Delete</button></div></td>'
+    +'</tr>').join(''):'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
 }
-function buildAssignRow(eq){
-  return '<tr>'
-    +'<td><span style="font-weight:600">'+getEmployeeName(eq.assignedTo)+'</span></td>'
-    +'<td>'+eq.brand+' '+eq.model+'</td>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
-    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
-    +'<td style="color:var(--text2);font-size:12px;text-align:center">'+(eq.purchaseDate||'—')+'</td>'
-    +'<td style="text-align:center">'+statusBadge(eq.status)+'</td>'
-    +'<td style="text-align:center"><button class="btn btn-outline btn-sm" onclick="unassign(\'' +eq.id+ '\')">Unassign</button></td>'
-    +'</tr>';
+function downloadEquipmentCSV(){
+  const s=document.getElementById('equip-search').value.toLowerCase();
+  const t=document.getElementById('equip-type-filter').value;
+  const st=document.getElementById('equip-status-filter').value;
+  const si=document.getElementById('equip-site-filter').value||'';
+  const filtered=equipment.filter(e=>(!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&(!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si));
+  if(!filtered.length){alert('No equipment to export.');return;}
+  const headers=['Type','Brand','Model','Serial Number','Condition','Status','Assigned To','Site','Purchase Date','Warranty Expiry','Purchase Price','Notes'];
+  const rows=filtered.map(e=>[e.type,e.brand,e.model,e.serial||'',e.condition,e.status,getEmployeeName(e.assignedTo),e.location||'',e.purchaseDate||'',e.warrantyExpiry||'',e.price||0,e.notes||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
+  const csv=[headers.map(h=>'"'+h+'"').join(','),...rows].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.download='dedale-equipment-'+new Date().toISOString().split('T')[0]+'.csv';
+  a.href=URL.createObjectURL(blob);a.click();
 }
-function buildRepairRow(eq){
-  return '<tr class="repair-row" data-id="'+eq.id+'" style="cursor:pointer">'
-    +'<td><span style="font-weight:600">'+eq.brand+' '+eq.model+'</span></td>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
-    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
-    +'<td style="color:var(--text2);font-size:12px">'+(eq.notes?'<span style="color:var(--gold)">'+eq.notes+'</span>':'<span style="color:var(--text3);font-style:italic">Tap to add notes</span>')+'</td>'
-    +'<td>'+conditionBadge(eq.condition)+'</td>'
-    +'<td style="color:var(--text2);font-size:12px;text-align:center">'+(eq.purchaseDate||'—')+'</td>'
-    +'<td><button class="btn btn-success btn-sm mark-fixed-btn" data-id="'+eq.id+'">Mark as Fixed</button></td>'
-    +'</tr>';
+function updateModelFilter(){
+  var type=document.getElementById('equip-type-filter').value;
+  var mf=document.getElementById('equip-model-filter');
+  var byType={"Laptop":["14ALC7","15IAH8 (Type 83ER)","15IAU7 (Type 82RK)","LOQ 15IAX9E (Type 83LK)","LOQ 15IAX9 (Type 83GS)","15IRH8 (Type 83EM)","15IRH10 (Type 83K1)","15IRU8 (Type 82X7)","16IAH8 (Type 83BG)"]};
+  if(type&&byType[type]){mf.innerHTML='<option value="">All Models</option>'+byType[type].map(function(m){return'<option>'+m+'</option>';}).join('');mf.style.display='';}
+  else{mf.innerHTML='<option value="">All Models</option>';mf.style.display='none';mf.value='';}
+}
+function filterEquipment(){
+  const s=document.getElementById('equip-search').value.toLowerCase(),t=document.getElementById('equip-type-filter').value,st=document.getElementById('equip-status-filter').value,si=document.getElementById('equip-site-filter').value||'';
+  renderEquipment(equipment.filter(e=>(!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&(!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si)));
 }
 
-function openRepairNotes(idOrEl){var id=typeof idOrEl==='string'?idOrEl:(idOrEl.dataset?idOrEl.dataset.id:idOrEl);
+function renderAssignments(list){
+  const assigned=(list||equipment).filter(e=>e.assignedTo);
+  document.getElementById('assignments-tbody').innerHTML=assigned.length?assigned.map(eq=>'<tr>'
+    +'<td><span style="font-weight:600">'+getEmployeeName(eq.assignedTo)+'</span></td>'
+    +'<td>'+eq.brand+' '+eq.model+'</td>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
+    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
+    +'<td style="color:var(--text2);font-size:12px">'+(eq.purchaseDate||'—')+'</td>'
+    +'<td>'+statusBadge(eq.status)+'</td>'
+    +'<td><button class="btn btn-outline btn-sm" onclick="unassign(\''+eq.id+'\')">Unassign</button></td></tr>').join('')
+    :'<tr><td colspan="7"><div class="empty-state"><p>No assignments on record</p></div></td></tr>';
+}
+function filterAssignments(){const s=document.getElementById('assign-search').value.toLowerCase();renderAssignments(equipment.filter(e=>e.assignedTo&&(getEmployeeName(e.assignedTo)+' '+e.brand+' '+e.model).toLowerCase().includes(s)));}
+function unassign(id){const eq=equipment.find(e=>e.id===id);if(eq&&confirm('Unassign '+eq.brand+' '+eq.model+' from '+getEmployeeName(eq.assignedTo)+'?')){const _prev=getEmployeeName(eq.assignedTo);logAssignmentHistory(eq.id,'unassigned','',_prev,'');logActivity(eq.brand+' '+eq.model+' unassigned from '+_prev);eq.assignedTo='';eq.status='In Stock';saveData();renderAssignments();if(document.getElementById('view-employees').classList.contains('active'))filterEmployees();}}
+
+function renderRepairs(list){
+  const repairs=(list||equipment).filter(e=>e.status==='Under Repair'||e.condition==='Damaged');
+  document.getElementById('repairs-tbody').innerHTML=repairs.length?repairs.map(eq=>'<tr style="cursor:pointer" onclick="openRepairNotes(\''+eq.id+'\')" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">'
+    +'<td><span style="font-weight:600">'+eq.brand+' '+eq.model+'</span></td>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
+    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
+    +'<td style="color:var(--text2);font-size:12px">'+(eq.notes?'<span style="color:var(--gold)">'+eq.notes+'</span>':'<span style="color:var(--text3);font-style:italic">Tap to add notes</span>')+'</td>'
+    +'<td>'+conditionBadge(eq.condition)+'</td>'
+    +'<td style="color:var(--text2);font-size:12px">'+(eq.purchaseDate||'—')+'</td>'
+    +'<td onclick="event.stopPropagation()"><button class="btn btn-success btn-sm" onclick="markRepaired(\''+eq.id+'\')">Mark as Fixed</button></td></tr>').join('')
+    :'<tr><td colspan="7"><div class="empty-state"><p>No items under repair or damaged</p></div></td></tr>';
+}
+function filterRepairs(){const s=document.getElementById('repair-search').value.toLowerCase(),st=document.getElementById('repair-status-filter').value;renderRepairs(equipment.filter(e=>(e.status==='Under Repair'||e.condition==='Damaged')&&(!s||(e.brand+' '+e.model).toLowerCase().includes(s))&&(!st||e.condition===st||e.status===st)));}
+function markRepaired(id){const eq=equipment.find(e=>e.id===id);if(eq){eq.condition='Good';eq.status='In Stock';eq.notes='';logAssignmentHistory(eq.id,'repaired','','','Condition restored to Good');logActivity(eq.brand+' '+eq.model+' marked as repaired');saveData();renderRepairs();renderDashboard();}}
+
+function openRepairNotes(id){
   const eq=equipment.find(e=>e.id===id);if(!eq)return;
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;background:rgba(14,15,26,0.88);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
@@ -1033,7 +1127,7 @@ function openEmployeeDetail(id){
     +'</div>'
     +'<div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-family:\'Share Tech Mono\',monospace;margin-bottom:10px">Assigned Equipment ('+items.length+')</div>'
     +'<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">'
-    +(items.length?items.map(e=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">'+(icons[e.type]||'📦')+'</span><div><div style="font-size:15px;font-weight:600;color:var(--text)">'+e.brand+' '+e.model+'</div>'+(e.serial?'<div style="font-size:12px;font-family:\'Share Tech Mono\',monospace;color:var(--gold)">S/N: '+e.serial+'</div>':'')+(e.warrantyExpiry?'<div style="font-size:11px;font-family:\'Share Tech Mono\',monospace;color:'+warrantyColor(e.warrantyExpiry)+'">WARRANTY: '+e.warrantyExpiry+'</div>':'<div style="font-size:11px;font-family:\'Share Tech Mono\',monospace;color:var(--text3)">WARRANTY: —</div>')+'</div></div><div style="display:flex;gap:6px;align-items:center">'+(e.condition==='Good'||e.condition==='New'?'<span class="badge badge-green" style="font-size:9px">'+e.condition+'</span>':'<span class="badge badge-yellow" style="font-size:9px">'+e.condition+'</span>')+'</div></div>').join(''):'<div style="font-size:15px;color:var(--text3);padding:12px 0">No equipment assigned</div>')
+    +(items.length?items.map(e=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">'+(icons[e.type]||'📦')+'</span><div><div style="font-size:15px;font-weight:600;color:var(--text)">'+e.brand+' '+e.model+'</div>'+(e.serial?'<div style="font-size:12px;font-family:\'Share Tech Mono\',monospace;color:var(--gold)">S/N: '+e.serial+'</div>':'')+'</div></div><div style="display:flex;gap:6px;align-items:center">'+(e.condition==='Good'||e.condition==='New'?'<span class="badge badge-green" style="font-size:9px">'+e.condition+'</span>':'<span class="badge badge-yellow" style="font-size:9px">'+e.condition+'</span>')+'</div></div>').join(''):'<div style="font-size:15px;color:var(--text3);padding:12px 0">No equipment assigned</div>')
     +'</div>'
     +'<div style="display:flex;gap:8px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--border)">'
     +'<button onclick="this.closest(\'div[style*=fixed]\').remove();editEmployee(\''+emp.id+'\')" style="font-family:\'Orbitron\',monospace;font-size:9px;font-weight:600;letter-spacing:1.5px;padding:9px 18px;background:transparent;color:var(--gold);border:1px solid var(--gold-dark);cursor:pointer">EDIT</button>'
@@ -1044,26 +1138,24 @@ function openEmployeeDetail(id){
   overlay.addEventListener('click',function(e){if(e.target===this)this.remove();});
 }
 // ── EQUIPMENT MODAL ──────────────────────────────────────────────
-function toggleModelField(val){
-  const type=val||document.getElementById('f-type').value;
-  const input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
-  const brandMap={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo']};
-  const brandSelect=document.getElementById('f-brand');
-  const brands=brandMap[type]||[];
-  brandSelect.innerHTML='<option value="">— Select Brand —</option>'+brands.map(b=>'<option>'+b+'</option>').join('');
-  // Hide model until brand is selected
-  input.style.display='none';select.style.display='none';input.value='';select.value='';
-  if(type==='Laptop'){select.style.display='none';}
-}
-
 function updateModelOnBrand(){
-  const type=document.getElementById('f-type').value;
-  const brand=document.getElementById('f-brand').value;
-  const input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
+  var type=document.getElementById('f-type').value;
+  var brand=document.getElementById('f-brand').value;
+  var input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
   input.style.display='none';select.style.display='none';input.value='';select.value='';
   if(!brand)return;
   if(type==='Laptop'){select.style.display='';}
   else{input.style.display='';}
+}
+function toggleModelField(val){
+  const type=val||document.getElementById('f-type').value;
+  const input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
+  if(type==='Laptop'){input.style.display='none';select.style.display='';input.value='';}
+  else{input.style.display='';select.style.display='none';select.value='';}
+  const brandMap={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo']};
+  const brandSelect=document.getElementById('f-brand');
+  const brands=brandMap[type]||[];
+  brandSelect.innerHTML='<option value="">— Select Brand —</option>'+brands.map(b=>'<option>'+b+'</option>').join('');
 }
 function buildAssignedDropdown(filter){
   const dd=document.getElementById('f-assigned-dropdown');if(!dd)return;
@@ -1083,23 +1175,23 @@ function setModelValue(type,val){toggleModelField(type);if(type==='Laptop')docum
 function openAddModal(){
   editingId=null;document.getElementById('equip-modal-title').textContent='Add Equipment';
   ['f-type','f-brand','f-serial','f-condition','f-status','f-assigned','f-location','f-purchase-date','f-price','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.tagName==='SELECT'?el.options[0].value:'';});
-  document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';document.getElementById('f-warranty-mm').value='';document.getElementById('f-warranty-yy').value='';
+  document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';
   document.getElementById('f-condition').value='New';document.getElementById('f-status').value='In Stock';
   toggleModelField('Laptop');document.getElementById('equip-modal').classList.add('open');
 }
 function editEquipment(id){
   const eq=equipment.find(e=>e.id===id);if(!eq)return;
   editingId=id;document.getElementById('equip-modal-title').textContent='Edit Equipment';
-  document.getElementById('f-type').value=eq.type;toggleModelField(eq.type);document.getElementById('f-brand').value=eq.brand;updateModelOnBrand();setModelValue(eq.type,eq.model);
+  document.getElementById('f-type').value=eq.type;toggleModelField(eq.type);document.getElementById('f-brand').value=eq.brand;setModelValue(eq.type,eq.model);
   document.getElementById('f-serial').value=eq.serial;document.getElementById('f-condition').value=eq.condition;document.getElementById('f-status').value=eq.status;
   const _emp=employees.find(e=>e.id===eq.assignedTo);
   document.getElementById('f-assigned').value=eq.assignedTo||'';document.getElementById('f-assigned-search').value=_emp?_emp.name:'';
   document.getElementById('f-location').value=eq.location||'';document.getElementById('f-purchase-date').value=eq.purchaseDate||'';
-  (()=>{const v=eq.warrantyExpiry||'';if(v&&v.includes('/')){const[m,y]=v.split('/');document.getElementById('f-warranty-mm').value=m.padStart(2,'0');document.getElementById('f-warranty-yy').value=y;}else{document.getElementById('f-warranty-mm').value='';document.getElementById('f-warranty-yy').value='';}})();document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
+  (function(){var v=eq.warrantyExpiry||'';if(v&&v.includes('/')){var parts=v.split('/');var mm=document.getElementById('f-warranty-mm');var yy=document.getElementById('f-warranty-yy');if(mm)mm.value=parts[0];if(yy)yy.value=parts[1];}else{var mm2=document.getElementById('f-warranty-mm');var yy2=document.getElementById('f-warranty-yy');if(mm2)mm2.value='';if(yy2)yy2.value='';}})();document.getElementById('f-price').value=eq.price||'';document.getElementById('f-notes').value=eq.notes||'';
   document.getElementById('equip-modal').classList.add('open');
 }
 function saveEquipment(){
-  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:(()=>{const mm=document.getElementById('f-warranty-mm').value,yy=document.getElementById('f-warranty-yy').value;return(mm&&yy)?mm+'/'+yy:''})(),price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
+  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:(function(){var mm=document.getElementById('f-warranty-mm')?.value,yy=document.getElementById('f-warranty-yy')?.value;return(mm&&yy)?mm+'/'+yy:'';})() ,price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
   if(data.serial){
     const dup=equipment.find(e=>e.serial&&e.serial.trim().toLowerCase()===data.serial.toLowerCase()&&e.id!==editingId);
     if(dup)return alert('Serial number "'+data.serial+'" is already assigned to '+dup.brand+' '+dup.model+' ('+dup.type+'). Please use a unique serial number.');
@@ -1342,7 +1434,7 @@ function showPODropdown(){const q=document.getElementById('po-employee-search').
 function hidePODropdown(){document.getElementById('po-employee-dropdown').style.display='none';}
 
 const PO_BRANDS={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo'],'Memory':['Kingston'],'Other':[]};
-const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve2 75','Evolve2 55','Engage 55'],'Rapoo':['MT750S','MT550','M500'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','NV2 256GB SSD','NV2 512GB SSD']};
+const PO_MODELS={'Lenovo':['14ALC7','15IAU7','15IAX9E (LOQ)','15IRH10'],'N-Vision':[],'Jabra':['Evolve2 75','Evolve2 55','Engage 55'],'Rapoo':['MT750S','MT550','M500'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','NV2 256GB SSD','NV2 512GB SSD']};
 
 function updatePOBrands(typeSelect){
   const row=typeSelect.closest('.po-item-row'),type=typeSelect.value;
@@ -1421,11 +1513,6 @@ function renderPurchaseOrders(){
     +'</div></div></div>').join('');
 }
 document.addEventListener('click',function(e){
-  var repairRow=e.target.closest('.repair-row');
-  var fixBtn=e.target.closest('.mark-fixed-btn');
-  if(fixBtn){markRepaired(fixBtn.getAttribute('data-id'));return;}
-  if(repairRow&&!fixBtn){openRepairNotes(repairRow.getAttribute('data-id'));return;}
-
   const approveBtn=e.target.closest('.po-btn-approve');if(approveBtn){const id=approveBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Approved');return;}
   const rejectBtn=e.target.closest('.po-btn-reject');if(rejectBtn){const id=rejectBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Rejected');return;}
   const deleteBtn=e.target.closest('.po-btn-delete');if(deleteBtn){const id=deleteBtn.getAttribute('data-id');if(id)deletePO(id);return;}
@@ -1638,7 +1725,7 @@ function closeMobileMenu(){const sb=document.querySelector('.sidebar'),ov=docume
 // ── INIT ─────────────────────────────────────────────────────────
 // initMSAL called after MSAL library loads (see script load order below)
 
-// ── MANUAL BACKUP ─────────────────────────────────────────────────
+// Force reload when browser restores page from back/forward cache
 async function manualBackup(){
   if(!accessToken){alert('You must be signed in to OneDrive to create a backup.');return;}
   const btn=document.querySelector('.nav-item[onclick="manualBackup()"]');
@@ -1648,22 +1735,11 @@ async function manualBackup(){
     const fileName='Dedale-Inventory-Backup-'+timestamp+'.json';
     const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,backedUpAt:new Date().toISOString()},null,2);
     const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/Dedale-Inventory-Backups/'+fileName+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
-    if(r.ok){
-      logActivity('Manual backup created: '+fileName);
-      saveData();
-      if(btn){btn.style.color='var(--green)';btn.innerHTML=btn.innerHTML.replace('Backing up...','✓ Backed Up!');}
-      setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('✓ Backed Up!','Backup Now');}},3000);
-    }else{
-      if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Backup Failed');}
-      setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Backup Failed','Backup Now');}},3000);
-    }
-  }catch(e){
-    if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Backup Failed');}
-    setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Backup Failed','Backup Now');}},3000);
-  }
+    if(r.ok){logActivity('Manual backup created: '+fileName);saveData();if(btn){btn.style.color='var(--green)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Backed Up!');setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Backed Up!','Backup Now');}},3000);};}
+    else{if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Failed');setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Failed','Backup Now');}},3000);}}
+  }catch(e){if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Failed');setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Failed','Backup Now');}},3000);}}
 }
 
-// Force reload when browser restores page from back/forward cache
 window.addEventListener('pageshow',function(e){if(e.persisted)window.location.reload();});
 
 </script>

@@ -782,15 +782,29 @@ function flushOnReconnect(){
     })();
   }
 }
-window.addEventListener('online',function(){
-  _isOnline=true;
-  flushOnReconnect();
-});
+window.addEventListener('online',function(){if(!_isOnline){_isOnline=true;flushOnReconnect();}});
 window.addEventListener('offline',function(){
-  _isOnline=false;
-  updateOnlineUI();
-  addNotif('📵','You are offline — changes will sync when reconnected','sync');
+  if(_isOnline){
+    _isOnline=false;updateOnlineUI();
+    addNotif('📵','You are offline — changes will sync when reconnected','sync');
+  }
 });
+/* Periodic connection check — more reliable than browser events alone */
+setInterval(function(){
+  var nowOnline=navigator.onLine;
+  if(nowOnline&&!_isOnline){
+    /* Just came online */
+    _isOnline=true;
+    flushOnReconnect();
+  }else if(!nowOnline&&_isOnline){
+    /* Just went offline */
+    _isOnline=false;
+    updateOnlineUI();
+  }else if(nowOnline!==_isOnline){
+    _isOnline=nowOnline;
+    updateOnlineUI();
+  }
+},3000);
 
 function showApp(){
   setTimeout(applyRolePermissions,200);
@@ -831,7 +845,7 @@ async function refreshTokenIfNeeded(){
 setInterval(refreshTokenIfNeeded,30*60*1000);
 
 setInterval(async()=>{
-  if(!accessToken||_pendingSync)return;
+  if(!accessToken||_pendingSync||_blockLoad||!_isOnline)return;
   try{
     const metaR=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME,{headers:{'Authorization':'Bearer '+accessToken}});
     if(!metaR.ok)return;
@@ -883,7 +897,7 @@ async function syncToOneDrive(){
 }
 
 async function loadFromOneDrive(){
-  if(!accessToken||_blockLoad)return;
+  if(!accessToken||_blockLoad||_pendingSync)return;
   try{
     updateSyncStatus('syncing');
     const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});

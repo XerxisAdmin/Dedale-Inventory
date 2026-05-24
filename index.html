@@ -76,7 +76,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
 tbody tr{border-bottom:1px solid rgba(26,42,58,0.5);transition:background 0.1s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--surface2);}
+tbody tr:hover{background:var(--surface2);}.nolaptop-card:hover{border-color:var(--gold) !important;}
 td{padding:11px 16px;color:var(--text);vertical-align:middle;font-size:14px;}
 .badge{display:inline-flex;align-items:center;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;white-space:nowrap;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
 .badge-green{background:rgba(0,184,96,0.15);color:var(--green);}
@@ -927,15 +927,18 @@ function renderDashboard(){
   var noLaptop=employees.filter(function(emp){return !equipment.some(function(e){return e.type==='Laptop'&&e.assignedTo===emp.id;});});
   var noLaptopEl=document.getElementById('no-laptop-list');
   if(noLaptopEl){
-    if(noLaptop.length===0){noLaptopEl.innerHTML='<div class="empty-state"><p>All employees have a laptop assigned</p></div>';}
-    else{
+    if(noLaptop.length===0){
+      noLaptopEl.innerHTML='<div class="empty-state"><p>All employees have a laptop assigned</p></div>';
+    }else{
       var nlh='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">';
       noLaptop.forEach(function(emp){
         var ini=emp.name.split(' ').map(function(n){return n[0]||'';}).join('').toUpperCase().slice(0,2);
-        nlh+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)">';
-        nlh+='<div style="width:34px;height:34px;border-radius:50%;background:rgba(196,18,48,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--crimson)">'+ini+'</div>';
-        nlh+='<div><div style="font-size:14px;font-weight:600;color:var(--text)">'+emp.name+'</div>';
-        nlh+='<div style="font-size:11px;color:var(--text3)">'+(emp.role||'No role')+' - '+emp.site+'</div></div></div>';
+        nlh+='<div data-empid="'+emp.id+'" class="nolaptop-card" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border);cursor:pointer;transition:border-color 0.15s">';
+        nlh+='<div style="width:34px;height:34px;border-radius:50%;background:rgba(196,18,48,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--crimson);flex-shrink:0">'+ini+'</div>';
+        nlh+='<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--text)">'+emp.name+'</div>';
+        nlh+='<div style="font-size:11px;color:var(--text3)">'+(emp.role||'No role')+' &middot; <span style="color:var(--crimson)">'+emp.site+'</span></div></div>';
+        nlh+='<div style="font-size:10px;color:var(--gold);font-family:Share Tech Mono,monospace;flex-shrink:0">&#8250;</div>';
+        nlh+='</div>';
       });
       nlh+='</div>';
       noLaptopEl.innerHTML=nlh;
@@ -1513,6 +1516,9 @@ function renderPurchaseOrders(){
     +'</div></div></div>').join('');
 }
 document.addEventListener('click',function(e){
+  var nlCard=e.target.closest('.nolaptop-card');
+  if(nlCard){openNoLaptopProfile(nlCard.getAttribute('data-empid'));return;}
+
   const approveBtn=e.target.closest('.po-btn-approve');if(approveBtn){const id=approveBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Approved');return;}
   const rejectBtn=e.target.closest('.po-btn-reject');if(rejectBtn){const id=rejectBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Rejected');return;}
   const deleteBtn=e.target.closest('.po-btn-delete');if(deleteBtn){const id=deleteBtn.getAttribute('data-id');if(id)deletePO(id);return;}
@@ -1702,6 +1708,91 @@ function showWarrantyList(){
     +(expiringSoon.length?'<div style="font-size:11px;font-weight:700;color:var(--gold);margin:12px 0 8px;font-family:\'Share Tech Mono\',monospace;letter-spacing:1px">EXPIRING SOON ('+expiringSoon.length+')</div>'+expiringSoon.map(e=>'<div style="padding:8px 0;border-bottom:1px solid rgba(46,50,96,0.5)"><div style="font-size:14px;font-weight:600;color:var(--text)">'+e.brand+' '+e.model+'</div><div style="font-size:12px;color:var(--gold);font-family:\'Share Tech Mono\',monospace">Expires: '+e.warrantyExpiry+'</div></div>').join(''):'')
     +'</div>';
   document.body.appendChild(overlay);overlay.addEventListener('click',function(e){if(e.target===this)this.remove();});
+}
+
+// ── NO LAPTOP PROFILE ────────────────────────────────────────────
+function openNoLaptopProfile(empId){
+  var emp=employees.find(function(e){return e.id===empId;});
+  if(!emp)return;
+  var allEquip=equipment.filter(function(e){return e.assignedTo===emp.id;});
+  var laptops=equipment.filter(function(e){return e.type==='Laptop'&&e.status==='In Stock';});
+  var ini=emp.name.split(' ').map(function(n){return n[0]||'';}).join('').toUpperCase().slice(0,2);
+  var icons={'Laptop':'&#x1F4BB;','Monitor':'&#x26F3;','Headset':'&#x1F3A7;','Mouse':'&#x1F5B1;'};
+  var equipHtml='';
+  if(allEquip.length===0){
+    equipHtml='<div style="font-size:13px;color:var(--text3);padding:8px 0">No equipment currently assigned</div>';
+  }else{
+    allEquip.forEach(function(e){
+      equipHtml+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--navy-mid);border:1px solid var(--border);margin-bottom:6px">';
+      equipHtml+='<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">'+e.brand+' '+e.model+'</div>';
+      equipHtml+='<div style="font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace">'+(e.serial?'S/N: '+e.serial:'No serial')+' &middot; '+e.type+'</div></div></div>';
+    });
+  }
+  var laptopOptions='<option value="">-- Select a laptop to assign --</option>';
+  laptops.forEach(function(l){
+    laptopOptions+='<option value="'+l.id+'">'+l.brand+' '+l.model+(l.serial?' (S/N: '+l.serial+')':'')+'</option>';
+  });
+  var existing=document.getElementById('no-laptop-profile-overlay');
+  if(existing)existing.remove();
+  var overlay=document.createElement('div');
+  overlay.id='no-laptop-profile-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(3,5,10,0.88);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  var html2='<div style="background:var(--surface);border:1px solid var(--border);width:520px;max-width:92vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);position:relative;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">';
+  html2+='<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--crimson),var(--gold),transparent)"></div>';
+  // Header
+  html2+='<div style="padding:22px 26px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">';
+  html2+='<div style="display:flex;align-items:center;gap:14px">';
+  html2+='<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--crimson-dark),var(--crimson));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;font-family:Orbitron,monospace;flex-shrink:0">'+ini+'</div>';
+  html2+='<div><div style="font-size:18px;font-weight:700;color:#fff;font-family:Rajdhani,sans-serif">'+emp.name+'</div>';
+  html2+=(emp.empid?'<div style="font-size:11px;color:var(--crimson);font-family:Share Tech Mono,monospace;letter-spacing:1.5px">ID: '+emp.empid+'</div>':'');
+  html2+='</div></div>';
+  html2+='<button id="nlp-close-btn" style="background:var(--surface2);border:1px solid var(--border);padding:6px 14px;font-size:11px;font-family:Share Tech Mono,monospace;color:var(--text2);cursor:pointer;flex-shrink:0">Close</button>';
+  html2+='</div>';
+  // Info grid
+  html2+='<div style="padding:18px 26px;border-bottom:1px solid var(--border)">';
+  html2+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  if(emp.role)html2+='<div style="background:var(--navy-mid);padding:10px 14px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:Share Tech Mono,monospace;letter-spacing:2px;margin-bottom:4px">ROLE</div><div style="font-size:14px;color:var(--text);font-weight:500">'+emp.role+'</div></div>';
+  if(emp.site)html2+='<div style="background:var(--navy-mid);padding:10px 14px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:Share Tech Mono,monospace;letter-spacing:2px;margin-bottom:4px">SITE</div><div style="font-size:14px;color:var(--text);font-weight:500">'+emp.site+'</div></div>';
+  if(emp.email)html2+='<div style="background:var(--navy-mid);padding:10px 14px;border:1px solid var(--border);grid-column:1/-1"><div style="font-size:9px;color:var(--gold);font-family:Share Tech Mono,monospace;letter-spacing:2px;margin-bottom:4px">EMAIL</div><div style="font-size:13px;color:var(--text);font-family:Share Tech Mono,monospace">'+emp.email+'</div></div>';
+  html2+='</div></div>';
+  // Equipment
+  html2+='<div style="padding:16px 26px;border-bottom:1px solid var(--border)">';
+  html2+='<div style="font-size:10px;color:var(--gold);font-family:Share Tech Mono,monospace;letter-spacing:2px;margin-bottom:10px">ASSIGNED EQUIPMENT ('+allEquip.length+')</div>';
+  html2+=equipHtml;
+  html2+='</div>';
+  // Assign laptop
+  html2+='<div style="padding:16px 26px">';
+  html2+='<div style="font-size:10px;color:var(--crimson);font-family:Share Tech Mono,monospace;letter-spacing:2px;margin-bottom:10px">ASSIGN A LAPTOP</div>';
+  if(laptops.length===0){
+    html2+='<div style="font-size:13px;color:var(--text3)">No laptops currently in stock. Add one in Equipment first.</div>';
+  }else{
+    html2+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+    html2+='<select id="nolaptop-assign-select" style="flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none">'+laptopOptions+'</select>';
+    html2+='<button id="nlp-assign-btn" data-empid="'+emp.id+'" style="padding:9px 18px;background:linear-gradient(135deg,var(--crimson-dark),var(--crimson));color:#fff;border:none;font-family:Orbitron,monospace;font-size:9px;font-weight:600;letter-spacing:1.5px;cursor:pointer;white-space:nowrap;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px))">ASSIGN</button>';
+    html2+='</div>';
+  }
+  html2+='</div></div>';
+  overlay.innerHTML=html2;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#nlp-close-btn').addEventListener('click',function(){overlay.remove();});
+  overlay.addEventListener('click',function(e){if(e.target===this)this.remove();});
+  var assignBtn=overlay.querySelector('#nlp-assign-btn');
+  if(assignBtn){assignBtn.addEventListener('click',function(){assignLaptopFromDash(this.getAttribute('data-empid'));});}
+}
+function assignLaptopFromDash(empId){
+  var sel=document.getElementById('nolaptop-assign-select');
+  if(!sel||!sel.value){alert('Please select a laptop first.');return;}
+  var eq=equipment.find(function(e){return e.id===sel.value;});
+  var emp=employees.find(function(e){return e.id===empId;});
+  if(!eq||!emp)return;
+  eq.assignedTo=empId;
+  eq.status='In Use';
+  logAssignmentHistory(eq.id,'assigned',empId,emp.name,'Assigned from dashboard');
+  logActivity(eq.brand+' '+eq.model+' assigned to '+emp.name);
+  saveData();
+  renderDashboard();
+  var overlay=document.getElementById('no-laptop-profile-overlay');
+  if(overlay)overlay.remove();
 }
 
 // ── EXPORT CSV ───────────────────────────────────────────────────

@@ -1183,7 +1183,7 @@ function addNHEquipRow(){
   container.appendChild(row);
 }
 var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo']};
-var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','15IRH10 (Type 83K1)'],
+var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
   Jabra:['Evolve2 75','Evolve2 55','Engage 55'],Rapoo:['MT750S','MT550','M500'],'N-Vision':[]};
 function updateNHEqBrands(typeSelect){
   var row=typeSelect.closest('.nh-equip-row'),type=typeSelect.value;
@@ -1342,13 +1342,8 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
     +'<tr><td align="center">'
     +'<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">'
     /* Header */
-    +'<tr><td style="background:#1e293b;padding:26px 32px;">'
-    +'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
-    +'<td><div style="font-size:17px;font-weight:700;color:#ffffff;letter-spacing:2px;font-family:Arial,sans-serif;">DEDALE INTELLIGENCE</div>'
-    +'<div style="font-size:11px;color:#f87171;letter-spacing:2px;margin-top:4px;text-transform:uppercase;font-family:Arial,sans-serif;">New Employee Onboarding Notification</div></td>'
-    +'<td align="right" style="vertical-align:top;"><span style="background:#dc2626;color:#fff;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;font-family:Arial,sans-serif;">NEW HIRE</span></td>'
-    +'</tr></table></td></tr>'
-    /* Employee banner */
+    +'<tr><td style="background:#0f172a;padding:28px 32px;border-bottom:3px solid #cc2244;">'+'<table width="100%" cellpadding="0" cellspacing="0"><tr>'+'<td style="border-left:4px solid #cc2244;padding-left:16px;">'+'<div style="font-size:11px;font-weight:600;color:#475569;letter-spacing:3px;text-transform:uppercase;font-family:Arial,sans-serif;margin-bottom:6px;">Dedale Intelligence &mdash; IT Asset Management</div>'+'<div style="font-size:21px;font-weight:700;color:#f1f5f9;font-family:Arial,sans-serif;line-height:1.2;">New Hire Notification</div>'+'</td>'+'<td align="right" style="vertical-align:bottom;">'+'<div style="font-size:11px;color:#334155;font-family:Arial,sans-serif;">INTEL-SYS v1.0</div>'+'</td></tr></table></td></tr>'
+/* Employee banner */
     +'<tr><td style="background:#f8fafc;padding:20px 32px;border-bottom:1px solid #e2e8f0;">'
     +'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
     +'<td style="vertical-align:middle;width:130px;">'+photoHtml+'</td>'
@@ -1778,7 +1773,7 @@ function buildAssignRow(eq){
     +'<td style="text-align:left">'+eq.brand+' '+eq.model+'</td>'
     +'<td style="text-align:left"><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
     +'<td style="text-align:left;font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
-    +'<td style="text-align:center;color:var(--text2);font-size:12px">'+(eq.purchaseDate||'&mdash;')+'</td>'
+    +(function(){var assignedEntry=eq.history&&eq.history.slice().reverse().find(function(h){return h.action==='assigned';});var d=assignedEntry?assignedEntry.date:null;if(!d)return'<td style="text-align:center;color:var(--text2);font-size:12px">&mdash;</td>';var dt=new Date(d);var formatted=dt.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});return'<td style="text-align:center;color:var(--text2);font-size:12px">'+formatted+'</td>';})()
     +'<td style="text-align:center">'+statusBadge(eq.status)+'</td>'
     +'<td style="text-align:center"><button class="btn btn-outline btn-sm assign-unassign-btn" data-id="'+eq.id+'">Unassign</button></td>'
     +'</tr>';

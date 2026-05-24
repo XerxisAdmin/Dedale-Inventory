@@ -913,9 +913,23 @@ function buildRepairRow(eq){
     +'</tr>';
 }
 
+function fixActionButtonHeights(){
+  document.querySelectorAll('.equip-edit-btn,.equip-hist-btn,.equip-qr-btn,.equip-del-btn').forEach(function(btn){
+    btn.style.setProperty('height','30px','important');
+    btn.style.setProperty('padding','6px 12px','important');
+    btn.style.setProperty('font-size','10px','important');
+    btn.style.setProperty('line-height','1','important');
+    btn.style.setProperty('min-height','0','important');
+    btn.style.setProperty('max-height','30px','important');
+    btn.style.setProperty('box-sizing','border-box','important');
+    btn.style.setProperty('-webkit-appearance','none','important');
+    btn.style.setProperty('appearance','none','important');
+  });
+}
 function renderEquipment(list){
   var rows=list||equipment;
   document.getElementById('equipment-tbody').innerHTML=rows.length?rows.map(buildEquipRow).join(''):'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
+  fixActionButtonHeights();
 }
 function downloadEquipmentCSV(){
   const s=document.getElementById('equip-search').value.toLowerCase(),t=document.getElementById('equip-type-filter').value,st=document.getElementById('equip-status-filter').value,si=document.getElementById('equip-site-filter').value||'';

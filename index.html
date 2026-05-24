@@ -405,7 +405,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
       <div id="notif-wrap" style="position:relative;"><button id="notif-btn" onclick="toggleNotifPanel()" style="background:transparent;border:1px solid var(--border);padding:6px 10px;cursor:pointer;position:relative;display:flex;align-items:center;gap:5px;color:var(--text2);"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span id="notif-badge" style="display:none;position:absolute;top:-5px;right:-5px;background:var(--crimson);color:#fff;font-size:9px;font-family:'Share Tech Mono',monospace;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;"></span></button><div id="notif-panel" style="display:none;position:absolute;top:calc(100% + 6px);right:0;width:300px;background:var(--surface);border:1px solid var(--border);z-index:400;max-height:380px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);"><div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);font-family:'Share Tech Mono',monospace;">NOTIFICATIONS</span><button onclick="clearNotifs()" style="background:transparent;border:none;font-size:10px;color:var(--text3);cursor:pointer;font-family:'Share Tech Mono',monospace;">CLEAR ALL</button></div><div id="notif-list"><div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">No notifications</div></div></div></div>
       <span id="sync-status" style="font-size:12px;font-family:'Share Tech Mono',monospace;color:var(--text3)"></span>
-      <div id="offline-indicator" style="display:none;align-items:center;gap:6px;background:rgba(196,18,48,0.15);border:1px solid var(--crimson-dark);padding:4px 10px;font-size:10px;font-family:'Share Tech Mono',monospace;color:var(--crimson);letter-spacing:1px;"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0119 12.55"/><path d="M5 12.55a10.94 10.94 0 015.17-2.39"/><path d="M10.71 5.05A16 16 0 0122.56 9"/><path d="M1.42 9a16 16 0 014.7-2.88"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>OFFLINE — changes saved locally</div>
+      <div id="connection-status" style="display:flex;align-items:center;gap:5px;font-size:10px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;"><span id="connection-dot" style="width:8px;height:8px;border-radius:50%;background:#22cc88;box-shadow:0 0 6px #22cc88;flex-shrink:0;"></span><span id="connection-label" style="color:var(--text3)">ONLINE</span></div>
       <div class="user-chip" id="user-chip" style="display:none"><div class="user-avatar" id="user-avatar">?</div><div><div class="user-name" id="user-display-name">User</div><div class="user-email" id="user-display-email"></div></div></div>
       <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add Equipment</button>
     </div>
@@ -678,6 +678,7 @@ let editingId=null;
 let _localSaveTime=0,_lastSyncTime=null,_lastServerTime=null,syncDebounceTimer=null;
 let _isOnline=navigator.onLine;
 let _pendingSync=false;
+let _blockLoad=false;
 let auditLog=JSON.parse(localStorage.getItem('dd_audit')||'[]');
 let notifications=JSON.parse(localStorage.getItem('dd_notifications')||'[]');
 const SUPER_ADMIN_EMAIL='xerxis.dalanon@dedale.com';
@@ -746,8 +747,16 @@ function showLoading(){document.getElementById('login-screen').classList.add('hi
 function hideLoading(){const ol=document.getElementById('loading-overlay');if(ol)ol.style.display='none';}
 /* ======= OFFLINE / ONLINE HANDLING ======= */
 function updateOnlineUI(){
-  var ind=document.getElementById('offline-indicator');
-  if(ind)ind.style.display=_isOnline?'none':'flex';
+  var dot=document.getElementById('connection-dot');
+  var lbl=document.getElementById('connection-label');
+  if(dot){
+    dot.style.background=_isOnline?'#22cc88':'#cc2244';
+    dot.style.boxShadow=_isOnline?'0 0 6px #22cc88':'0 0 6px #cc2244';
+  }
+  if(lbl){
+    lbl.textContent=_isOnline?'ONLINE':'OFFLINE';
+    lbl.style.color=_isOnline?'#22cc88':'#cc2244';
+  }
   if(_isOnline)updateSyncStatus('connected');
   else updateSyncStatus('offline');
 }
@@ -755,8 +764,22 @@ function flushOnReconnect(){
   _isOnline=true;
   updateOnlineUI();
   if(_pendingSync&&accessToken){
-    addNotif('📶','Back online — syncing local changes to OneDrive...','sync');
-    syncToOneDrive();
+    _blockLoad=true;
+    addNotif('📶','Back online — pushing local changes first...','sync');
+    /* Push local data immediately, bypass debounce */
+    clearTimeout(syncDebounceTimer);
+    (async function(){
+      try{
+        isSyncing=true;updateSyncStatus('syncing');
+        const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig},null,2);
+        const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
+        if(r.ok){
+          updateSyncStatus('saved');_lastSyncTime=Date.now();_pendingSync=false;
+          addNotif('✅','Offline changes synced to OneDrive successfully','sync');
+        }else{updateSyncStatus('error');}
+      }catch(e){updateSyncStatus('error');}
+      finally{isSyncing=false;_blockLoad=false;}
+    })();
   }
 }
 window.addEventListener('online',function(){
@@ -808,7 +831,7 @@ async function refreshTokenIfNeeded(){
 setInterval(refreshTokenIfNeeded,30*60*1000);
 
 setInterval(async()=>{
-  if(!accessToken)return;
+  if(!accessToken||_pendingSync)return;
   try{
     const metaR=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME,{headers:{'Authorization':'Bearer '+accessToken}});
     if(!metaR.ok)return;
@@ -860,7 +883,7 @@ async function syncToOneDrive(){
 }
 
 async function loadFromOneDrive(){
-  if(!accessToken)return;
+  if(!accessToken||_blockLoad)return;
   try{
     updateSyncStatus('syncing');
     const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});

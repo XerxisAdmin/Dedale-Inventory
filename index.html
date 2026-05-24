@@ -22,6 +22,7 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 @keyframes bootbar{from{width:0}to{width:100%}}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .sidebar{width:248px;min-height:100vh;background:var(--navy-mid);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;border-right:1px solid var(--border);}
 .sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
@@ -191,6 +192,51 @@ thead th{padding:8px;font-size:8px;}
 body{overflow-x:hidden;}
 #po-sticky-header{padding:4px 14px 14px !important;}
 #stat-employees-breakdown{grid-template-columns:repeat(2,1fr) !important;}
+
+/* ── MOBILE COLUMN HIDING ── Equipment: show only Type Brand/Model Status, hide rest + Actions ── */
+#view-equipment thead th:nth-child(3),
+#view-equipment tbody td:nth-child(3),
+#view-equipment thead th:nth-child(4),
+#view-equipment tbody td:nth-child(4),
+#view-equipment thead th:nth-child(6),
+#view-equipment tbody td:nth-child(6),
+#view-equipment thead th:nth-child(7),
+#view-equipment tbody td:nth-child(7),
+#view-equipment thead th:nth-child(8),
+#view-equipment tbody td:nth-child(8),
+#view-equipment thead th:nth-child(9),
+#view-equipment tbody td:nth-child(9){display:none !important;}
+/* Highlight tappable rows on mobile */
+#view-equipment tbody tr:active{background:var(--surface2);}
+#view-equipment tbody tr::after{content:'';display:none;}
+/* Assignments: hide Type(3) Serial(4) Date Assigned(5) */
+#view-assignments thead th:nth-child(3),
+#view-assignments tbody td:nth-child(3),
+#view-assignments thead th:nth-child(4),
+#view-assignments tbody td:nth-child(4),
+#view-assignments thead th:nth-child(5),
+#view-assignments tbody td:nth-child(5){display:none !important;}
+/* Repairs: hide Type(2) Serial(3) Date Logged(6) */
+#view-repairs thead th:nth-child(2),
+#view-repairs tbody td:nth-child(2),
+#view-repairs thead th:nth-child(3),
+#view-repairs tbody td:nth-child(3),
+#view-repairs thead th:nth-child(6),
+#view-repairs tbody td:nth-child(6){display:none !important;}
+/* Make visible columns fill width properly */
+#view-equipment table,
+#view-assignments table,
+#view-repairs table{table-layout:auto;}
+/* Tighter padding for mobile table cells */
+#view-equipment td,#view-equipment th,
+#view-assignments td,#view-assignments th,
+#view-repairs td,#view-repairs th{padding:8px 8px !important;font-size:11px !important;}
+/* Toolbar filters stack properly */
+#view-equipment>div:first-child,
+#view-assignments>div:first-child,
+#view-repairs>div:first-child{flex-direction:column;}
+#view-equipment>div:first-child .search-input,
+#view-assignments>div:first-child .search-input{width:100%;}
 }
 @media(max-width:400px){.stats-grid{grid-template-columns:1fr !important;}#stat-employees-breakdown{grid-template-columns:1fr !important;}}
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}.dash-grid{grid-template-columns:1fr;}.emp-grid{grid-template-columns:repeat(2,1fr);}.purchase-summary{grid-template-columns:repeat(2,1fr);}}
@@ -874,7 +920,7 @@ function getEmployeeName(id){const e=employees.find(e=>e.id===id);return e?e.nam
 
 function buildEquipRow(eq){
   var id=eq.id;
-  return '<tr>'
+  return '<tr onclick="openMobileEquipRow(\'' + id + '\')" style="cursor:pointer">'
     +'<td style="text-align:left"><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
     +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
     +'<td style="text-align:left;font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
@@ -913,6 +959,40 @@ function buildRepairRow(eq){
     +'</tr>';
 }
 
+function openMobileEquipRow(id){
+  if(window.innerWidth>768)return;
+  var eq=equipment.find(function(e){return e.id===id;});
+  if(!eq)return;
+  var existing=document.getElementById('mobile-equip-sheet');if(existing)existing.remove();
+  var emp=employees.find(function(e){return e.id===eq.assignedTo;});
+  var sheet=document.createElement('div');
+  sheet.id='mobile-equip-sheet';
+  sheet.style.cssText='position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:2px solid var(--crimson);z-index:600;padding:20px 18px 32px;animation:slideUp 0.2s ease;max-height:80vh;overflow-y:auto;';
+  sheet.innerHTML=''
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--crimson),var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">'
+    +'<div><div style="font-family:\'Orbitron\',monospace;font-size:13px;font-weight:700;color:#fff;letter-spacing:1px">'+eq.brand+' '+eq.model+'</div>'
+    +'<div style="font-size:11px;color:var(--text3);font-family:\'Share Tech Mono\',monospace;margin-top:3px">'+eq.type+(eq.serial?' \u00b7 '+eq.serial:'')+'</div></div>'
+    +'<button onclick="document.getElementById(\'mobile-equip-sheet\').remove()" style="background:var(--surface2);border:1px solid var(--border);padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;font-family:\'Share Tech Mono\',monospace">\u2715</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
+    +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">CONDITION</div><div style="font-size:13px;color:var(--text)">'+eq.condition+'</div></div>'
+    +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">STATUS</div><div style="font-size:13px;color:var(--text)">'+eq.status+'</div></div>'
+    +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">ASSIGNED TO</div><div style="font-size:13px;color:var(--text)">'+(emp?emp.name:'\u2014')+'</div></div>'
+    +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">LOCATION</div><div style="font-size:13px;color:var(--text)">'+(eq.location||'\u2014')+'</div></div>'
+    +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">WARRANTY</div><div style="font-size:13px;color:'+(eq.warrantyExpiry?warrantyColor(eq.warrantyExpiry):'var(--text3)')+'">'+(eq.warrantyExpiry||'\u2014')+'</div></div>'
+    +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">SERIAL</div><div style="font-size:11px;color:var(--text);font-family:\'Share Tech Mono\',monospace">'+(eq.serial||'\u2014')+'</div></div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    +'<button class="btn btn-outline" onclick="document.getElementById(\'mobile-equip-sheet\').remove();editEquipment(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">EDIT</button>'
+    +'<button class="btn btn-outline" onclick="document.getElementById(\'mobile-equip-sheet\').remove();showEquipmentHistory(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">HISTORY</button>'
+    +'<button class="btn btn-outline" onclick="document.getElementById(\'mobile-equip-sheet\').remove();showQRCode(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">QR CODE</button>'
+    +'<button class="btn btn-danger" onclick="document.getElementById(\'mobile-equip-sheet\').remove();deleteEquipment(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">DELETE</button>'
+    +'</div>';
+  document.body.appendChild(sheet);
+  sheet.addEventListener('click',function(e){e.stopPropagation();});
+  document.addEventListener('click',function removSheet(){document.getElementById('mobile-equip-sheet')?.remove();document.removeEventListener('click',removSheet);});
+}
 function fixActionButtonHeights(){
   document.querySelectorAll('.equip-edit-btn,.equip-hist-btn,.equip-qr-btn,.equip-del-btn').forEach(function(btn){
     btn.style.setProperty('height','30px','important');

@@ -86,7 +86,7 @@ td{padding:11px 16px;color:var(--text);vertical-align:middle;font-size:14px;text
 .badge-blue{background:rgba(0,184,212,0.15);color:var(--teal);}
 .badge-teal{background:rgba(0,184,212,0.15);color:var(--teal);}
 .badge-gray{background:rgba(48,72,88,0.3);color:var(--text2);}
-.actions{display:flex;gap:5px;justify-content:flex-start;}
+.actions{display:flex;gap:5px;justify-content:flex-start;padding:0;margin:0;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(3,5,10,0.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);padding:24px 26px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 0.2s ease;border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));position:relative;}
@@ -931,7 +931,7 @@ function buildEquipRow(eq){
     +'<td style="text-align:left;font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
     +'<td style="text-align:left;color:var(--text2);font-size:12px">'+(eq.location||'&mdash;')+'</td>'
     +'<td style="text-align:center;font-size:11px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
-    +'<td style="text-align:left;white-space:nowrap"><div class="actions">'
+    +'<td style="text-align:left;white-space:nowrap;padding-left:14px"><div class="actions">'
     +'<button class="btn btn-outline btn-sm equip-edit-btn" data-id="'+id+'">Edit</button>'
     +'<button class="btn btn-outline btn-sm equip-hist-btn" data-id="'+id+'">History</button>'
     +'<button class="btn btn-outline btn-sm equip-qr-btn" data-id="'+id+'">QR</button>'

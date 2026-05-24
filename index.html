@@ -142,7 +142,7 @@ select option{background:var(--navy-mid);color:var(--text);}
 .po-card-meta{font-size:10px;color:var(--text3);margin-bottom:12px;font-family:'Share Tech Mono',monospace;}
 .po-items-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px;}
 .po-items-table th{background:var(--surface2);padding:6px 10px;text-align:left;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
-.po-items-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);font-size:12px;}
+.po-items-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);font-size:12px;text-align:left;}
 .po-items-table tr:last-child td{border-bottom:none;}
 .po-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);}
 .po-total{font-weight:800;font-size:15px;color:var(--gold);font-family:'Share Tech Mono',monospace;}
@@ -959,15 +959,15 @@ function getEmployeeName(id){const e=employees.find(e=>e.id===id);return e?e.nam
 function buildEquipRow(eq){
   var id=eq.id;
   return '<tr>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
-    +'<td><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
-    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
-    +'<td>'+conditionBadge(eq.condition)+'</td>'
-    +'<td>'+statusBadge(eq.status)+'</td>'
-    +'<td style="font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
-    +'<td style="color:var(--text2);font-size:12px">'+(eq.location||'&mdash;')+'</td>'
-    +'<td style="font-size:11px;text-align:center">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
-    +'<td><div class="actions">'
+    +'<td style="text-align:left"><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+    +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
+    +'<td style="text-align:left;font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
+    +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
+    +'<td style="text-align:left">'+statusBadge(eq.status)+'</td>'
+    +'<td style="text-align:left;font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
+    +'<td style="text-align:left;color:var(--text2);font-size:12px">'+(eq.location||'&mdash;')+'</td>'
+    +'<td style="text-align:center;font-size:11px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
+    +'<td style="text-align:left"><div class="actions">'
     +'<button class="btn btn-outline btn-sm equip-edit-btn" data-id="'+id+'">Edit</button>'
     +'<button class="btn btn-outline btn-sm equip-hist-btn" data-id="'+id+'">History</button>'
     +'<button class="btn btn-outline btn-sm equip-qr-btn" data-id="'+id+'">QR</button>'
@@ -976,11 +976,11 @@ function buildEquipRow(eq){
 }
 function buildAssignRow(eq){
   return '<tr>'
-    +'<td><span style="font-weight:600">'+getEmployeeName(eq.assignedTo)+'</span></td>'
-    +'<td>'+eq.brand+' '+eq.model+'</td>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
-    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
-    +'<td style="color:var(--text2);font-size:12px;text-align:center">'+(eq.purchaseDate||'&mdash;')+'</td>'
+    +'<td style="text-align:left"><span style="font-weight:600">'+getEmployeeName(eq.assignedTo)+'</span></td>'
+    +'<td style="text-align:left">'+eq.brand+' '+eq.model+'</td>'
+    +'<td style="text-align:left"><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+    +'<td style="text-align:left;font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
+    +'<td style="text-align:center;color:var(--text2);font-size:12px">'+(eq.purchaseDate||'&mdash;')+'</td>'
     +'<td style="text-align:center">'+statusBadge(eq.status)+'</td>'
     +'<td style="text-align:center"><button class="btn btn-outline btn-sm assign-unassign-btn" data-id="'+eq.id+'">Unassign</button></td>'
     +'</tr>';

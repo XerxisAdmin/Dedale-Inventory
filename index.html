@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -224,6 +228,7 @@ body{overflow-x:hidden;}
 /* ── EMPLOYEES MOBILE FIXES ── */
 /* Hide topbar Add Equipment button — accessible from Equipment view */
 .topbar-right .btn.btn-primary{display:none !important;}
+#global-search-wrap{display:none !important;}
 /* Employee directory sticky header — stack title + buttons */
 #view-employees>div[style*="sticky"]>div:first-child{flex-wrap:wrap;gap:6px;}
 #view-employees .section-title{font-size:11px !important;letter-spacing:1.5px;}
@@ -391,6 +396,10 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:12px"><div style="width:2px;height:22px;background:var(--crimson);box-shadow:0 0 8px var(--crimson)"></div><div><div class="topbar-title" id="page-title">TACTICAL OVERVIEW</div><div style="font-size:8px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:1.5px;margin-top:2px">DEDALE INTELLIGENCE // IT OPERATIONS</div></div></div>
     <div class="topbar-right">
+      <div id="global-search-wrap" style="position:relative;flex:1;max-width:260px;">
+        <input type="text" id="global-search" autocomplete="off" placeholder="&#128269; Search everything..." oninput="globalSearch(this.value)" onfocus="globalSearch(this.value)" onblur="setTimeout(function(){var r=document.getElementById('global-search-results');if(r)r.style.display='none';},200)" style="width:100%;background:var(--navy-mid);border:1px solid var(--border);color:var(--text);padding:7px 12px;font-size:11px;font-family:'Share Tech Mono',monospace;outline:none;box-sizing:border-box;">
+        <div id="global-search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);z-index:500;max-height:320px;overflow-y:auto;margin-top:2px;box-shadow:0 8px 24px rgba(0,0,0,0.4);"></div>
+      </div>
       <span id="sync-status" style="font-size:12px;font-family:'Share Tech Mono',monospace;color:var(--text3)"></span>
       <div class="user-chip" id="user-chip" style="display:none"><div class="user-avatar" id="user-avatar">?</div><div><div class="user-name" id="user-display-name">User</div><div class="user-email" id="user-display-email"></div></div></div>
       <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add Equipment</button>
@@ -417,6 +426,10 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <div class="dash-card"><div class="dash-card-title">Status Overview</div><div id="status-overview"></div></div>
         <div class="dash-card"><div class="dash-card-title">Items Requiring Attention</div><div id="attention-list"></div></div>
         <div class="dash-card" style="grid-column:1/-1"><div class="dash-card-title">Employees Without a Laptop</div><div id="no-laptop-list"></div></div>
+        <div class="dash-card"><div class="dash-card-title">Equipment by Type</div><div style="position:relative;height:200px;"><canvas id="chart-type"></canvas></div></div>
+        <div class="dash-card"><div class="dash-card-title">Equipment by Status</div><div style="position:relative;height:200px;"><canvas id="chart-status"></canvas></div></div>
+        <div class="dash-card"><div class="dash-card-title">Equipment by Site</div><div style="position:relative;height:200px;"><canvas id="chart-site"></canvas></div></div>
+        <div class="dash-card"><div class="dash-card-title">&#9888; Warranty Alerts</div><div id="warranty-alerts"></div></div>
       </div>
     </div>
     <div class="view" id="view-equipment" style="display:flex;flex-direction:column;min-height:0;">
@@ -928,6 +941,63 @@ document.addEventListener('change',function(e){
   }
 });
 
+
+/* ── CHART INSTANCES ── */
+var _chartType=null,_chartStatus=null,_chartSite=null;
+var _chartDefaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9aa2cc',font:{size:11},padding:10}}},scales:{x:{ticks:{color:'#9aa2cc',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#9aa2cc',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}};
+
+function renderCharts(){
+  if(typeof Chart==='undefined')return;
+  Chart.defaults.color='#9aa2cc';
+  /* Equipment by Type — donut */
+  var typeData={};equipment.forEach(function(e){typeData[e.type]=(typeData[e.type]||0)+1;});
+  var tLabels=Object.keys(typeData),tVals=tLabels.map(function(k){return typeData[k];});
+  var tColors=['#cc2244','#d4a830','#4488ff','#22cc88','#8866ff','#ff6633','#ff44aa'];
+  var ctxT=document.getElementById('chart-type');
+  if(ctxT){if(_chartType)_chartType.destroy();_chartType=new Chart(ctxT,{type:'doughnut',data:{labels:tLabels,datasets:[{data:tVals,backgroundColor:tColors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#9aa2cc',font:{size:11},padding:8,boxWidth:12}}}}});}
+  /* Equipment by Status — bar */
+  var statuses=['In Use','In Stock','Under Repair','Retired'];
+  var sVals=statuses.map(function(s){return equipment.filter(function(e){return e.status===s;}).length;});
+  var sColors=['#22cc88','#4488ff','#d4a830','#555577'];
+  var ctxS=document.getElementById('chart-status');
+  if(ctxS){if(_chartStatus)_chartStatus.destroy();_chartStatus=new Chart(ctxS,{type:'bar',data:{labels:statuses,datasets:[{data:sVals,backgroundColor:sColors,borderWidth:0,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9aa2cc',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#9aa2cc',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}}});}
+  /* Equipment by Site — bar */
+  var sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'];
+  var siVals=sites.map(function(s){return equipment.filter(function(e){return e.location===s;}).length;});
+  var siColors=['#cc2244','#d4a830','#4488ff','#8866ff','#22cc88'];
+  var ctxSi=document.getElementById('chart-site');
+  if(ctxSi){if(_chartSite)_chartSite.destroy();_chartSite=new Chart(ctxSi,{type:'bar',data:{labels:sites,datasets:[{data:siVals,backgroundColor:siColors,borderWidth:0,borderRadius:4,label:'Equipment'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9aa2cc',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#9aa2cc',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}}});}
+}
+
+function renderWarrantyAlerts(){
+  var el=document.getElementById('warranty-alerts');if(!el)return;
+  var today=new Date();today.setHours(0,0,0,0);
+  var soon=new Date(today.getTime()+30*24*60*60*1000);
+  var expired=equipment.filter(function(e){if(!e.warrantyExpiry)return false;return new Date(e.warrantyExpiry)<today;});
+  var expiring=equipment.filter(function(e){if(!e.warrantyExpiry)return false;var d=new Date(e.warrantyExpiry);return d>=today&&d<=soon;});
+  if(expired.length===0&&expiring.length===0){el.innerHTML='<div class="empty-state"><p>No warranty alerts \u2014 all good</p></div>';return;}
+  var html='';
+  expired.forEach(function(e){html+='<div class="recent-row" style="border-left:3px solid var(--crimson);padding-left:10px;margin-bottom:6px"><span style="font-size:12px">'+e.brand+' '+e.model+' <span style="color:var(--text3);font-size:10px">('+e.type+')</span></span><span style="color:var(--crimson);font-size:10px;font-family:\'Share Tech Mono\',monospace">EXPIRED '+e.warrantyExpiry+'</span></div>';});
+  expiring.forEach(function(e){html+='<div class="recent-row" style="border-left:3px solid var(--gold);padding-left:10px;margin-bottom:6px"><span style="font-size:12px">'+e.brand+' '+e.model+' <span style="color:var(--text3);font-size:10px">('+e.type+')</span></span><span style="color:var(--gold);font-size:10px;font-family:\'Share Tech Mono\',monospace">EXPIRING '+e.warrantyExpiry+'</span></div>';});
+  el.innerHTML=html;
+}
+
+function globalSearch(q){
+  var el=document.getElementById('global-search-results');if(!el)return;
+  q=(q||'').trim().toLowerCase();
+  if(q.length<2){el.style.display='none';return;}
+  var results=[];
+  /* Equipment */
+  equipment.filter(function(e){return(e.brand+' '+e.model+' '+(e.serial||'')+' '+e.type).toLowerCase().includes(q);}).slice(0,4).forEach(function(e){results.push({cat:'EQUIPMENT',catColor:'#4488ff',label:e.brand+' '+e.model,sub:e.type+' \u00b7 '+(e.serial||'No serial'),action:'showView(\'view-equipment\')'});});
+  /* Employees */
+  employees.filter(function(e){return(e.name+' '+(e.role||'')+' '+(e.email||'')+' '+(e.empid||'')).toLowerCase().includes(q);}).slice(0,4).forEach(function(e){results.push({cat:'EMPLOYEE',catColor:'#d4a830',label:e.name,sub:(e.role||'No role')+' \u00b7 '+e.site,action:'showView(\'view-employees\')'});});
+  /* Purchase Orders */
+  purchaseOrders.filter(function(p){return(p.title+' '+(p.requester||'')+' '+p.status).toLowerCase().includes(q);}).slice(0,3).forEach(function(p){results.push({cat:'PO',catColor:'#cc2244',label:p.title,sub:(p.requester||'')+' \u00b7 '+p.status,action:'showView(\'view-purchase-orders\')'});});
+  if(results.length===0){el.innerHTML='<div style="padding:12px 14px;font-size:12px;color:var(--text3);font-family:\'Share Tech Mono\',monospace">No results for "'+q+'"</div>';el.style.display='block';return;}
+  el.innerHTML=results.map(function(r){return'<div onclick="'+r.action+';document.getElementById(\'global-search\').value=\'\';document.getElementById(\'global-search-results\').style.display=\'none\';" style="padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'"><div><div style="font-size:12px;color:var(--text);font-weight:600">'+r.label+'</div><div style="font-size:10px;color:var(--text3);margin-top:2px">'+r.sub+'</div></div><span style="font-size:9px;color:'+r.catColor+';font-family:\'Share Tech Mono\',monospace;letter-spacing:1px;flex-shrink:0;margin-left:8px">'+r.cat+'</span></div>';}).join('');
+  el.style.display='block';
+}
+
 function renderDashboard(){
   const total=equipment.length,inUse=equipment.filter(e=>e.status==='In Use').length,inStock=equipment.filter(e=>e.status==='In Stock').length,issues=equipment.filter(e=>e.status==='Under Repair'||e.condition==='Damaged').length;
   document.getElementById('stat-total').textContent=total;document.getElementById('stat-inuse').textContent=inUse;document.getElementById('stat-instock').textContent=inStock;document.getElementById('stat-issues').textContent=issues;
@@ -960,6 +1030,8 @@ function renderDashboard(){
     }
   }
   document.getElementById('stat-employees').textContent=employees.length;
+  renderWarrantyAlerts();
+  setTimeout(renderCharts,50);
   const _sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'];
   const _siteColors={'PH - Ceb':'#cc2244','PH - MNL':'#d4a830','PH - DVO':'#4488ff','PAR':'#8866ff','VN':'#22cc88'};
   const _siteBg={'PH - Ceb':'rgba(204,34,68,0.08)','PH - MNL':'rgba(212,168,48,0.08)','PH - DVO':'rgba(68,136,255,0.08)','PAR':'rgba(136,102,255,0.08)','VN':'rgba(34,204,136,0.08)'};
@@ -1508,6 +1580,7 @@ function savePO(){
   if(!requester)return alert('Please select your name from the employee directory.');
   if(!justification)return alert('Please select a justification reason.');
   if(items.length===0)return alert('Please add at least one item with a description.');
+  if(items.some(function(i){return i.price<=0;}))return alert('Please enter a price greater than ₱0 for all items.');
   const total=items.reduce((s,i)=>s+i.qty*i.price,0);
   const po={id:genId(),title,requester,justification,forEmployee,urgency,items,total,status:'Pending',createdAt:new Date().toISOString(),sentAt:null,approvalSent:false};
   purchaseOrders.unshift(po);logActivity('Purchase request "'+title+'" submitted by '+requester);

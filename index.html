@@ -542,7 +542,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
       <div id="analytics-content"></div>
     </div>
-    <div class="view" id="view-new-hire" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:20px"><span class="section-title">New Hire Form</span></div><div id="nh-main-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1280px;"><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:16px">Personal Information</div><div class="form-grid"><div class="form-group full"><label>Full Name *</label><input id="nh-name" autocomplete="new-password" placeholder="First Last"></div><div class="form-group"><label>Employee ID</label><input id="nh-empid" autocomplete="new-password" placeholder="e.g. C2024-0001"></div><div class="form-group"><label>Role / Position</label><input id="nh-role" autocomplete="new-password" placeholder="e.g. Analyst"></div><div class="form-group"><label>Email Address *</label><input id="nh-email" autocomplete="new-password" type="email" placeholder="name@dedale.com"></div><div class="form-group"><label>Site *</label><select id="nh-site"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div><div class="form-group"><label>Start Date *</label><input id="nh-start-date" autocomplete="new-password" type="date"></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">ID Photo / Document</div><div style="font-size:11px;color:var(--text3);margin-bottom:12px">Upload a photo or scanned ID. Image will be included in the notification email.</div><div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;"><div><input autocomplete="new-password" type="file" id="nh-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleNHPhotoUpload(event)"><button class="btn btn-outline btn-sm" onclick="document.getElementById('nh-photo-input').click()" style="margin-bottom:10px;">📷 Upload Photo / ID</button></div><div id="nh-photo-preview-wrap" style="display:none"><img id="nh-photo-preview" style="max-width:160px;max-height:160px;border:1px solid var(--border);display:block;"><button onclick="clearNHPhoto()" style="background:transparent;border:none;color:var(--crimson);font-size:11px;cursor:pointer;font-family:Share Tech Mono,monospace;margin-top:5px;">✕ Remove</button></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">Signature *</div><div style="font-size:11px;color:var(--text3);margin-bottom:10px">Draw your signature below using your finger (mobile) or mouse.</div><div style="border:1px solid var(--border);background:var(--navy-mid);margin-bottom:8px;position:relative;touch-action:none;" ontouchstart="event.stopPropagation()"><canvas id="nh-signature-canvas" tabindex="0" style="display:block;width:100%;height:160px;cursor:crosshair;touch-action:none;outline:none;filter:invert(1);"></canvas><div id="nh-sig-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace;pointer-events:none;letter-spacing:1px;">Sign here</div></div><button class="btn btn-outline btn-sm" onclick="clearNHSignature()">Clear Signature</button></div></div><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:4px">Equipment to Assign</div><div style="font-size:11px;color:var(--text3);margin-bottom:14px">Items will be added to the Equipment Registry and assigned to this employee automatically.</div><div id="nh-equip-container"></div><button class="btn btn-outline btn-sm" onclick="addNHEquipRow()" style="margin-top:4px;">+ Add Item</button></div></div></div><div id="nh-action-btns" style="display:flex;gap:10px;justify-content:center;padding-bottom:30px;max-width:1280px;margin-top:4px;"><button class="btn btn-outline" onclick="resetNewHireForm()">Clear Form</button><button class="btn btn-primary" onclick="saveNewHire()">Submit New Hire</button></div></div>
+    <div class="view" id="view-new-hire" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:20px"><span class="section-title">New Hire Form</span></div><div id="nh-main-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1280px;"><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:16px">Personal Information</div><div class="form-grid"><div class="form-group full"><label>Full Name *</label><input id="nh-name" autocomplete="new-password" placeholder="First Last"></div><div class="form-group"><label>Employee ID</label><input id="nh-empid" autocomplete="new-password" placeholder="e.g. C2024-0001"></div><div class="form-group"><label>Role / Position</label><input id="nh-role" autocomplete="new-password" placeholder="e.g. Analyst"></div><div class="form-group"><label>Email Address *</label><input id="nh-email" autocomplete="new-password" type="email" placeholder="name@dedale.com"></div><div class="form-group"><label>Site *</label><select id="nh-site"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div><div class="form-group"><label>Start Date *</label><input id="nh-start-date" autocomplete="new-password" type="date"></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">ID Photo / Document</div><div style="font-size:11px;color:var(--text3);margin-bottom:12px">Upload a photo or scanned ID. Image will be included in the notification email.</div><div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;"><div><input autocomplete="new-password" type="file" id="nh-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleNHPhotoUpload(event)"><button class="btn btn-outline btn-sm" onclick="document.getElementById('nh-photo-input').click()" style="margin-bottom:10px;">📷 Upload Photo / ID</button></div><div id="nh-photo-preview-wrap" style="display:none"><img id="nh-photo-preview" style="max-width:160px;max-height:160px;border:1px solid var(--border);display:block;"><button onclick="clearNHPhoto()" style="background:transparent;border:none;color:var(--crimson);font-size:11px;cursor:pointer;font-family:Share Tech Mono,monospace;margin-top:5px;">✕ Remove</button></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">Signature *</div><div style="font-size:11px;color:var(--text3);margin-bottom:10px">Draw your signature below using your finger (mobile) or mouse.</div><div style="border:1px solid var(--border);background:var(--navy-mid);margin-bottom:8px;position:relative;touch-action:none;" ontouchstart="event.stopPropagation()"><canvas id="nh-signature-canvas" tabindex="0" style="display:block;width:100%;height:160px;cursor:crosshair;touch-action:none;outline:none;"></canvas><div id="nh-sig-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace;pointer-events:none;letter-spacing:1px;">Sign here</div></div><button class="btn btn-outline btn-sm" onclick="clearNHSignature()">Clear Signature</button></div></div><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:4px">Equipment to Assign</div><div style="font-size:11px;color:var(--text3);margin-bottom:14px">Items will be added to the Equipment Registry and assigned to this employee automatically.</div><div id="nh-equip-container"></div><button class="btn btn-outline btn-sm" onclick="addNHEquipRow()" style="margin-top:4px;">+ Add Item</button></div></div></div><div id="nh-action-btns" style="display:flex;gap:10px;justify-content:center;padding-bottom:30px;max-width:1280px;margin-top:4px;"><button class="btn btn-outline" onclick="resetNewHireForm()">Clear Form</button><button class="btn btn-primary" onclick="saveNewHire()">Submit New Hire</button></div></div>
 <div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;min-height:0;">
       <div style="background:var(--bg);padding:16px 30px 12px;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -1050,13 +1050,10 @@ function initNHSignature(){
   canvas.width=rect.width||560;
   canvas.height=160;
   _nhSigCtx=canvas.getContext('2d');
-  _nhSigCtx.strokeStyle='#000000';
-  _nhSigCtx.lineWidth=2.5;
+  _nhSigCtx.strokeStyle='#e4e8ff';
+  _nhSigCtx.lineWidth=2;
   _nhSigCtx.lineCap='round';
   _nhSigCtx.lineJoin='round';
-  /* White background so email gets black-on-white natively */
-  _nhSigCtx.fillStyle='#ffffff';
-  _nhSigCtx.fillRect(0,0,canvas.width,canvas.height);
   /* Mouse events */
   canvas.addEventListener('mousedown',nhSigStart);
   canvas.addEventListener('mousemove',nhSigMove);
@@ -1099,8 +1096,6 @@ function clearNHSignature(){
   if(!_nhSigCtx)return;
   var canvas=document.getElementById('nh-signature-canvas');
   _nhSigCtx.clearRect(0,0,canvas.width,canvas.height);
-  _nhSigCtx.fillStyle='#ffffff';
-  _nhSigCtx.fillRect(0,0,canvas.width,canvas.height);
   _nhSigHasContent=false;
   var ph=document.getElementById('nh-sig-placeholder');
   if(ph)ph.style.display='';
@@ -1183,7 +1178,7 @@ function addNHEquipRow(){
   container.appendChild(row);
 }
 var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo']};
-var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','15IRH10 (Type 83K1)'],
   Jabra:['Evolve2 75','Evolve2 55','Engage 55'],Rapoo:['MT750S','MT550','M500'],'N-Vision':[]};
 function updateNHEqBrands(typeSelect){
   var row=typeSelect.closest('.nh-equip-row'),type=typeSelect.value;
@@ -1240,7 +1235,7 @@ function saveNewHire(){
 
   var canvas=document.getElementById('nh-signature-canvas');
   var sigData=canvas?canvas.toDataURL('image/png'):null;
-  var sigDataEmail=sigData; /* already black-on-white */
+  var sigDataEmail=canvas?getNHSigForEmail(canvas):null;
 
   var newEmp={id:genId(),empid:empid,name:name,role:role,email:email,site:site,
     startDate:startDate,signature:sigData,photo:_nhPhotoData||null,
@@ -1328,53 +1323,53 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
   var startFormatted=emp.startDate?new Date(emp.startDate+'T00:00:00').toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}):'';
   var submittedAt=new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
   var equipSection=equipItems&&equipItems.length>0
-    ?'<tr><td style="padding:24px 32px 0;"><div style="font-size:13px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f1f5f9">Equipment Assigned</div>'
+    ?'<tr><td style="padding:20px 32px;border-bottom:1px solid #f0f0f0;"><div style="font-size:11px;font-weight:700;color:#cc2244;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f1f5f9">Equipment Assigned</div>'
      +'<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e2e8f0;border-radius:4px;overflow:hidden">'
-     +'<tr style="background:#f8fafc"><th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0;text-transform:uppercase;letter-spacing:0.5px">Type</th>'
+     +'<tr style="background:#fafafa"><th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#71717a;font-weight:600;border-bottom:1px solid #e4e4e7;text-transform:uppercase;letter-spacing:0.5px">Type</th>'
      +'<th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0;text-transform:uppercase;letter-spacing:0.5px">Brand / Model</th>'
      +'<th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0;text-transform:uppercase;letter-spacing:0.5px">Serial</th>'
      +'<th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#64748b;font-weight:600;border-bottom:1px solid #e2e8f0;text-transform:uppercase;letter-spacing:0.5px">Condition</th></tr>'
      +equipRows+'</table></td></tr>'
     :'';
   var htmlBody='<!DOCTYPE html><html><head><meta charset="UTF-8"></head>'
-    +'<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,sans-serif;">'
-    +'<table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:32px 16px;">'
+    +'<body style="margin:0;padding:0;background:#f4f4f5;font-family:Arial,sans-serif;">'
+    +'<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:28px 12px;">'
     +'<tr><td align="center">'
-    +'<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">'
-    /* Header */
-    +'<tr><td style="background:#0f172a;padding:28px 32px;border-bottom:3px solid #cc2244;">'+'<table width="100%" cellpadding="0" cellspacing="0"><tr>'+'<td style="border-left:4px solid #cc2244;padding-left:16px;">'+'<div style="font-size:11px;font-weight:600;color:#475569;letter-spacing:3px;text-transform:uppercase;font-family:Arial,sans-serif;margin-bottom:6px;">Dedale Intelligence &mdash; IT Asset Management</div>'+'<div style="font-size:21px;font-weight:700;color:#f1f5f9;font-family:Arial,sans-serif;line-height:1.2;">New Hire Notification</div>'+'</td>'+'<td align="right" style="vertical-align:bottom;">'+'<div style="font-size:11px;color:#334155;font-family:Arial,sans-serif;">INTEL-SYS v1.0</div>'+'</td></tr></table></td></tr>'
-/* Employee banner */
-    +'<tr><td style="background:#f8fafc;padding:20px 32px;border-bottom:1px solid #e2e8f0;">'
+    +'<table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;background:#ffffff;border-radius:2px;border:1px solid #e4e4e7;">'
+    +'<tr><td style="background:#cc2244;height:4px;line-height:4px;font-size:4px;">&nbsp;</td></tr>'
+    +'<tr><td style="padding:22px 32px 18px;border-bottom:1px solid #f0f0f0;">'
     +'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
-    +'<td style="vertical-align:middle;width:130px;">'+photoHtml+'</td>'
-    +'<td style="padding-left:18px;vertical-align:middle;">'
-    +'<div style="font-size:22px;font-weight:700;color:#111827;margin-bottom:4px;font-family:Arial,sans-serif;">'+emp.name+'</div>'
-    +'<div style="font-size:14px;color:#6b7280;margin-bottom:10px;font-family:Arial,sans-serif;">'+(emp.role||'<em>Role not specified</em>')+'</div>'
-    +'<span style="background:#eff6ff;color:#1d4ed8;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:Arial,sans-serif;">'+emp.site+'</span>'
-    +'</td></tr></table></td></tr>'
-    /* Employee details */
-    +'<tr><td style="padding:24px 32px;">'
-    +'<div style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;font-family:Arial,sans-serif;">Employee Details</div>'
+    +'<td><div style="font-size:13px;font-weight:700;color:#18181b;letter-spacing:1px;font-family:Arial,sans-serif;">DEDALE INTELLIGENCE</div>'
+    +'<div style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;margin-top:2px;">IT Asset Management System</div></td>'
+    +'<td align="right"><div style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;">New Hire Notification</div></td>'
+    +'</tr></table></td></tr>'
+    +'<tr><td style="padding:22px 32px;border-bottom:1px solid #f0f0f0;">'
+    +'<table cellpadding="0" cellspacing="0" width="100%"><tr>'
+    +'<td style="vertical-align:middle;">'
+    +'<div style="font-size:22px;font-weight:700;color:#09090b;font-family:Arial,sans-serif;margin-bottom:4px;">'+emp.name+'</div>'
+    +'<div style="font-size:13px;color:#71717a;font-family:Arial,sans-serif;">'+(emp.role||'Role not specified')+' &bull; '+emp.site+'</div>'
+    +'</td>'
+    +'<td align="right" style="vertical-align:middle;">'+photoHtml+'</td>'
+    +'</tr></table></td></tr>'
+    +'<tr><td style="padding:20px 32px;border-bottom:1px solid #f0f0f0;">'
+    +'<div style="font-size:11px;font-weight:700;color:#cc2244;text-transform:uppercase;letter-spacing:1.5px;font-family:Arial,sans-serif;margin-bottom:12px;">Employee Details</div>'
     +'<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">'
-    +'<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;width:130px;font-family:Arial,sans-serif;">Employee ID</td>'
-    +'<td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#111827;font-weight:600;font-family:Arial,sans-serif;">'+(emp.empid||'<em style="color:#9ca3af;font-weight:400;">Not provided</em>')+'</td></tr>'
-    +'<tr><td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;font-family:Arial,sans-serif;">Email</td>'
-    +'<td style="padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#1d4ed8;font-family:Arial,sans-serif;">'+emp.email+'</td></tr>'
-    +'<tr><td style="padding:9px 0;font-size:12px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;font-family:Arial,sans-serif;">Start Date</td>'
-    +'<td style="padding:9px 0;font-size:14px;color:#111827;font-weight:600;font-family:Arial,sans-serif;">'+startFormatted+'</td></tr>'
+    +'<tr style="border-top:1px solid #f4f4f5;"><td style="padding:9px 0;font-size:12px;color:#71717a;font-family:Arial,sans-serif;width:130px;font-weight:600;">Employee ID</td>'
+    +'<td style="padding:9px 0;font-size:13px;color:#09090b;font-family:Arial,sans-serif;font-weight:600;">'+(emp.empid||'<span style="color:#a1a1aa;font-weight:400;font-style:italic;">Not provided</span>')+'</td></tr>'
+    +'<tr style="border-top:1px solid #f4f4f5;"><td style="padding:9px 0;font-size:12px;color:#71717a;font-family:Arial,sans-serif;font-weight:600;">Email</td>'
+    +'<td style="padding:9px 0;font-size:13px;color:#2563eb;font-family:Arial,sans-serif;">'+emp.email+'</td></tr>'
+    +'<tr style="border-top:1px solid #f4f4f5;"><td style="padding:9px 0;font-size:12px;color:#71717a;font-family:Arial,sans-serif;font-weight:600;">Start Date</td>'
+    +'<td style="padding:9px 0;font-size:13px;color:#09090b;font-family:Arial,sans-serif;font-weight:600;">'+startFormatted+'</td></tr>'
     +'</table></td></tr>'
-    /* Equipment */
     +equipSection
-    /* Signature */
-    +'<tr><td style="padding:24px 32px;">'
-    +'<div style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #f1f5f9;font-family:Arial,sans-serif;">Employee Signature</div>'
-    +'<div style="background:#f8fafc;border:1px solid #e2e8f0;padding:16px;border-radius:4px;text-align:center;">'+sigHtml+'</div>'
+    +'<tr><td style="padding:20px 32px;border-bottom:1px solid #f0f0f0;">'
+    +'<div style="font-size:11px;font-weight:700;color:#cc2244;text-transform:uppercase;letter-spacing:1.5px;font-family:Arial,sans-serif;margin-bottom:12px;">Employee Signature</div>'
+    +'<div style="background:#fafafa;border:1px solid #e4e4e7;padding:16px;text-align:center;">'+sigHtml+'</div>'
     +'</td></tr>'
-    /* Footer */
-    +'<tr><td style="background:#f8fafc;padding:14px 32px;border-top:1px solid #e2e8f0;">'
+    +'<tr><td style="padding:14px 32px;">'
     +'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
-    +'<td><span style="font-size:11px;color:#9ca3af;font-family:Arial,sans-serif;">Submitted via INTEL-SYS &middot; '+submittedAt+'</span></td>'
-    +'<td align="right"><span style="font-size:11px;color:#9ca3af;font-family:Arial,sans-serif;">Dedale Intelligence &copy; 2026</span></td>'
+    +'<td><span style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;">INTEL-SYS &bull; '+submittedAt+'</span></td>'
+    +'<td align="right"><span style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;">Dedale Intelligence</span></td>'
     +'</tr></table></td></tr>'
     +'</table></td></tr></table></body></html>';
 
@@ -1773,7 +1768,7 @@ function buildAssignRow(eq){
     +'<td style="text-align:left">'+eq.brand+' '+eq.model+'</td>'
     +'<td style="text-align:left"><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
     +'<td style="text-align:left;font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
-    +(function(){var assignedEntry=eq.history&&eq.history.slice().reverse().find(function(h){return h.action==='assigned';});var d=assignedEntry?assignedEntry.date:null;if(!d)return'<td style="text-align:center;color:var(--text2);font-size:12px">&mdash;</td>';var dt=new Date(d);var formatted=dt.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});return'<td style="text-align:center;color:var(--text2);font-size:12px">'+formatted+'</td>';})()
+    +'<td style="text-align:center;color:var(--text2);font-size:12px">'+(eq.purchaseDate||'&mdash;')+'</td>'
     +'<td style="text-align:center">'+statusBadge(eq.status)+'</td>'
     +'<td style="text-align:center"><button class="btn btn-outline btn-sm assign-unassign-btn" data-id="'+eq.id+'">Unassign</button></td>'
     +'</tr>';
@@ -2468,10 +2463,7 @@ function showEquipmentDetail(id){
 }
 
 function renderAnalytics(){
-  const total=equipment.length;
-  const pricedItems=equipment.filter(function(e){return e.price&&e.price>0;});
-  const totalCost=pricedItems.reduce(function(s,e){return s+(e.price||0);},0);
-  const unpricedCount=total-pricedItems.length;
+  const total=equipment.length,totalCost=equipment.reduce((s,e)=>s+(e.price||0),0);
   const sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'],types=['Laptop','Monitor','Headset','Mouse'];
   const siteColors={'PH - Ceb':'#cc2244','PH - MNL':'#d4a830','PH - DVO':'#4488ff','PAR':'#8866ff','VN':'#22cc88'};
   const today=new Date(),soon=new Date();soon.setDate(today.getDate()+30);
@@ -2483,8 +2475,8 @@ function renderAnalytics(){
   const warrantyExpired=equipment.filter(e=>{const d=warrantyToDate(e.warrantyExpiry);return d&&d<today;});
   const warrantySoon=equipment.filter(e=>{const d=warrantyToDate(e.warrantyExpiry);return d&&d>=today&&d<=soon;});
   document.getElementById('analytics-content').innerHTML='<div class="stats-grid" style="margin-bottom:20px">'
-    +'<div class="stat-card"><div class="stat-label">Total Asset Value</div><div class="stat-value" style="font-size:28px;font-family:\'Share Tech Mono\',monospace">\u20b1'+totalCost.toLocaleString()+'</div><div class="stat-sub">'+pricedItems.length+' of '+total+' items with known pricing</div></div>'
-    +'<div class="stat-card"><div class="stat-label">Avg Cost Per Item</div><div class="stat-value" style="font-size:28px;font-family:\'Share Tech Mono\',monospace">\u20b1'+(pricedItems.length?Math.round(totalCost/pricedItems.length).toLocaleString():0)+'</div><div class="stat-sub">'+(unpricedCount>0?unpricedCount+' item'+(unpricedCount>1?'s':'')+' excluded (no price)':'Based on all items')+'</div></div>'
+    +'<div class="stat-card"><div class="stat-label">Total Asset Value</div><div class="stat-value" style="font-size:28px;font-family:\'Share Tech Mono\',monospace">\u20b1'+totalCost.toLocaleString()+'</div><div class="stat-sub">All equipment combined</div></div>'
+    +'<div class="stat-card"><div class="stat-label">Avg Cost Per Item</div><div class="stat-value" style="font-size:28px;font-family:\'Share Tech Mono\',monospace">\u20b1'+(total?Math.round(totalCost/total).toLocaleString():0)+'</div></div>'
     +'<div class="stat-card" style="cursor:pointer" onclick="showAgingList()" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'"><div class="stat-label">Aging Equipment</div><div class="stat-value" style="color:var(--gold)">'+agingItems.length+'</div><div class="stat-sub">Over 3 years old</div></div>'
     +'<div class="stat-card" style="cursor:pointer" onclick="showWarrantyList()" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'"><div class="stat-label">Warranty Issues</div><div class="stat-value" style="color:var(--crimson)">'+(warrantyExpired.length+warrantySoon.length)+'</div><div class="stat-sub">'+warrantyExpired.length+' expired \u00b7 '+warrantySoon.length+' expiring soon</div></div>'
     +'</div><div class="dash-grid">'

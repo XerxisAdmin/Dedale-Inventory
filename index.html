@@ -159,7 +159,7 @@ select option{background:var(--navy-mid);color:var(--text);}
 .site-pill{display:inline-block;background:rgba(204,34,68,0.15);color:var(--crimson);padding:3px 10px;font-size:10px;font-family:'Share Tech Mono',monospace;letter-spacing:1.5px;clip-path:polygon(3px 0,100% 0,calc(100% - 3px) 100%,0 100%);}
 #mobile-menu-btn{display:none;position:fixed;top:14px;left:14px;z-index:300;width:40px;height:40px;background:var(--crimson);border:none;cursor:pointer;align-items:center;justify-content:center;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));}
 #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99;backdrop-filter:blur(2px);}
-@media(max-width:768px){
+@media(max-width:768px){#view-new-hire>div+div{grid-template-columns:1fr !important;}#view-new-hire{padding:14px 14px 20px !important;}.nh-equip-row .form-grid{grid-template-columns:1fr !important;}#view-new-hire>div:last-child{flex-direction:column !important;}#view-new-hire>div:last-child .btn{width:100% !important;justify-content:center !important;}#view-new-hire>div+div,#view-new-hire>div:last-child{max-width:100% !important;}#nh-photo-input+button{width:100% !important;}
 #mobile-menu-btn{display:flex;}
 #sidebar-overlay.open{display:block;}
 .sidebar{transform:translateX(-100%);transition:transform 0.25s ease;z-index:200;}
@@ -542,7 +542,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
       <div id="analytics-content"></div>
     </div>
-    <div class="view" id="view-new-hire" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:20px"><span class="section-title">New Hire Form</span></div><div style="max-width:720px;"><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:16px">Personal Information</div><div class="form-grid"><div class="form-group full"><label>Full Name *</label><input id="nh-name" autocomplete="new-password" placeholder="First Last"></div><div class="form-group"><label>Employee ID</label><input id="nh-empid" autocomplete="new-password" placeholder="e.g. C2024-0001"></div><div class="form-group"><label>Role / Position</label><input id="nh-role" autocomplete="new-password" placeholder="e.g. Analyst"></div><div class="form-group"><label>Email Address *</label><input id="nh-email" autocomplete="new-password" type="email" placeholder="name@dedale.com"></div><div class="form-group"><label>Site *</label><select id="nh-site"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div><div class="form-group"><label>Start Date *</label><input id="nh-start-date" autocomplete="new-password" type="date"></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">ID Photo / Document</div><div style="font-size:11px;color:var(--text3);margin-bottom:12px">Upload a photo or scanned ID. Image will be included in the notification email.</div><div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;"><div><input autocomplete="new-password" type="file" id="nh-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleNHPhotoUpload(event)"><button class="btn btn-outline btn-sm" onclick="document.getElementById('nh-photo-input').click()" style="margin-bottom:10px;">📷 Upload Photo / ID</button></div><div id="nh-photo-preview-wrap" style="display:none"><img id="nh-photo-preview" style="max-width:160px;max-height:160px;border:1px solid var(--border);display:block;"><button onclick="clearNHPhoto()" style="background:transparent;border:none;color:var(--crimson);font-size:11px;cursor:pointer;font-family:Share Tech Mono,monospace;margin-top:5px;">✕ Remove</button></div></div></div><div class="dash-card" style="margin-bottom:20px;"><div class="dash-card-title" style="margin-bottom:12px">Signature *</div><div style="font-size:11px;color:var(--text3);margin-bottom:10px">Draw your signature below using your finger (mobile) or mouse.</div><div style="border:1px solid var(--border);background:var(--navy-mid);margin-bottom:8px;position:relative;touch-action:none;" ontouchstart="event.stopPropagation()"><canvas id="nh-signature-canvas" tabindex="0" style="display:block;width:100%;height:160px;cursor:crosshair;touch-action:none;outline:none;"></canvas><div id="nh-sig-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace;pointer-events:none;letter-spacing:1px;">Sign here</div></div><button class="btn btn-outline btn-sm" onclick="clearNHSignature()">Clear Signature</button></div><div style="display:flex;gap:10px;justify-content:flex-end;padding-bottom:30px;"><button class="btn btn-outline" onclick="resetNewHireForm()">Clear Form</button><button class="btn btn-primary" onclick="saveNewHire()">Submit New Hire</button></div></div></div>
+    <div class="view" id="view-new-hire" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:20px"><span class="section-title">New Hire Form</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1280px;"><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:16px">Personal Information</div><div class="form-grid"><div class="form-group full"><label>Full Name *</label><input id="nh-name" autocomplete="new-password" placeholder="First Last"></div><div class="form-group"><label>Employee ID</label><input id="nh-empid" autocomplete="new-password" placeholder="e.g. C2024-0001"></div><div class="form-group"><label>Role / Position</label><input id="nh-role" autocomplete="new-password" placeholder="e.g. Analyst"></div><div class="form-group"><label>Email Address *</label><input id="nh-email" autocomplete="new-password" type="email" placeholder="name@dedale.com"></div><div class="form-group"><label>Site *</label><select id="nh-site"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div><div class="form-group"><label>Start Date *</label><input id="nh-start-date" autocomplete="new-password" type="date"></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">ID Photo / Document</div><div style="font-size:11px;color:var(--text3);margin-bottom:12px">Upload a photo or scanned ID. Image will be included in the notification email.</div><div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;"><div><input autocomplete="new-password" type="file" id="nh-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleNHPhotoUpload(event)"><button class="btn btn-outline btn-sm" onclick="document.getElementById('nh-photo-input').click()" style="margin-bottom:10px;">📷 Upload Photo / ID</button></div><div id="nh-photo-preview-wrap" style="display:none"><img id="nh-photo-preview" style="max-width:160px;max-height:160px;border:1px solid var(--border);display:block;"><button onclick="clearNHPhoto()" style="background:transparent;border:none;color:var(--crimson);font-size:11px;cursor:pointer;font-family:Share Tech Mono,monospace;margin-top:5px;">✕ Remove</button></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">Signature *</div><div style="font-size:11px;color:var(--text3);margin-bottom:10px">Draw your signature below using your finger (mobile) or mouse.</div><div style="border:1px solid var(--border);background:var(--navy-mid);margin-bottom:8px;position:relative;touch-action:none;" ontouchstart="event.stopPropagation()"><canvas id="nh-signature-canvas" tabindex="0" style="display:block;width:100%;height:160px;cursor:crosshair;touch-action:none;outline:none;"></canvas><div id="nh-sig-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace;pointer-events:none;letter-spacing:1px;">Sign here</div></div><button class="btn btn-outline btn-sm" onclick="clearNHSignature()">Clear Signature</button></div></div><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:4px">Equipment to Assign</div><div style="font-size:11px;color:var(--text3);margin-bottom:14px">Items will be added to the Equipment Registry and assigned to this employee automatically.</div><div id="nh-equip-container"></div><button class="btn btn-outline btn-sm" onclick="addNHEquipRow()" style="margin-top:4px;">+ Add Item</button></div></div></div><div style="display:flex;gap:10px;justify-content:flex-end;padding-bottom:30px;max-width:1280px;margin-top:4px;"><button class="btn btn-outline" onclick="resetNewHireForm()">Clear Form</button><button class="btn btn-primary" onclick="saveNewHire()">Submit New Hire</button></div></div>
 <div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;min-height:0;">
       <div style="background:var(--bg);padding:16px 30px 12px;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -1137,6 +1137,81 @@ function resetNewHireForm(){
   var site=document.getElementById('nh-site');if(site)site.value='';
   var sd=document.getElementById('nh-start-date');if(sd)sd.value='';
   clearNHSignature();clearNHPhoto();
+  var ec=document.getElementById('nh-equip-container');if(ec)ec.innerHTML='';
+}
+
+
+/* ── NEW HIRE: Equipment rows ── */
+function addNHEquipRow(){
+  var container=document.getElementById('nh-equip-container');if(!container)return;
+  var row=document.createElement('div');
+  row.className='nh-equip-row';
+  row.style.cssText='background:var(--navy-mid);border:1px solid var(--border);padding:12px;margin-bottom:10px;position:relative;';
+  row.innerHTML=''
+    +'<button class="nh-eq-remove-btn" style="position:absolute;top:8px;right:8px;background:transparent;border:none;color:var(--crimson);cursor:pointer;font-size:14px;line-height:1;">✕</button>'
+    +'<div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px;">'
+    +'<div class="form-group"><label>Type *</label>'
+    +'<select class="nh-eq-type" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;" onchange="updateNHEqBrands(this)">'
+    +'<option value="">— Type —</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option>'
+    +'</select></div>'
+    +'<div class="form-group"><label>Brand</label>'
+    +'<select class="nh-eq-brand" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;" onchange="updateNHEqModels(this)">'
+    +'<option value="">— Brand —</option>'
+    +'</select></div>'
+    +'<div class="form-group"><label>Model</label>'
+    +'<select class="nh-eq-model" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;display:none;">'
+    +'<option value="">— Model —</option>'
+    +'</select>'
+    +'<input class="nh-eq-model-txt" autocomplete="new-password" placeholder="Model name" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;">'
+    +'</div>'
+    +'<div class="form-group"><label>Serial No.</label>'
+    +'<input class="nh-eq-serial" autocomplete="new-password" placeholder="e.g. SN-001234" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
+    +'</div>'
+    +'<div class="form-group"><label>Condition</label>'
+    +'<select class="nh-eq-cond" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;">'
+    +'<option>New</option><option>Good</option><option>Fair</option><option>Damaged</option>'
+    +'</select></div>'
+    +'<div class="form-group"><label>Purchase Price (₱)</label>'
+    +'<input class="nh-eq-price" autocomplete="new-password" type="number" placeholder="0.00" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
+    +'</div>'
+    +'</div>';
+  container.appendChild(row);
+}
+var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo']};
+var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','15IRH10 (Type 83K1)'],
+  Jabra:['Evolve2 75','Evolve2 55','Engage 55'],Rapoo:['MT750S','MT550','M500'],'N-Vision':[]};
+function updateNHEqBrands(typeSelect){
+  var row=typeSelect.closest('.nh-equip-row'),type=typeSelect.value;
+  var bs=row.querySelector('.nh-eq-brand');
+  bs.innerHTML='<option value="">— Brand —</option>'+((_nhEqBrands[type]||[]).map(function(b){return'<option>'+b+'</option>';}).join(''));
+  row.querySelector('.nh-eq-model').innerHTML='<option value="">— Model —</option>';
+  row.querySelector('.nh-eq-model').style.display='none';
+  row.querySelector('.nh-eq-model-txt').style.display='';
+}
+function updateNHEqModels(brandSelect){
+  var row=brandSelect.closest('.nh-equip-row'),brand=brandSelect.value;
+  var ms=row.querySelector('.nh-eq-model'),models=_nhEqModels[brand]||[];
+  if(models.length>0){
+    ms.innerHTML='<option value="">— Model —</option>'+models.map(function(m){return'<option>'+m+'</option>';}).join('');
+    ms.style.display='';row.querySelector('.nh-eq-model-txt').style.display='none';
+  }else{
+    ms.style.display='none';row.querySelector('.nh-eq-model-txt').style.display='';
+  }
+}
+function getNHEquipItems(){
+  var items=[];
+  document.querySelectorAll('.nh-equip-row').forEach(function(row){
+    var type=row.querySelector('.nh-eq-type').value;
+    if(!type)return;
+    var brand=row.querySelector('.nh-eq-brand').value||'';
+    var modelSel=row.querySelector('.nh-eq-model');
+    var model=(modelSel.style.display!=='none'?modelSel.value:row.querySelector('.nh-eq-model-txt').value)||'';
+    var serial=row.querySelector('.nh-eq-serial').value.trim();
+    var cond=row.querySelector('.nh-eq-cond').value;
+    var price=parseFloat(row.querySelector('.nh-eq-price').value)||0;
+    items.push({type:type,brand:brand,model:model,serial:serial,condition:cond,price:price});
+  });
+  return items;
 }
 
 function saveNewHire(){
@@ -1169,8 +1244,26 @@ function saveNewHire(){
   logAudit('ADD','Employee',name,'Role: '+role+', Site: '+site+', ID: '+empid+' — via New Hire Form');
   addNotif('\ud83d\udc64','New hire added: '+name,'employee');
   logActivity('New hire '+name+' added via New Hire Form');
+
+  /* Create and assign equipment items */
+  var equipItems=getNHEquipItems();
+  equipItems.forEach(function(item){
+    if(item.serial){
+      var dup=equipment.find(function(e){return e.serial&&e.serial.trim().toLowerCase()===item.serial.toLowerCase();});
+      if(dup){alert('Serial "'+item.serial+'" already exists ('+dup.brand+' '+dup.model+'). That item was skipped.');return;}
+    }
+    var eq={id:genId(),type:item.type,brand:item.brand,model:item.model,serial:item.serial,
+      condition:item.condition,status:'In Use',assignedTo:newEmp.id,location:site,
+      purchaseDate:'',warrantyExpiry:'',price:item.price,notes:'',
+      history:[{action:'added',employeeId:newEmp.id,employeeName:name,date:new Date().toISOString(),note:'Added via New Hire Form'},
+        {action:'assigned',employeeId:newEmp.id,employeeName:name,date:new Date().toISOString(),note:'Assigned at onboarding'}]};
+    equipment.push(eq);
+    logAudit('ADD','Equipment',item.brand+' '+item.model,'Assigned to '+name+' via New Hire Form');
+    logActivity(item.brand+' '+item.model+' added and assigned to '+name);
+  });
+
   saveData();
-  sendNewHireEmail(newEmp,sigData);
+  sendNewHireEmail(newEmp,sigData,equipItems);
   resetNewHireForm();
 
   /* Success banner */
@@ -1184,7 +1277,7 @@ function saveNewHire(){
   if(view)view.insertBefore(banner,view.children[1]);
 }
 
-async function sendNewHireEmail(emp,sigData){
+async function sendNewHireEmail(emp,sigData,equipItems){
   try{
     var r=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:currentUser,forceRefresh:false});
     if(r&&r.accessToken)accessToken=r.accessToken;
@@ -1211,7 +1304,7 @@ async function sendNewHireEmail(emp,sigData){
     +'<div style="font-size:11px;color:#cc2244;letter-spacing:3px;margin-top:4px">NEW HIRE NOTIFICATION</div>'
     +'</div>'
     +'<table style="width:100%;border-collapse:collapse;margin-bottom:22px">'+tableRows+'</table>'
-    +'<div style="margin-bottom:20px"><div style="color:#d4a830;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:monospace">ID PHOTO / DOCUMENT</div>'+photoHtml+'</div>'
+    +'<div style="margin-bottom:20px">'+(equipItems&&equipItems.length>0?'<div style="color:#d4a830;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:monospace">EQUIPMENT ASSIGNED</div>'+'<table style="width:100%;border-collapse:collapse;margin-bottom:4px">'+'<thead><tr style="background:#282c52">'+'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">TYPE</th>'+'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">BRAND / MODEL</th>'+'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">SERIAL</th>'+'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">CONDITION</th>'+'</tr></thead><tbody>'+equipItems.map(function(i){return'<tr style="border-bottom:1px solid #2a2a3a">'+'<td style="padding:7px 12px;color:#9aa2cc;font-size:12px">'+i.type+'</td>'+'<td style="padding:7px 12px;color:#e4e8ff;font-size:12px">'+i.brand+' '+i.model+'</td>'+'<td style="padding:7px 12px;color:#9aa2cc;font-family:monospace;font-size:11px">'+(i.serial||'—')+'</td>'+'<td style="padding:7px 12px;color:#9aa2cc;font-size:12px">'+i.condition+'</td>'+'</tr>';}).join('')+'</tbody></table></div>':'<div style="color:#565e90;font-size:12px;margin-bottom:16px">No equipment assigned</div>')+'<div style="color:#d4a830;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:monospace">ID PHOTO / DOCUMENT</div>'+photoHtml+'</div>'
     +'<div style="margin-bottom:20px"><div style="color:#d4a830;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:monospace">SIGNATURE</div>'+sigHtml+'</div>'
     +'<div style="padding-top:16px;border-top:1px solid #383d72;font-size:11px;color:#565e90">Submitted via INTEL-SYS New Hire Form · '
     +new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})
@@ -2155,6 +2248,7 @@ function renderPurchaseOrders(){
 }
 
 document.addEventListener('click',function(e){
+  var nhRemove=e.target.closest('.nh-eq-remove-btn');if(nhRemove){nhRemove.closest('.nh-equip-row').remove();return;}
   var nlCard=e.target.closest('.nolaptop-card');if(nlCard){openNoLaptopProfile(nlCard.getAttribute('data-empid'));return;}
   var editBtn=e.target.closest('.equip-edit-btn');if(editBtn){editEquipment(editBtn.getAttribute('data-id'));return;}
   var histBtn=e.target.closest('.equip-hist-btn');if(histBtn){showEquipmentHistory(histBtn.getAttribute('data-id'));return;}

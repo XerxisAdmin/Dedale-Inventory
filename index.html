@@ -193,6 +193,29 @@ body{overflow-x:hidden;}
 #po-sticky-header{padding:4px 14px 14px !important;}
 #stat-employees-breakdown{grid-template-columns:repeat(2,1fr) !important;}
 
+/* ── EMPLOYEES MOBILE FIXES ── */
+/* Hide topbar Add Equipment button — accessible from Equipment view */
+.topbar-right .btn.btn-primary{display:none !important;}
+/* Employee directory sticky header — stack title + buttons */
+#view-employees>div[style*="sticky"]>div:first-child{flex-wrap:wrap;gap:6px;}
+#view-employees .section-title{font-size:11px !important;letter-spacing:1.5px;}
+/* Shrink Import Excel and Add Employee buttons */
+#view-employees .btn.btn-sm{padding:7px 10px !important;font-size:9px !important;letter-spacing:1px !important;}
+/* Employee cards — prevent overflow */
+.emp-card{padding:12px 14px !important;width:100% !important;box-sizing:border-box !important;overflow:hidden !important;}
+.emp-name{font-size:15px !important;}
+/* Employee card header — stack name above buttons on mobile */
+.emp-card>div:first-child{flex-direction:column !important;align-items:flex-start !important;gap:8px !important;}
+/* Employee card Edit/Delete buttons — shrink and prevent overflow */
+.emp-card .btn.btn-sm{padding:5px 9px !important;font-size:9px !important;}
+/* Reduce container padding on mobile */
+#emp-grid-container{padding:10px 10px 20px !important;}
+/* Equipment toolbar on mobile — wrap and stack */
+#view-equipment>div:first-child{flex-direction:column;gap:6px;}
+/* Add Equipment button inside Equipment view for mobile */
+#view-equipment>div:first-child .btn.btn-primary{display:flex !important;}
+#equip-add-mobile-btn{display:flex !important;width:100%;}
+
 /* ── MOBILE COLUMN HIDING ── Equipment: show only Type Brand/Model Status, hide rest + Actions ── */
 #view-equipment thead th:nth-child(3),
 #view-equipment tbody td:nth-child(3),
@@ -374,6 +397,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <button class="btn btn-outline btn-sm" onclick="downloadEquipmentCSV()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
         <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
         <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none" id="equip-add-mobile-btn">+ Add Equipment</button>
         <select class="filter-select" onchange="filterEquipment();updateModelFilter()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-model-filter" style="display:none"><option value="">All Models</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
@@ -485,7 +509,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
           <span id="emp-count" style="font-size:12px;color:var(--text3);font-family:'Share Tech Mono',monospace;white-space:nowrap;"></span>
         </div>
       </div>
-      <div style="padding:16px 30px 26px;"><div class="emp-grid" id="employees-grid" style="width:100%;min-width:0;"></div></div>
+      <div style="padding:16px 30px 26px;" id="emp-grid-container"><div class="emp-grid" id="employees-grid" style="width:100%;min-width:0;"></div></div>
     </div>
   </div>
 </main>
@@ -973,7 +997,7 @@ function openMobileEquipRow(id){
     +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">'
     +'<div><div style="font-family:\'Orbitron\',monospace;font-size:13px;font-weight:700;color:#fff;letter-spacing:1px">'+eq.brand+' '+eq.model+'</div>'
     +'<div style="font-size:11px;color:var(--text3);font-family:\'Share Tech Mono\',monospace;margin-top:3px">'+eq.type+(eq.serial?' \u00b7 '+eq.serial:'')+'</div></div>'
-    +'<button onclick="document.getElementById(\'mobile-equip-sheet\').remove()" style="background:var(--surface2);border:1px solid var(--border);padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;font-family:\'Share Tech Mono\',monospace">\u2715</button>'
+    +'<button onclick="var s=document.getElementById(\'mobile-equip-sheet\');if(s)s.remove();var b=document.getElementById(\'mobile-equip-backdrop\');if(b)b.remove();" style="background:var(--surface2);border:1px solid var(--border);padding:5px 12px;font-size:11px;color:var(--text2);cursor:pointer;font-family:\'Share Tech Mono\',monospace">\u2715</button>'
     +'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
     +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">CONDITION</div><div style="font-size:13px;color:var(--text)">'+eq.condition+'</div></div>'
@@ -984,14 +1008,24 @@ function openMobileEquipRow(id){
     +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">SERIAL</div><div style="font-size:11px;color:var(--text);font-family:\'Share Tech Mono\',monospace">'+(eq.serial||'\u2014')+'</div></div>'
     +'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
-    +'<button class="btn btn-outline" onclick="document.getElementById(\'mobile-equip-sheet\').remove();editEquipment(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">EDIT</button>'
-    +'<button class="btn btn-outline" onclick="document.getElementById(\'mobile-equip-sheet\').remove();showEquipmentHistory(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">HISTORY</button>'
-    +'<button class="btn btn-outline" onclick="document.getElementById(\'mobile-equip-sheet\').remove();showQRCode(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">QR CODE</button>'
-    +'<button class="btn btn-danger" onclick="document.getElementById(\'mobile-equip-sheet\').remove();deleteEquipment(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">DELETE</button>'
+    +'<button class="btn btn-outline" onclick="var s=document.getElementById(\'mobile-equip-sheet\');if(s)s.remove();var b=document.getElementById(\'mobile-equip-backdrop\');if(b)b.remove();editEquipment(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">EDIT</button>'
+    +'<button class="btn btn-outline" onclick="var s=document.getElementById(\'mobile-equip-sheet\');if(s)s.remove();var b=document.getElementById(\'mobile-equip-backdrop\');if(b)b.remove();showEquipmentHistory(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">HISTORY</button>'
+    +'<button class="btn btn-outline" onclick="var s=document.getElementById(\'mobile-equip-sheet\');if(s)s.remove();var b=document.getElementById(\'mobile-equip-backdrop\');if(b)b.remove();showQRCode(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">QR CODE</button>'
+    +'<button class="btn btn-danger" onclick="var s=document.getElementById(\'mobile-equip-sheet\');if(s)s.remove();var b=document.getElementById(\'mobile-equip-backdrop\');if(b)b.remove();deleteEquipment(\''+id+'\')" style="padding:10px;font-size:10px;justify-content:center">DELETE</button>'
     +'</div>';
+  // Backdrop — tapping outside dismisses the sheet
+  var backdrop=document.createElement('div');
+  backdrop.id='mobile-equip-backdrop';
+  backdrop.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:599;';
+  document.body.appendChild(backdrop);
   document.body.appendChild(sheet);
-  sheet.addEventListener('click',function(e){e.stopPropagation();});
-  document.addEventListener('click',function removSheet(){document.getElementById('mobile-equip-sheet')?.remove();document.removeEventListener('click',removSheet);});
+  // Use setTimeout so this click event finishes before listeners attach
+  setTimeout(function(){
+    backdrop.addEventListener('click',function(){
+      var s=document.getElementById('mobile-equip-sheet');if(s)s.remove();
+      var b=document.getElementById('mobile-equip-backdrop');if(b)b.remove();
+    });
+  },50);
 }
 function fixActionButtonHeights(){
   document.querySelectorAll('.equip-edit-btn,.equip-hist-btn,.equip-qr-btn,.equip-del-btn').forEach(function(btn){

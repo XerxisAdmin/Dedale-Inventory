@@ -76,7 +76,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
 tbody tr{border-bottom:1px solid rgba(26,42,58,0.5);transition:background 0.1s;}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--surface2);}
+tbody tr:hover{background:var(--surface2);}.repair-row:hover{background:var(--surface2) !important;}
 td{padding:10px 14px;color:var(--text);vertical-align:middle;font-size:14px;text-align:left;}
 .badge{display:inline-flex;align-items:center;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;white-space:nowrap;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
 .badge-green{background:rgba(0,184,96,0.15);color:var(--green);}
@@ -880,164 +880,56 @@ document.addEventListener('change',function(e){
     if(e.target.value==='other'){o.style.display='block';o.focus();}else{o.style.display='none';}
   }
 });
-function renderDashboard(){
-  const total=equipment.length,inUse=equipment.filter(e=>e.status==='In Use').length,inStock=equipment.filter(e=>e.status==='In Stock').length,issues=equipment.filter(e=>e.status==='Under Repair'||e.condition==='Damaged').length;
-  document.getElementById('stat-total').textContent=total;document.getElementById('stat-inuse').textContent=inUse;document.getElementById('stat-instock').textContent=inStock;document.getElementById('stat-issues').textContent=issues;
-  const bar=document.getElementById('alerts-bar');if(issues>0){bar.classList.remove('hidden');document.getElementById('alerts-count').textContent=issues;}else bar.classList.add('hidden');
-  const types=['Laptop','Monitor','Headset','Mouse'];
-  const lowTypes=types.filter(t=>equipment.filter(e=>e.type===t&&e.status==='In Stock').length===0);
-  const lowBar=document.getElementById('low-stock-bar');
-  if(lowBar){if(lowTypes.length>0){lowBar.classList.remove('hidden');document.getElementById('low-stock-msg').textContent='Low stock alert: '+lowTypes.join(', ')+' '+(lowTypes.length===1?'has':'have')+' no units in stock';}else lowBar.classList.add('hidden');}
-  const ti={'Laptop':'💻','Monitor':'🖥','Headset':'🎧','Mouse':'🖱'};
-  document.getElementById('type-breakdown').innerHTML=types.map(t=>{const cnt=equipment.filter(e=>e.type===t).length,pct=total?Math.round(cnt/total*100):0;return'<div class="equip-type-row"><div class="equip-type-name">'+ti[t]+' <span>'+t+'</span></div><div style="display:flex;align-items:center;gap:10px"><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div><span class="equip-count">'+cnt+'</span></div></div>';}).join('');
-  document.getElementById('recent-activity').innerHTML=activity.slice(0,5).map(a=>'<div class="recent-row"><span>'+a.text+'</span><span style="color:var(--text3);font-size:11px;font-family:\'Share Tech Mono\',monospace">'+a.time+'</span></div>').join('')||'<div class="empty-state"><p>No recent activity</p></div>';
-  document.getElementById('status-overview').innerHTML=['In Use','In Stock','Under Repair','Retired'].map(s=>'<div class="equip-type-row"><span>'+statusBadge(s)+'</span><span class="equip-count">'+equipment.filter(e=>e.status===s).length+'</span></div>').join('');
-  const attn=equipment.filter(e=>e.status==='Under Repair'||e.condition==='Damaged');
-  document.getElementById('attention-list').innerHTML=attn.length?attn.map(e=>'<div class="recent-row"><span>'+e.type+' — '+e.brand+' '+e.model+'</span>'+conditionBadge(e.condition)+'</div>').join(''):'<div class="empty-state"><p>No items require attention</p></div>';
-  const noLaptop=employees.filter(function(emp){return !equipment.some(function(e){return e.type==='Laptop'&&e.assignedTo===emp.id;});});
-  const noLaptopEl=document.getElementById('no-laptop-list');
-  if(noLaptopEl){
-    if(noLaptop.length===0){
-      noLaptopEl.innerHTML='<div class="empty-state"><p>All employees have a laptop assigned</p></div>';
-    }else{
-      var nlh='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">';
-      noLaptop.forEach(function(emp){
-        var ini=emp.name.split(' ').map(function(n){return n[0];}).join('').toUpperCase().slice(0,2);
-        nlh+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)">';
-        nlh+='<div style="width:34px;height:34px;border-radius:50%;background:rgba(196,18,48,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--crimson)">'+ini+'</div>';
-        nlh+='<div><div style="font-size:14px;font-weight:600;color:var(--text)">'+emp.name+'</div>';
-        nlh+='<div style="font-size:11px;color:var(--text3)">'+(emp.role||'No role')+' &middot; <span style="color:var(--crimson)">'+emp.site+'</span></div></div></div>';
-      });
-      nlh+='</div>';
-      noLaptopEl.innerHTML=nlh;
-    }
-  }
-  document.getElementById('stat-employees').textContent=employees.length;
-  const _sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'];
-  const _siteColors={'PH - Ceb':'#cc2244','PH - MNL':'#d4a830','PH - DVO':'#4488ff','PAR':'#8866ff','VN':'#22cc88'};
-  const _siteBg={'PH - Ceb':'rgba(204,34,68,0.08)','PH - MNL':'rgba(212,168,48,0.08)','PH - DVO':'rgba(68,136,255,0.08)','PAR':'rgba(136,102,255,0.08)','VN':'rgba(34,204,136,0.08)'};
-  const breakdown=document.getElementById('stat-employees-breakdown');
-  const _maxEmp=Math.max(..._sites.map(s=>employees.filter(e=>e.site===s).length),1);
-  if(breakdown){breakdown.innerHTML=_sites.map(s=>{const cnt=employees.filter(e=>e.site===s).length,pct=Math.round(cnt/_maxEmp*100);return'<div onclick="navigateToSiteEmployees(\''+s+'\')" style="background:'+_siteBg[s]+';padding:12px 14px;border:1px solid '+_siteColors[s]+'22;cursor:pointer;transition:transform 0.15s" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:'+_siteColors[s]+';display:inline-block"></span><span style="font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:'+_siteColors[s]+';font-family:\'Share Tech Mono\',monospace">'+s+'</span></div><span style="font-size:20px;font-weight:800;color:'+_siteColors[s]+';font-family:\'Share Tech Mono\',monospace">'+cnt+'</span></div><div style="height:5px;background:'+_siteColors[s]+'25;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:'+pct+'%;background:'+_siteColors[s]+';transition:width 0.4s"></div></div><div style="font-size:11px;color:'+_siteColors[s]+'">'+( cnt===1?'1 employee':cnt+' employees')+'</div></div>';}).join('');}
+// ── RENDER HELPER FUNCTIONS ─────────────────────────────────────
+function buildNoLaptopCard(emp){
+  var ini=emp.name.split(' ').map(function(n){return n[0]||'';}).join('').toUpperCase().slice(0,2);
+  return '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)">'
+    +'<div style="width:34px;height:34px;border-radius:50%;background:rgba(196,18,48,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--crimson)">'+ini+'</div>'
+    +'<div><div style="font-size:14px;font-weight:600;color:var(--text)">'+emp.name+'</div>'
+    +'<div style="font-size:11px;color:var(--text3)">'+(emp.role||'No role')+' · <span style="color:var(--crimson)">'+emp.site+'</span></div>'
+    +'</div></div>';
 }
-
-function getEmployeeName(id){const e=employees.find(e=>e.id===id);return e?e.name:'—';}
-
-function renderEquipment(list){
-  const rows=list||equipment;
-  document.getElementById('equipment-tbody').innerHTML=rows.length?rows.map(eq=>'<tr>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
+function buildEquipRow(eq){
+  return '<tr>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
     +'<td><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
-    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
-    +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
-    +'<td style="text-align:center">'+statusBadge(eq.status)+'</td>'
+    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
+    +'<td>'+conditionBadge(eq.condition)+'</td>'
+    +'<td>'+statusBadge(eq.status)+'</td>'
     +'<td style="font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.location||'—')+'</td>'
-    +'<td style="font-size:11px;font-family:\'Share Tech Mono\',monospace;text-align:center">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
-    +'<td style="text-align:left"><div class="actions"><button class="btn btn-outline btn-sm" onclick="editEquipment(\''+eq.id+'\')">Edit</button><button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\''+eq.id+'\')">History</button><button class="btn btn-outline btn-sm" onclick="showQRCode(\''+eq.id+'\')">QR</button><button class="btn btn-danger btn-sm" onclick="deleteEquipment(\''+eq.id+'\')">Delete</button></div></td>'
-    +'</tr>').join(''):'<tr><td colspan="9"><div class="empty-state"><p>No equipment found</p></div></td></tr>';
+    +'<td style="font-size:11px;text-align:center">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'—')+'</td>'
+    +'<td><div class="actions">'
+    +'<button class="btn btn-outline btn-sm" onclick="editEquipment(\'' +eq.id+ '\')">Edit</button>'
+    +'<button class="btn btn-outline btn-sm" onclick="showEquipmentHistory(\'' +eq.id+ '\')">History</button>'
+    +'<button class="btn btn-outline btn-sm" onclick="showQRCode(\'' +eq.id+ '\')">QR</button>'
+    +'<button class="btn btn-danger btn-sm" onclick="deleteEquipment(\'' +eq.id+ '\')">Delete</button>'
+    +'</div></td></tr>';
 }
-function downloadEquipmentCSV(){
-  const s=document.getElementById('equip-search').value.toLowerCase();
-  const t=document.getElementById('equip-type-filter').value;
-  const st=document.getElementById('equip-status-filter').value;
-  const si=document.getElementById('equip-site-filter').value||'';
-  const filtered=equipment.filter(e=>
-    (!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&
-    (!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si)
-  );
-  if(!filtered.length){alert('No equipment to export.');return;}
-  const headers=['Type','Brand','Model','Serial Number','Condition','Status','Assigned To','Site','Purchase Date','Warranty Expiry (MM/YYYY)','Purchase Price (PHP)','Notes'];
-  const rows=filtered.map(e=>[
-    e.type,e.brand,e.model,e.serial||'',e.condition,e.status,
-    getEmployeeName(e.assignedTo),e.location||'',e.purchaseDate||'',
-    e.warrantyExpiry||'',e.price||0,e.notes||''
-  ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
-  const csv=[headers.map(h=>'"'+h+'"').join(','),...rows].join('\n');
-  const blob=new Blob([csv],{type:'text/csv'});
-  const a=document.createElement('a');
-  const filterLabel=[t,st,si].filter(Boolean).join('-')||'all';
-  a.download='dedale-equipment-'+filterLabel+'-'+new Date().toISOString().split('T')[0]+'.csv';
-  a.href=URL.createObjectURL(blob);a.click();
-  logActivity('Equipment CSV exported: '+filtered.length+' records (filter: '+filterLabel+')');
-}
-
-function updateModelFilter(){
-  const type=document.getElementById('equip-type-filter').value;
-  const modelFilter=document.getElementById('equip-model-filter');
-  const modelsByType={"Laptop": ["14ALC7", "15IAH8 (Type 83ER)", "15IAU7 (Type 82RK)", "LOQ 15IAX9E (Type 83LK)", "LOQ 15IAX9 (Type 83GS)", "15IRH8 (Type 83EM)", "15IRH10 (Type 83K1)", "15IRU8 (Type 82X7)", "16IAH8 (Type 83BG)"], "Monitor": ["N-Vision"], "Headset": ["Jabra Evolve2 75", "Jabra Evolve2 55", "Jabra Engage 55"], "Mouse": ["Rapoo MT750S", "Rapoo MT550", "Rapoo M500"]};
-  if(type&&modelsByType[type]){
-    modelFilter.innerHTML='<option value="">All Models</option>'+modelsByType[type].map(m=>'<option>'+m+'</option>').join('');
-    modelFilter.style.display='';
-  }else{
-    modelFilter.innerHTML='<option value="">All Models</option>';
-    modelFilter.style.display='none';
-    modelFilter.value='';
-  }
-}
-
-function filterEquipment(){
-  const s=document.getElementById('equip-search').value.toLowerCase(),t=document.getElementById('equip-type-filter').value,st=document.getElementById('equip-status-filter').value,si=document.getElementById('equip-site-filter').value||'';
-  const model=document.getElementById('equip-model-filter')?.value||'';
-  const dw=document.getElementById('equip-date-warranty-filter')?.value||'';
-  const now=new Date();const thisYear=now.getFullYear();const lastYear=thisYear-1;
-  const soon=new Date();soon.setMonth(soon.getMonth()+2);
-  renderEquipment(equipment.filter(e=>{
-    if(s&&!(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))return false;
-    if(t&&e.type!==t)return false;
-    if(model&&e.model!==model)return false;
-    if(st&&e.status!==st)return false;
-    if(si&&e.location!==si)return false;
-    if(dw==='purchased-this-year'&&(!e.purchaseDate||new Date(e.purchaseDate).getFullYear()!==thisYear))return false;
-    if(dw==='purchased-last-year'&&(!e.purchaseDate||new Date(e.purchaseDate).getFullYear()!==lastYear))return false;
-    if(dw==='warranty-active'){const d=warrantyToDate(e.warrantyExpiry);if(!d||d<now)return false;}
-    if(dw==='warranty-expiring'){const d=warrantyToDate(e.warrantyExpiry);if(!d||d<now||d>soon)return false;}
-    if(dw==='warranty-expired'){const d=warrantyToDate(e.warrantyExpiry);if(!d||d>=now)return false;}
-    if(dw==='no-warranty'&&e.warrantyExpiry)return false;
-    return true;
-  }));
-}
-
-function renderAssignments(list){
-  const assigned=(list||equipment).filter(e=>e.assignedTo);
-  document.getElementById('assignments-tbody').innerHTML=assigned.length?assigned.map(eq=>'<tr>'
+function buildAssignRow(eq){
+  return '<tr>'
     +'<td><span style="font-weight:600">'+getEmployeeName(eq.assignedTo)+'</span></td>'
     +'<td>'+eq.brand+' '+eq.model+'</td>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
-    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
     +'<td style="color:var(--text2);font-size:12px;text-align:center">'+(eq.purchaseDate||'—')+'</td>'
     +'<td style="text-align:center">'+statusBadge(eq.status)+'</td>'
-    +'<td style="text-align:center"><button class="btn btn-outline btn-sm" onclick="unassign(\''+eq.id+'\')">Unassign</button></td></tr>').join('')
-    :'<tr><td colspan="7"><div class="empty-state"><p>No assignments on record</p></div></td></tr>';
+    +'<td style="text-align:center"><button class="btn btn-outline btn-sm" onclick="unassign(\'' +eq.id+ '\')">Unassign</button></td>'
+    +'</tr>';
 }
-function filterAssignments(){
-  const s=(document.getElementById('assign-search')?.value||'').toLowerCase();
-  const t=document.getElementById('assign-type-filter')?.value||'';
-  const st=document.getElementById('assign-status-filter')?.value||'';
-  const si=document.getElementById('assign-site-filter')?.value||'';
-  renderAssignments(equipment.filter(e=>e.assignedTo
-    &&(!s||(getEmployeeName(e.assignedTo)+' '+e.brand+' '+e.model).toLowerCase().includes(s))
-    &&(!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si)
-  ));
-}
-function unassign(id){const eq=equipment.find(e=>e.id===id);if(eq&&confirm('Unassign '+eq.brand+' '+eq.model+' from '+getEmployeeName(eq.assignedTo)+'?')){const _prev=getEmployeeName(eq.assignedTo);logAssignmentHistory(eq.id,'unassigned','',_prev,'');logActivity(eq.brand+' '+eq.model+' unassigned from '+_prev);eq.assignedTo='';eq.status='In Stock';saveData();renderAssignments();if(document.getElementById('view-employees').classList.contains('active'))filterEmployees();}}
-
-function renderRepairs(list){
-  const repairs=(list||equipment).filter(e=>e.status==='Under Repair'||e.condition==='Damaged');
-  document.getElementById('repairs-tbody').innerHTML=repairs.length?repairs.map(eq=>'<tr style="cursor:pointer" onclick="openRepairNotes(\''+eq.id+'\')" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">'
+function buildRepairRow(eq){
+  return '<tr class="repair-row" data-id="'+eq.id+'" style="cursor:pointer">'
     +'<td><span style="font-weight:600">'+eq.brand+' '+eq.model+'</span></td>'
-    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+eq.type+'</span></td>'
-    +'<td style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
+    +'<td><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
+    +'<td style="font-size:11px;color:var(--text3)">'+(eq.serial||'—')+'</td>'
     +'<td style="color:var(--text2);font-size:12px">'+(eq.notes?'<span style="color:var(--gold)">'+eq.notes+'</span>':'<span style="color:var(--text3);font-style:italic">Tap to add notes</span>')+'</td>'
-    +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
+    +'<td>'+conditionBadge(eq.condition)+'</td>'
     +'<td style="color:var(--text2);font-size:12px;text-align:center">'+(eq.purchaseDate||'—')+'</td>'
-    +'<td onclick="event.stopPropagation()"><button class="btn btn-success btn-sm" onclick="markRepaired(\''+eq.id+'\')">Mark as Fixed</button></td></tr>').join('')
-    :'<tr><td colspan="7"><div class="empty-state"><p>No items under repair or damaged</p></div></td></tr>';
+    +'<td><button class="btn btn-success btn-sm mark-fixed-btn" data-id="'+eq.id+'">Mark as Fixed</button></td>'
+    +'</tr>';
 }
-function filterRepairs(){const s=document.getElementById('repair-search').value.toLowerCase(),st=document.getElementById('repair-status-filter').value;renderRepairs(equipment.filter(e=>(e.status==='Under Repair'||e.condition==='Damaged')&&(!s||(e.brand+' '+e.model).toLowerCase().includes(s))&&(!st||e.condition===st||e.status===st)));}
-function markRepaired(id){const eq=equipment.find(e=>e.id===id);if(eq){eq.condition='Good';eq.status='In Stock';eq.notes='';logAssignmentHistory(eq.id,'repaired','','','Condition restored to Good');logActivity(eq.brand+' '+eq.model+' marked as repaired');saveData();renderRepairs();renderDashboard();}}
 
-function openRepairNotes(id){
+function openRepairNotes(idOrEl){var id=typeof idOrEl==='string'?idOrEl:(idOrEl.dataset?idOrEl.dataset.id:idOrEl);
   const eq=equipment.find(e=>e.id===id);if(!eq)return;
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;background:rgba(14,15,26,0.88);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
@@ -1529,6 +1421,11 @@ function renderPurchaseOrders(){
     +'</div></div></div>').join('');
 }
 document.addEventListener('click',function(e){
+  var repairRow=e.target.closest('.repair-row');
+  var fixBtn=e.target.closest('.mark-fixed-btn');
+  if(fixBtn){markRepaired(fixBtn.getAttribute('data-id'));return;}
+  if(repairRow&&!fixBtn){openRepairNotes(repairRow.getAttribute('data-id'));return;}
+
   const approveBtn=e.target.closest('.po-btn-approve');if(approveBtn){const id=approveBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Approved');return;}
   const rejectBtn=e.target.closest('.po-btn-reject');if(rejectBtn){const id=rejectBtn.getAttribute('data-id');if(id)updatePOStatus(id,'Rejected');return;}
   const deleteBtn=e.target.closest('.po-btn-delete');if(deleteBtn){const id=deleteBtn.getAttribute('data-id');if(id)deletePO(id);return;}

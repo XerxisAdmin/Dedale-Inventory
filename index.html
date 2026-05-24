@@ -414,9 +414,28 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Equipment</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Supplier</th></tr></thead><tbody id="purchases-tbody"></tbody></table></div>
     </div>
     <!-- PURCHASE ORDERS -->
-    <div class="view" id="view-purchase-orders">
-      
-      <div id="po-list"></div>
+    <div class="view" id="view-purchase-orders" style="display:flex;flex-direction:column;min-height:0;">
+      <div style="background:var(--bg);padding:16px 30px 14px;flex-shrink:0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span class="section-title">Purchase Orders</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="downloadPOHistory()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download History</button>
+            <button class="btn btn-primary btn-sm" onclick="openPOModal()">+ New Purchase Request</button>
+          </div>
+        </div>
+        <div class="stats-grid" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr);">
+          <div class="stat-card" id="po-card-pending" onclick="filterPOByStatus('Pending')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Pending</div><div class="stat-value" id="po-stat-pending">0</div><div class="stat-sub">Awaiting approval</div></div>
+          <div class="stat-card" id="po-card-approved" onclick="filterPOByStatus('Approved')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Approved</div><div class="stat-value" id="po-stat-approved">0</div><div class="stat-sub">Finance approved</div></div>
+          <div class="stat-card" id="po-card-rejected" onclick="filterPOByStatus('Rejected')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''"><div class="stat-label">Rejected</div><div class="stat-value" id="po-stat-rejected">0</div><div class="stat-sub">Not approved</div></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <select class="filter-select" id="po-filter-status" onchange="renderPurchaseOrders()"><option value="">All Statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+          <select class="filter-select" id="po-filter-urgency" onchange="renderPurchaseOrders()"><option value="">All Urgency Levels</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 30px 26px;">
+        <div id="po-list"></div>
+      </div>
     </div>
     <!-- ANALYTICS -->
     <div class="view" id="view-analytics" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
@@ -931,7 +950,7 @@ function buildEquipRow(eq){
     +'<td style="text-align:left;font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
     +'<td style="text-align:left;color:var(--text2);font-size:12px">'+(eq.location||'&mdash;')+'</td>'
     +'<td style="text-align:center;font-size:11px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
-    +'<td style="text-align:left;white-space:nowrap;padding-left:14px"><div class="actions">'
+    +'<td style="text-align:left;white-space:nowrap"><div class="actions">'
     +'<button class="btn btn-outline btn-sm equip-edit-btn" data-id="'+id+'">Edit</button>'
     +'<button class="btn btn-outline btn-sm equip-hist-btn" data-id="'+id+'">History</button>'
     +'<button class="btn btn-outline btn-sm equip-qr-btn" data-id="'+id+'">QR</button>'

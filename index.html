@@ -345,14 +345,14 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:7%;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:17%;">Brand / Model</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:16%;">Brand / Model</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Serial No.</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Condition</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Status</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:14%;">Assigned To</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:13%;">Assigned To</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Location</th>
-              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Warranty</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Warranty</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:22%;">Actions</th>
             </tr>
           </thead>
           <tbody id="equipment-tbody"></tbody>
@@ -782,8 +782,22 @@ function showView(name){
   const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS'};
   document.getElementById('page-title').textContent=titles[name]||name;
   if(name==='dashboard')renderDashboard();
-  if(name==='equipment')renderEquipment();
-  if(name==='assignments')renderAssignments();
+  if(name==='equipment'){
+    var es=document.getElementById('equip-search');if(es)es.value='';
+    var etf=document.getElementById('equip-type-filter');if(etf)etf.value='';
+    var emf=document.getElementById('equip-model-filter');if(emf){emf.value='';emf.style.display='none';}
+    var esf=document.getElementById('equip-status-filter');if(esf)esf.value='';
+    var esi=document.getElementById('equip-site-filter');if(esi)esi.value='';
+    var edw=document.getElementById('equip-date-warranty-filter');if(edw)edw.value='';
+    renderEquipment();
+  }
+  if(name==='assignments'){
+    var as=document.getElementById('assign-search');if(as)as.value='';
+    var at=document.getElementById('assign-type-filter');if(at)at.value='';
+    var ast=document.getElementById('assign-status-filter');if(ast)ast.value='';
+    var asi=document.getElementById('assign-site-filter');if(asi)asi.value='';
+    renderAssignments();
+  }
   if(name==='repairs')renderRepairs();
   if(name==='purchases')renderPurchases();
   if(name==='purchase-orders'){const sf=document.getElementById('po-filter-status');if(sf&&sf.value==='')sf.value='Pending';renderPurchaseOrders();setTimeout(()=>filterPOByStatus('Pending'),50);}
@@ -986,7 +1000,20 @@ function renderAssignments(list){
     ?assigned.map(buildAssignRow).join('')
     :'<tr><td colspan="7"><div class="empty-state"><p>No assignments on record</p></div></td></tr>';
 }
-function filterAssignments(){const s=document.getElementById('assign-search').value.toLowerCase();renderAssignments(equipment.filter(e=>e.assignedTo&&(getEmployeeName(e.assignedTo)+' '+e.brand+' '+e.model).toLowerCase().includes(s)));}
+function filterAssignments(){
+  var s=(document.getElementById('assign-search')||{value:''}).value.toLowerCase();
+  var t=(document.getElementById('assign-type-filter')||{value:''}).value;
+  var st=(document.getElementById('assign-status-filter')||{value:''}).value;
+  var si=(document.getElementById('assign-site-filter')||{value:''}).value;
+  renderAssignments(equipment.filter(function(e){
+    if(!e.assignedTo) return false;
+    if(s&&!(getEmployeeName(e.assignedTo)+' '+e.brand+' '+e.model+' '+(e.serial||'')).toLowerCase().includes(s)) return false;
+    if(t&&e.type!==t) return false;
+    if(st&&e.status!==st) return false;
+    if(si&&e.location!==si) return false;
+    return true;
+  }));
+}
 function unassign(id){const eq=equipment.find(e=>e.id===id);if(eq&&confirm('Unassign '+eq.brand+' '+eq.model+' from '+getEmployeeName(eq.assignedTo)+'?')){const _prev=getEmployeeName(eq.assignedTo);logAssignmentHistory(eq.id,'unassigned','',_prev,'');logActivity(eq.brand+' '+eq.model+' unassigned from '+_prev);eq.assignedTo='';eq.status='In Stock';saveData();renderAssignments();if(document.getElementById('view-employees').classList.contains('active'))filterEmployees();}}
 
 function renderRepairs(list){

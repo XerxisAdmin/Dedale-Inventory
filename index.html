@@ -51,7 +51,7 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .btn-danger:hover{background:rgba(196,18,48,0.35);}
 .btn-success{background:rgba(0,184,96,0.15);color:var(--green);border:1px solid rgba(0,184,96,0.4);clip-path:none;}
 .btn-success:hover{background:rgba(0,184,96,0.25);}
-.content{padding:0 30px 26px 30px;flex:1;overflow-y:auto;overflow-x:hidden;}
+.content{padding:0;flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .view{display:none !important;}.view.active{display:flex !important;flex-direction:column;flex:1;min-height:0;}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .stat-card{background:var(--surface);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:border-color 0.2s;}
@@ -305,7 +305,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     
   <div class="content">
     <!-- DASHBOARD -->
-    <div class="view active" id="view-dashboard">
+    <div class="view active" id="view-dashboard" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
       <div id="alerts-bar" class="alerts-bar hidden"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span><strong id="alerts-count">0</strong> items require attention — damaged or under repair</span></div>
       <div id="low-stock-bar" class="alerts-bar hidden" style="background:rgba(204,34,68,0.06);border-left-color:var(--crimson);color:var(--crimson)"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><span id="low-stock-msg">Some equipment types are low in stock</span></div>
       <div class="stats-grid">
@@ -408,7 +408,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
     </div>
     <!-- PURCHASES -->
-    <div class="view" id="view-purchases">
+    <div class="view" id="view-purchases" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
       <div class="section-header"><span class="section-title">Purchase History</span><button class="btn btn-primary btn-sm" onclick="openPurchaseModal()">+ Log Purchase</button></div>
       <div class="purchase-summary" id="purchase-summary"></div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Equipment</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Supplier</th></tr></thead><tbody id="purchases-tbody"></tbody></table></div>
@@ -419,7 +419,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div id="po-list"></div>
     </div>
     <!-- ANALYTICS -->
-    <div class="view" id="view-analytics">
+    <div class="view" id="view-analytics" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
       <div id="analytics-content"></div>
     </div>

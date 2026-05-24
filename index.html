@@ -676,7 +676,7 @@ let purchaseOrders=JSON.parse(localStorage.getItem('dd_purchase_orders')||'[]');
 let activity=JSON.parse(localStorage.getItem('dd_activity')||'[]');
 let editingId=null;
 let _localSaveTime=0,_lastSyncTime=null,_lastServerTime=null,syncDebounceTimer=null;
-let _isOnline=navigator.onLine;
+let _isOnline=true; /* default online, periodic check corrects if actually offline */
 let _pendingSync=false;
 let _blockLoad=false;
 let auditLog=JSON.parse(localStorage.getItem('dd_audit')||'[]');

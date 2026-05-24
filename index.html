@@ -341,18 +341,18 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <select class="filter-select" onchange="filterEquipment()" id="equip-date-warranty-filter"><option value="">All Dates &amp; Warranty</option><option value="purchased-this-year">Purchased This Year</option><option value="purchased-last-year">Purchased Last Year</option><option value="warranty-active">Warranty Active</option><option value="warranty-expiring">Warranty Expiring Soon</option><option value="warranty-expired">Warranty Expired</option><option value="no-warranty">No Warranty Set</option></select>
       </div>
       <div style="flex:1;overflow-y:auto;overflow-x:auto;border:1px solid var(--border);border-top:none;background:var(--surface);">
-        <table style="width:100%;min-width:900px;border-collapse:collapse;font-size:13px;table-layout:fixed;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:7%;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:16%;">Brand / Model</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Serial No.</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Condition</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Status</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:13%;">Assigned To</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Location</th>
-              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Warranty</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:22%;">Actions</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Brand / Model</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Condition</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Status</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Assigned To</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Location</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Warranty</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
             </tr>
           </thead>
           <tbody id="equipment-tbody"></tbody>
@@ -368,15 +368,15 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <select class="filter-select" onchange="filterAssignments()" id="assign-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
       </div>
       <div style="flex:1;overflow-y:auto;overflow-x:auto;background:var(--surface);">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:16%;">Employee</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:18%;">Equipment</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:7%;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:9%;">Serial No.</th>
-              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:13%;">Date Assigned</th>
-              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Status</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Employee</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Equipment</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Date Assigned</th>
+              <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Status</th>
               <th style="padding:10px 14px;text-align:center;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
             </tr>
           </thead>
@@ -391,15 +391,15 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <select class="filter-select" id="repair-status-filter" onchange="filterRepairs()"><option value="">All Conditions</option><option>Damaged</option><option>Under Repair</option></select>
       </div>
       <div style="flex:1;overflow-y:auto;overflow-x:auto;background:var(--surface);">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
           <thead style="position:sticky;top:0;z-index:10;">
             <tr>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:22%;">Equipment</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:8%;">Type</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Serial No.</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:26%;">Issue Notes</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Condition</th>
-              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;width:10%;">Date Logged</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Equipment</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Type</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Serial No.</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Issue Notes</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Condition</th>
+              <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Date Logged</th>
               <th style="padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Actions</th>
             </tr>
           </thead>
@@ -931,7 +931,7 @@ function buildEquipRow(eq){
     +'<td style="text-align:left;font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
     +'<td style="text-align:left;color:var(--text2);font-size:12px">'+(eq.location||'&mdash;')+'</td>'
     +'<td style="text-align:center;font-size:11px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
-    +'<td style="text-align:left"><div class="actions">'
+    +'<td style="text-align:left;white-space:nowrap"><div class="actions">'
     +'<button class="btn btn-outline btn-sm equip-edit-btn" data-id="'+id+'">Edit</button>'
     +'<button class="btn btn-outline btn-sm equip-hist-btn" data-id="'+id+'">History</button>'
     +'<button class="btn btn-outline btn-sm equip-qr-btn" data-id="'+id+'">QR</button>'

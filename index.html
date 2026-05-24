@@ -380,6 +380,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="nav-item" onclick="showView('purchases')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Purchases</div>
     <div class="nav-item" onclick="showView('purchase-orders')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Purchase Orders</div>
     <div class="nav-item" onclick="showView('employees')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>Employees</div>
+    <div class="nav-item" id="nav-new-hire" onclick="showView('new-hire')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>New Hire Form</div>
     <div class="nav-section">Data</div>
     <div class="nav-item" onclick="showView('analytics')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</div>
     <div class="nav-item" id="nav-audit" onclick="showView('audit')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Audit Log</div>
@@ -541,7 +542,8 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
       <div id="analytics-content"></div>
     </div>
-    <div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;min-height:0;">
+    <div class="view" id="view-new-hire" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:20px"><span class="section-title">New Hire Form</span></div><div style="max-width:720px;"><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:16px">Personal Information</div><div class="form-grid"><div class="form-group full"><label>Full Name *</label><input id="nh-name" autocomplete="new-password" placeholder="First Last"></div><div class="form-group"><label>Employee ID</label><input id="nh-empid" autocomplete="new-password" placeholder="e.g. C2024-0001"></div><div class="form-group"><label>Role / Position</label><input id="nh-role" autocomplete="new-password" placeholder="e.g. Analyst"></div><div class="form-group"><label>Email Address *</label><input id="nh-email" autocomplete="new-password" type="email" placeholder="name@dedale.com"></div><div class="form-group"><label>Site *</label><select id="nh-site"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div><div class="form-group"><label>Start Date *</label><input id="nh-start-date" autocomplete="new-password" type="date"></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">ID Photo / Document</div><div style="font-size:11px;color:var(--text3);margin-bottom:12px">Upload a photo or scanned ID. Image will be included in the notification email.</div><div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;"><div><input autocomplete="new-password" type="file" id="nh-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleNHPhotoUpload(event)"><button class="btn btn-outline btn-sm" onclick="document.getElementById('nh-photo-input').click()" style="margin-bottom:10px;">📷 Upload Photo / ID</button></div><div id="nh-photo-preview-wrap" style="display:none"><img id="nh-photo-preview" style="max-width:160px;max-height:160px;border:1px solid var(--border);display:block;"><button onclick="clearNHPhoto()" style="background:transparent;border:none;color:var(--crimson);font-size:11px;cursor:pointer;font-family:Share Tech Mono,monospace;margin-top:5px;">✕ Remove</button></div></div></div><div class="dash-card" style="margin-bottom:20px;"><div class="dash-card-title" style="margin-bottom:12px">Signature *</div><div style="font-size:11px;color:var(--text3);margin-bottom:10px">Draw your signature below using your finger (mobile) or mouse.</div><div style="border:1px solid var(--border);background:var(--navy-mid);margin-bottom:8px;position:relative;touch-action:none;"><canvas id="nh-signature-canvas" style="display:block;width:100%;height:160px;cursor:crosshair;touch-action:none;"></canvas><div id="nh-sig-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace;pointer-events:none;letter-spacing:1px;">Sign here</div></div><button class="btn btn-outline btn-sm" onclick="clearNHSignature()">Clear Signature</button></div><div style="display:flex;gap:10px;justify-content:flex-end;padding-bottom:30px;"><button class="btn btn-outline" onclick="resetNewHireForm()">Clear Form</button><button class="btn btn-primary" onclick="saveNewHire()">Submit New Hire</button></div></div></div>
+<div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;min-height:0;">
       <div style="background:var(--bg);padding:16px 30px 12px;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
           <span class="section-title">Employee Directory</span>
@@ -954,7 +956,7 @@ function showView(name){
   // Highlight correct nav item safely (works from both click and programmatic calls)
   var _navItems=document.querySelectorAll('.nav-item');
   _navItems.forEach(function(n){if(n.getAttribute('onclick')&&n.getAttribute('onclick').indexOf(name)>-1)n.classList.add('active');});
-  const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS',audit:'AUDIT LOG',settings:'SETTINGS'};
+  const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS',audit:'AUDIT LOG',settings:'SETTINGS','new-hire':'NEW HIRE FORM'};
   document.getElementById('page-title').textContent=titles[name]||name;
   if(name==='dashboard')renderDashboard();
   if(name==='equipment'){
@@ -980,6 +982,7 @@ function showView(name){
   if(name==='analytics')renderAnalytics();
   if(name==='audit')renderAuditLog();
   if(name==='settings')renderSettings();
+  if(name==='new-hire'){_nhSigCtx=null;setTimeout(initNHSignature,100);}
   closeMobileMenu();
 }
 
@@ -1032,6 +1035,195 @@ document.addEventListener('change',function(e){
 
 
 
+
+/* ======= NEW HIRE FORM ======= */
+var _nhPhotoData=null;
+var _nhSigDrawing=false;
+var _nhSigCtx=null;
+var _nhSigHasContent=false;
+
+function initNHSignature(){
+  var canvas=document.getElementById('nh-signature-canvas');
+  if(!canvas||_nhSigCtx)return;
+  /* Set actual pixel dimensions to match CSS display size */
+  var rect=canvas.getBoundingClientRect();
+  canvas.width=rect.width||560;
+  canvas.height=160;
+  _nhSigCtx=canvas.getContext('2d');
+  _nhSigCtx.strokeStyle='#e4e8ff';
+  _nhSigCtx.lineWidth=2;
+  _nhSigCtx.lineCap='round';
+  _nhSigCtx.lineJoin='round';
+  /* Mouse events */
+  canvas.addEventListener('mousedown',nhSigStart);
+  canvas.addEventListener('mousemove',nhSigMove);
+  canvas.addEventListener('mouseup',nhSigEnd);
+  canvas.addEventListener('mouseleave',nhSigEnd);
+  /* Touch events */
+  canvas.addEventListener('touchstart',function(e){e.preventDefault();nhSigStart(e.touches[0]);},{passive:false});
+  canvas.addEventListener('touchmove',function(e){e.preventDefault();nhSigMove(e.touches[0]);},{passive:false});
+  canvas.addEventListener('touchend',function(e){e.preventDefault();nhSigEnd();},{passive:false});
+}
+function nhSigPos(e){
+  var canvas=document.getElementById('nh-signature-canvas');
+  var rect=canvas.getBoundingClientRect();
+  var scaleX=canvas.width/rect.width;
+  var scaleY=canvas.height/rect.height;
+  return{x:(e.clientX-rect.left)*scaleX,y:(e.clientY-rect.top)*scaleY};
+}
+function nhSigStart(e){
+  _nhSigDrawing=true;
+  var p=nhSigPos(e);
+  _nhSigCtx.beginPath();
+  _nhSigCtx.moveTo(p.x,p.y);
+  var ph=document.getElementById('nh-sig-placeholder');
+  if(ph)ph.style.display='none';
+}
+function nhSigMove(e){
+  if(!_nhSigDrawing)return;
+  var p=nhSigPos(e);
+  _nhSigCtx.lineTo(p.x,p.y);
+  _nhSigCtx.stroke();
+  _nhSigHasContent=true;
+}
+function nhSigEnd(){_nhSigDrawing=false;}
+function clearNHSignature(){
+  if(!_nhSigCtx)return;
+  var canvas=document.getElementById('nh-signature-canvas');
+  _nhSigCtx.clearRect(0,0,canvas.width,canvas.height);
+  _nhSigHasContent=false;
+  var ph=document.getElementById('nh-sig-placeholder');
+  if(ph)ph.style.display='';
+}
+function isNHSigEmpty(){return!_nhSigHasContent;}
+
+function handleNHPhotoUpload(e){
+  var file=e.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    /* Compress via canvas — max 400x400 */
+    var img=new Image();
+    img.onload=function(){
+      var MAX=400;
+      var w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
+      var c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      _nhPhotoData=c.toDataURL('image/jpeg',0.8);
+      var preview=document.getElementById('nh-photo-preview');
+      var wrap=document.getElementById('nh-photo-preview-wrap');
+      if(preview){preview.src=_nhPhotoData;}
+      if(wrap)wrap.style.display='';
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function clearNHPhoto(){
+  _nhPhotoData=null;
+  var wrap=document.getElementById('nh-photo-preview-wrap');
+  if(wrap)wrap.style.display='none';
+  var inp=document.getElementById('nh-photo-input');
+  if(inp)inp.value='';
+}
+
+function resetNewHireForm(){
+  ['nh-name','nh-empid','nh-role','nh-email'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var site=document.getElementById('nh-site');if(site)site.value='';
+  var sd=document.getElementById('nh-start-date');if(sd)sd.value='';
+  clearNHSignature();clearNHPhoto();
+  _nhSigCtx=null;
+}
+
+function saveNewHire(){
+  var name=document.getElementById('nh-name').value.trim();
+  var empid=document.getElementById('nh-empid').value.trim();
+  var role=document.getElementById('nh-role').value.trim();
+  var email=document.getElementById('nh-email').value.trim();
+  var site=document.getElementById('nh-site').value;
+  var startDate=document.getElementById('nh-start-date').value;
+
+  if(!name)return alert('Full name is required.');
+  if(!email)return alert('Email address is required.');
+  if(!site)return alert('Please select a site.');
+  if(!startDate)return alert('Start date is required.');
+  if(isNHSigEmpty())return alert('Please provide a signature before submitting.');
+
+  if(empid&&employees.some(function(e){return e.empid&&e.empid.toLowerCase()===empid.toLowerCase();}))
+    return alert('Employee ID "'+empid+'" already exists.');
+  if(email&&employees.some(function(e){return e.email&&e.email.toLowerCase()===email.toLowerCase();}))
+    return alert('An employee with email "'+email+'" already exists.');
+
+  var canvas=document.getElementById('nh-signature-canvas');
+  var sigData=canvas?canvas.toDataURL('image/png'):null;
+
+  var newEmp={id:genId(),empid:empid,name:name,role:role,email:email,site:site,
+    startDate:startDate,signature:sigData,photo:_nhPhotoData||null,
+    addedVia:'new-hire-form',addedAt:new Date().toISOString()};
+
+  employees.push(newEmp);
+  logAudit('ADD','Employee',name,'Role: '+role+', Site: '+site+', ID: '+empid+' — via New Hire Form');
+  addNotif('\ud83d\udc64','New hire added: '+name,'employee');
+  logActivity('New hire '+name+' added via New Hire Form');
+  saveData();
+  sendNewHireEmail(newEmp,sigData);
+  resetNewHireForm();
+
+  /* Success banner */
+  var existing=document.getElementById('nh-success-banner');if(existing)existing.remove();
+  var banner=document.createElement('div');banner.id='nh-success-banner';
+  banner.style.cssText='background:rgba(34,204,136,0.15);border:1px solid rgba(34,204,136,0.4);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-family:Share Tech Mono,monospace;font-size:12px;color:var(--green);max-width:720px;';
+  banner.innerHTML='<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>'
+    +'<span>'+name+' has been added to the Employee Directory and a notification email has been sent to Xerxis.</span>'
+    +'<button onclick="this.parentNode.remove()" style="background:transparent;border:none;color:var(--green);cursor:pointer;margin-left:auto;font-size:14px;">×</button>';
+  var view=document.getElementById('view-new-hire');
+  if(view)view.insertBefore(banner,view.children[1]);
+}
+
+async function sendNewHireEmail(emp,sigData){
+  try{
+    var r=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:currentUser,forceRefresh:false});
+    if(r&&r.accessToken)accessToken=r.accessToken;
+  }catch(e){}
+  if(!accessToken)return;
+  var photoHtml=emp.photo
+    ?'<img src="'+emp.photo+'" style="max-width:200px;max-height:200px;border:1px solid #383d72;display:block;margin-top:8px;">'
+    :'<span style="color:#565e90;font-size:13px">No photo uploaded</span>';
+  var sigHtml=sigData
+    ?'<img src="'+sigData+'" style="max-width:100%;background:#1a1d38;border:1px solid #383d72;display:block;margin-top:8px;">'
+    :'<span style="color:#565e90;font-size:13px">No signature</span>';
+  var rows=[['Full Name',emp.name],['Employee ID',emp.empid||'Not provided'],
+    ['Role / Position',emp.role||'Not provided'],['Email',emp.email],
+    ['Site',emp.site],['Start Date',emp.startDate]];
+  var tableRows=rows.map(function(r){
+    return'<tr><td style="padding:9px 14px;border-bottom:1px solid #2a2a3a;color:#d4a830;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;width:130px">'+r[0]+'</td>'
+      +'<td style="padding:9px 14px;border-bottom:1px solid #2a2a3a;color:#e4e8ff;font-size:14px">'+r[1]+'</td></tr>';
+  }).join('');
+  var htmlBody='<!DOCTYPE html><html><body style="margin:0;padding:0;background:#0e0f1a;font-family:Arial,sans-serif">'
+    +'<div style="max-width:620px;margin:0 auto;padding:28px 20px">'
+    +'<div style="background:#141628;border:1px solid #383d72;padding:28px 32px">'
+    +'<div style="text-align:center;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #383d72">'
+    +'<div style="font-size:18px;font-weight:900;color:#fff;letter-spacing:3px">DEDALE INTELLIGENCE</div>'
+    +'<div style="font-size:11px;color:#cc2244;letter-spacing:3px;margin-top:4px">NEW HIRE NOTIFICATION</div>'
+    +'</div>'
+    +'<table style="width:100%;border-collapse:collapse;margin-bottom:22px">'+tableRows+'</table>'
+    +'<div style="margin-bottom:20px"><div style="color:#d4a830;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:monospace">ID PHOTO / DOCUMENT</div>'+photoHtml+'</div>'
+    +'<div style="margin-bottom:20px"><div style="color:#d4a830;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-family:monospace">SIGNATURE</div>'+sigHtml+'</div>'
+    +'<div style="padding-top:16px;border-top:1px solid #383d72;font-size:11px;color:#565e90">Submitted via INTEL-SYS New Hire Form · '
+    +new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})
+    +'</div></div></div></body></html>';
+  try{
+    await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
+      body:JSON.stringify({message:{subject:'[NEW HIRE] '+emp.name+' — '+emp.site,
+        body:{contentType:'HTML',content:htmlBody},
+        toRecipients:[{emailAddress:{address:SUPER_ADMIN_EMAIL,name:'Xerxis Dalanon'}}]},
+        saveToSentItems:false})
+    });
+  }catch(e){console.error('New hire email failed:',e);}
+}
+
 /* ======= ROLE-BASED PERMISSIONS (4-tier) ======= */
 function getUserRole(){
   if(!currentUser)return 'staff';
@@ -1080,6 +1272,8 @@ function applyRolePermissions(){
   if(auditNav)auditNav.style.display=(isSuperAdmin||isITStaff)?'':'none';
   var settingsNav=document.getElementById('nav-settings');
   if(settingsNav)settingsNav.style.display=isSuperAdmin?'':'none';
+  var newHireNav=document.getElementById('nav-new-hire');
+  if(newHireNav)newHireNav.style.display=(isSuperAdmin||isITStaff)?'':'none';
 
   /* Equipment edit/delete buttons — only IT Staff and Super Admin */
   if(!isSuperAdmin&&!isITStaff){

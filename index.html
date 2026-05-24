@@ -972,9 +972,9 @@ function renderCharts(){
 function renderWarrantyAlerts(){
   var el=document.getElementById('warranty-alerts');if(!el)return;
   var today=new Date();today.setHours(0,0,0,0);
-  var soon=new Date(today.getTime()+30*24*60*60*1000);
-  var expired=equipment.filter(function(e){if(!e.warrantyExpiry)return false;return new Date(e.warrantyExpiry)<today;});
-  var expiring=equipment.filter(function(e){if(!e.warrantyExpiry)return false;var d=new Date(e.warrantyExpiry);return d>=today&&d<=soon;});
+  var soon=new Date();soon.setMonth(soon.getMonth()+2);
+  var expired=equipment.filter(function(e){if(!e.warrantyExpiry)return false;var d=warrantyToDate(e.warrantyExpiry);return d&&d<today;});
+  var expiring=equipment.filter(function(e){if(!e.warrantyExpiry)return false;var d=warrantyToDate(e.warrantyExpiry);return d&&d>=today&&d<=soon;});
   if(expired.length===0&&expiring.length===0){el.innerHTML='<div class="empty-state"><p>No warranty alerts \u2014 all good</p></div>';return;}
   var html='';
   expired.forEach(function(e){html+='<div class="recent-row" style="border-left:3px solid var(--crimson);padding-left:10px;margin-bottom:6px"><span style="font-size:12px">'+e.brand+' '+e.model+' <span style="color:var(--text3);font-size:10px">('+e.type+')</span></span><span style="color:var(--crimson);font-size:10px;font-family:\'Share Tech Mono\',monospace">EXPIRED '+e.warrantyExpiry+'</span></div>';});

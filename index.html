@@ -384,6 +384,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="nav-item" id="nav-audit" onclick="showView('audit')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Audit Log</div>
     <div class="nav-item" onclick="exportCSV()"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV</div>
     <div class="nav-item" onclick="window.open('qr.html','_blank')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="5" y="5" width="3" height="3" fill="currentColor"/><rect x="16" y="5" width="3" height="3" fill="currentColor"/><rect x="5" y="16" width="3" height="3" fill="currentColor"/></svg>App QR Code</div>
+    <div class="nav-item" id="nav-settings" onclick="showView('settings')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</div>
     <div class="nav-item" onclick="manualBackup()"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Backup Now</div>
   </nav>
   <div style="padding:12px 12px 6px">
@@ -532,6 +533,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       </div>
       <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 30px 26px;"><div id="po-list"></div></div>
     </div>
+    <div class="view" id="view-settings" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:20px"><span class="section-title">Settings</span></div><div class="dash-card" style="margin-bottom:16px;max-width:680px;"><div class="dash-card-title" style="margin-bottom:14px">Access Management</div><div style="margin-bottom:18px"><div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--crimson);font-family:Share Tech Mono,monospace;margin-bottom:8px">SUPER ADMIN (you)</div><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy-mid);border:1px solid var(--border)"><span style="font-size:12px;color:var(--text)">xerxis.dalanon@dedale.com</span><span style="font-size:9px;padding:2px 6px;background:rgba(196,18,48,0.2);color:var(--crimson);font-family:Share Tech Mono,monospace;margin-left:auto">LOCKED</span></div></div><div style="margin-bottom:18px"><div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#ff8c00;font-family:Share Tech Mono,monospace;margin-bottom:8px">IT STAFF</div><div style="font-size:11px;color:var(--text3);margin-bottom:8px">Can manage equipment, employees, assignments, and view audit log. Cannot manage access or approve POs.</div><div id="itstaff-list" style="margin-bottom:8px"></div><div style="display:flex;gap:8px"><input id="itstaff-email-input" class="search-input" placeholder="Enter email address..." style="flex:1;" autocomplete="off"><button class="btn btn-outline btn-sm" onclick="addRoleEmail('itstaff')">+ Add</button></div></div><div style="margin-bottom:8px"><div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);font-family:Share Tech Mono,monospace;margin-bottom:8px">FINANCE</div><div style="font-size:11px;color:var(--text3);margin-bottom:8px">Can approve and reject Purchase Orders. Cannot edit equipment or employees.</div><div id="finance-list" style="margin-bottom:8px"></div><div style="display:flex;gap:8px"><input id="finance-email-input" class="search-input" placeholder="Enter email address..." style="flex:1;" autocomplete="off"><button class="btn btn-outline btn-sm" onclick="addRoleEmail('finance')">+ Add</button></div></div></div><div class="dash-card" style="max-width:680px;"><div class="dash-card-title" style="margin-bottom:10px">About Roles</div><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr><th style="padding:8px 12px;text-align:left;font-size:9px;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:Share Tech Mono,monospace;letter-spacing:1.5px">ROLE</th><th style="padding:8px 12px;text-align:left;font-size:9px;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:Share Tech Mono,monospace;letter-spacing:1.5px">PERMISSIONS</th></tr></thead><tbody><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px"><span style="font-size:9px;padding:2px 7px;background:rgba(196,18,48,0.2);color:var(--crimson);font-family:Share Tech Mono,monospace">SUPER ADMIN</span></td><td style="padding:8px 12px;font-size:11px;color:var(--text2)">Full access — equipment, employees, POs, audit log, access management, backup, export</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px"><span style="font-size:9px;padding:2px 7px;background:rgba(255,140,0,0.2);color:#ff8c00;font-family:Share Tech Mono,monospace">IT STAFF</span></td><td style="padding:8px 12px;font-size:11px;color:var(--text2)">Manage equipment, employees, assignments — cannot manage access or approve POs</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 12px"><span style="font-size:9px;padding:2px 7px;background:rgba(212,168,48,0.15);color:var(--gold);font-family:Share Tech Mono,monospace">FINANCE</span></td><td style="padding:8px 12px;font-size:11px;color:var(--text2)">View all, approve/reject Purchase Orders only</td></tr><tr><td style="padding:8px 12px"><span style="font-size:9px;padding:2px 7px;background:rgba(68,136,255,0.15);color:#4488ff;font-family:Share Tech Mono,monospace">STAFF</span></td><td style="padding:8px 12px;font-size:11px;color:var(--text2)">View own equipment, submit Purchase Orders only</td></tr></tbody></table></div></div>
     <div class="view" id="view-audit" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:16px"><span class="section-title">Audit Log</span><button class="btn btn-outline btn-sm" onclick="clearAuditLog()">Clear Log</button></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;"><input class="search-input" id="audit-search" placeholder="Search by user, action, item..." oninput="renderAuditLog()" style="flex:1;min-width:200px;"><select class="filter-select" id="audit-action-filter" onchange="renderAuditLog()"><option value="">All Actions</option><option>ADD</option><option>EDIT</option><option>DELETE</option><option>ASSIGN</option><option>UNASSIGN</option><option>APPROVE</option><option>REJECT</option><option>SUBMIT PO</option></select><select class="filter-select" id="audit-entity-filter" onchange="renderAuditLog()"><option value="">All Entities</option><option>Equipment</option><option>Employee</option><option>PO</option><option>Assignment</option></select></div><div id="audit-count" style="font-size:11px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-bottom:10px;"></div><div style="overflow-x:auto;border:1px solid var(--border);"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr><th style="padding:9px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;white-space:nowrap;">Time</th><th style="padding:9px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">User</th><th style="padding:9px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Action</th><th style="padding:9px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Entity</th><th style="padding:9px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Item</th><th style="padding:9px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;">Details</th></tr></thead><tbody id="audit-tbody"></tbody></table></div></div>
     <div class="view" id="view-analytics" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
@@ -674,7 +676,8 @@ let editingId=null;
 let _localSaveTime=0,_lastSyncTime=null,_lastServerTime=null,syncDebounceTimer=null;
 let auditLog=JSON.parse(localStorage.getItem('dd_audit')||'[]');
 let notifications=JSON.parse(localStorage.getItem('dd_notifications')||'[]');
-const ROLES={admins:['xerxis.dalanon@dedale.com'],finance:['alvin.villena@dedale.com']};
+const SUPER_ADMIN_EMAIL='xerxis.dalanon@dedale.com';
+var roleConfig=JSON.parse(localStorage.getItem('dd_roles')||'{"itstaff":[],"finance":["alvin.villena@dedale.com"]}');
 
 if(equipment.length===0){
   employees=[{id:'e1',name:'Rambo Joinani',role:'Analyst',email:'rambo.joinani@dedale.com',site:'PH - Ceb'},{id:'e2',name:'Xerxis Dalanon',role:'IT Admin',email:'xerxis.dalanon@dedale.com',site:'PH - Ceb'},{id:'e3',name:'Sophie Martin',role:'Manager',email:'sophie.martin@dedale.com',site:'PAR'}];
@@ -698,6 +701,7 @@ function saveData(){
   localStorage.setItem('dd_purchase_orders',JSON.stringify(purchaseOrders));
   localStorage.setItem('dd_activity',JSON.stringify(activity));
   localStorage.setItem('dd_audit',JSON.stringify(auditLog.slice(0,500)));
+  localStorage.setItem('dd_roles',JSON.stringify(roleConfig));
   localStorage.setItem('dd_notifications',JSON.stringify(notifications.slice(0,50)));
   if(accessToken)syncToOneDrive();
 }
@@ -787,6 +791,7 @@ setInterval(async()=>{
     const data=await r.json();
     if(data.equipment){equipment=data.equipment;localStorage.setItem('dd_equipment',JSON.stringify(equipment));}
     if(data.employees){employees=data.employees;localStorage.setItem('dd_employees',JSON.stringify(employees));}
+    if(data.roleConfig){roleConfig=data.roleConfig;localStorage.setItem('dd_roles',JSON.stringify(roleConfig));}
     if(data.purchaseOrders&&(Date.now()-_localSaveTime>10000)){purchaseOrders=data.purchaseOrders;localStorage.setItem('dd_purchase_orders',JSON.stringify(purchaseOrders));}
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     setEl('po-stat-pending',purchaseOrders.filter(p=>p.status==='Pending').length);
@@ -813,7 +818,7 @@ async function syncToOneDrive(){
   syncDebounceTimer=setTimeout(async()=>{
     if(isSyncing)return;isSyncing=true;updateSyncStatus('syncing');
     try{
-      const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity},null,2);
+      const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig},null,2);
       const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
       if(r.status===401){accessToken=null;updateSyncStatus('disconnected');return;}
       if(r.ok){updateSyncStatus('saved');_lastSyncTime=Date.now();}else updateSyncStatus('error');
@@ -884,7 +889,7 @@ function showView(name){
   // Highlight correct nav item safely (works from both click and programmatic calls)
   var _navItems=document.querySelectorAll('.nav-item');
   _navItems.forEach(function(n){if(n.getAttribute('onclick')&&n.getAttribute('onclick').indexOf(name)>-1)n.classList.add('active');});
-  const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS'};
+  const titles={dashboard:'TACTICAL OVERVIEW',equipment:'EQUIPMENT REGISTRY',assignments:'UNIT ASSIGNMENTS',repairs:'REPAIR & MAINTENANCE LOG',purchases:'PROCUREMENT HISTORY','purchase-orders':'PURCHASE REQUESTS',employees:'PERSONNEL DIRECTORY',analytics:'ANALYTICS & INSIGHTS',audit:'AUDIT LOG',settings:'SETTINGS'};
   document.getElementById('page-title').textContent=titles[name]||name;
   if(name==='dashboard')renderDashboard();
   if(name==='equipment'){
@@ -909,6 +914,7 @@ function showView(name){
   if(name==='employees')initEmployeeView();
   if(name==='analytics')renderAnalytics();
   if(name==='audit')renderAuditLog();
+  if(name==='settings')renderSettings();
   closeMobileMenu();
 }
 
@@ -961,17 +967,32 @@ document.addEventListener('change',function(e){
 
 
 
-/* ======= ROLE-BASED PERMISSIONS ======= */
+/* ======= ROLE-BASED PERMISSIONS (4-tier) ======= */
 function getUserRole(){
   if(!currentUser)return 'staff';
   var email=(currentUser.username||currentUser.mail||currentUser.preferred_username||'').toLowerCase();
-  if(ROLES.admins.indexOf(email)>-1)return 'admin';
-  if(ROLES.finance.indexOf(email)>-1)return 'finance';
+  if(email===SUPER_ADMIN_EMAIL.toLowerCase())return 'superadmin';
+  if(roleConfig.itstaff&&roleConfig.itstaff.indexOf(email)>-1)return 'itstaff';
+  if(roleConfig.finance&&roleConfig.finance.indexOf(email)>-1)return 'finance';
   return 'staff';
+}
+function hasPermission(perm){
+  var role=getUserRole();
+  if(role==='superadmin')return true;
+  var perms={
+    itstaff:['equip_rw','emp_rw','assign','audit_view','po_submit','analytics','csv_export','backup'],
+    finance:['po_submit','po_approve','analytics'],
+    staff:['po_submit']
+  };
+  return perms[role]?perms[role].indexOf(perm)>-1:false;
 }
 function applyRolePermissions(){
   var role=getUserRole();
-  var isAdmin=(role==='admin');
+  var isSuperAdmin=(role==='superadmin');
+  var isITStaff=(role==='itstaff');
+  var isFinance=(role==='finance');
+
+  /* Role badge */
   var badge=document.getElementById('role-badge');
   if(!badge){
     var chip=document.getElementById('user-chip');
@@ -983,14 +1004,95 @@ function applyRolePermissions(){
     }
   }
   if(badge){
-    if(isAdmin){badge.style.background='rgba(196,18,48,0.2)';badge.style.color='var(--crimson)';badge.textContent='ADMIN';}
-    else if(role==='finance'){badge.style.background='rgba(212,168,48,0.15)';badge.style.color='var(--gold)';badge.textContent='FINANCE';}
+    if(isSuperAdmin){badge.style.background='rgba(196,18,48,0.2)';badge.style.color='var(--crimson)';badge.textContent='SUPER ADMIN';}
+    else if(isITStaff){badge.style.background='rgba(255,140,0,0.2)';badge.style.color='#ff8c00';badge.textContent='IT STAFF';}
+    else if(isFinance){badge.style.background='rgba(212,168,48,0.15)';badge.style.color='var(--gold)';badge.textContent='FINANCE';}
     else{badge.style.background='rgba(68,136,255,0.15)';badge.style.color='#4488ff';badge.textContent='STAFF';}
   }
-  if(!isAdmin){
-    var auditNav=document.getElementById('nav-audit');
-    if(auditNav)auditNav.style.display='none';
+
+  /* Sidebar visibility */
+  var auditNav=document.getElementById('nav-audit');
+  if(auditNav)auditNav.style.display=(isSuperAdmin||isITStaff)?'':'none';
+  var settingsNav=document.getElementById('nav-settings');
+  if(settingsNav)settingsNav.style.display=isSuperAdmin?'':'none';
+
+  /* Equipment edit/delete buttons — only IT Staff and Super Admin */
+  if(!isSuperAdmin&&!isITStaff){
+    document.querySelectorAll('.equip-edit-btn,.equip-del-btn').forEach(function(el){el.style.display='none';});
   }
+
+  /* Topbar Add Equipment — only IT Staff and Super Admin */
+  if(!isSuperAdmin&&!isITStaff){
+    var addBtn=document.querySelector('.topbar-right .btn.btn-primary');
+    if(addBtn)addBtn.style.display='none';
+  }
+
+  /* Clear Audit Log button — Super Admin only */
+  var clearAuditBtn=document.querySelector('[onclick="clearAuditLog()"]');
+  if(clearAuditBtn)clearAuditBtn.style.display=isSuperAdmin?'':'none';
+
+  /* Approve/Reject PO buttons — Super Admin and Finance only */
+  if(!isSuperAdmin&&!isFinance){
+    document.querySelectorAll('.po-btn-approve,.po-btn-reject').forEach(function(el){el.style.display='none';});
+  }
+
+  /* Export CSV — Super Admin and IT Staff only */
+  var exportNav=document.querySelector('[onclick="exportCSV()"]');
+  if(exportNav)exportNav.style.display=(isSuperAdmin||isITStaff)?'':'none';
+
+  /* Backup Now — Super Admin and IT Staff only */
+  var backupNav=document.querySelector('[onclick="manualBackup()"]');
+  if(backupNav)backupNav.style.display=(isSuperAdmin||isITStaff)?'':'none';
+}
+
+
+/* ======= SETTINGS / ACCESS MANAGEMENT ======= */
+function renderSettings(){
+  renderRoleList('itstaff','itstaff-list','#ff8c00');
+  renderRoleList('finance','finance-list','var(--gold)');
+}
+function renderRoleList(role,containerId,color){
+  var el=document.getElementById(containerId);if(!el)return;
+  var emails=roleConfig[role]||[];
+  if(emails.length===0){
+    el.innerHTML='<div style="padding:8px 12px;font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace;border:1px dashed var(--border)">No '+role+' users added yet</div>';
+    return;
+  }
+  el.innerHTML=emails.map(function(email){
+    return'<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--navy-mid);border:1px solid var(--border);margin-bottom:4px;">'
+      +'<span style="font-size:12px;color:var(--text)">'+email+'</span>'
+      +'<button data-role="'+role+'" data-email="'+email+'" onclick="removeRoleEmailFromBtn(this)" style="background:transparent;border:1px solid var(--crimson-dark);color:var(--crimson);padding:3px 8px;font-size:10px;cursor:pointer;font-family:Share Tech Mono,monospace;">REMOVE</button>'
+      +'</div>';
+  }).join('');
+}
+function addRoleEmail(role){
+  var inputId=role+'-email-input';
+  var input=document.getElementById(inputId);
+  if(!input)return;
+  var email=input.value.trim().toLowerCase();
+  if(!email)return alert('Please enter an email address.');
+  if(!email.includes('@'))return alert('Please enter a valid email address.');
+  if(email===SUPER_ADMIN_EMAIL.toLowerCase())return alert('That email is the Super Admin and cannot be assigned another role.');
+  if(!roleConfig[role])roleConfig[role]=[];
+  if(roleConfig[role].indexOf(email)>-1)return alert('That email already has '+role+' access.');
+  /* Remove from other roles first */
+  Object.keys(roleConfig).forEach(function(r){
+    if(r!==role)roleConfig[r]=roleConfig[r].filter(function(e){return e!==email;});
+  });
+  roleConfig[role].push(email);
+  input.value='';
+  logAudit('EDIT','Access',email,'Added to '+role+' role by '+((currentUser&&currentUser.name)||'admin'));
+  saveData();
+  renderSettings();
+  alert(email+' has been added as '+role+'.');
+}
+function removeRoleEmailFromBtn(btn){removeRoleEmail(btn.getAttribute('data-role'),btn.getAttribute('data-email'));}
+function removeRoleEmail(role,email){
+  if(!confirm('Remove '+email+' from '+role+'? They will become a Staff user.'))return;
+  roleConfig[role]=(roleConfig[role]||[]).filter(function(e){return e!==email;});
+  logAudit('EDIT','Access',email,'Removed from '+role+' role');
+  saveData();
+  renderSettings();
 }
 
 /* ======= AUDIT LOG ======= */

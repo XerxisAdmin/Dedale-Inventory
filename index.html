@@ -2291,7 +2291,7 @@ function showPODropdown(){const q=document.getElementById('po-employee-search').
 function hidePODropdown(){document.getElementById('po-employee-dropdown').style.display='none';}
 
 const PO_BRANDS={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo'],'Memory':['Kingston'],'Other':[]};
-const PO_MODELS={'Lenovo':['14ALC7','15IAU7','15IAX9E (LOQ)','15IRH10'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','NV2 256GB SSD','NV2 512GB SSD']};
+const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','NV2 256GB SSD','NV2 512GB SSD']};
 
 function updatePOBrands(typeSelect){
   const row=typeSelect.closest('.po-item-row'),type=typeSelect.value,bs=row.querySelector('.po-item-brand'),ms=row.querySelector('.po-item-model');
@@ -2408,10 +2408,80 @@ async function sendApprovalEmail(po){
   if(!accessToken){alert('Session expired. Please log out and log back in, then resubmit the purchase request.');return;}
   try{
     const itemsHtml=po.items.map(i=>'<tr style="border-bottom:1px solid #2a2a3a"><td style="padding:8px 12px;color:#e4e8ff">'+i.desc+'</td><td style="padding:8px 12px;color:#9aa2cc;font-family:monospace">'+i.type+'</td><td style="padding:8px 12px;color:#9aa2cc;font-family:monospace;text-align:center">'+i.qty+'</td><td style="padding:8px 12px;color:#9aa2cc;font-family:monospace">\u20b1'+i.price.toLocaleString()+'</td><td style="padding:8px 12px;color:#d4a830;font-family:monospace;font-weight:600">\u20b1'+(i.qty*i.price).toLocaleString()+'</td></tr>').join('');
-    const approveUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=approve';
-    const rejectUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=reject';
-    const htmlBody='<!DOCTYPE html><html><body style="margin:0;padding:0;background:#0e0f1a;font-family:Arial,sans-serif"><div style="max-width:600px;margin:0 auto;padding:28px 20px"><div style="background:#141628;border:1px solid #383d72;padding:28px 32px;border-radius:2px"><div style="text-align:center;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #383d72"><div style="font-size:20px;font-weight:900;color:#fff;letter-spacing:3px">DEDALE INTELLIGENCE</div><div style="font-size:11px;color:#cc2244;letter-spacing:3px;margin-top:4px">PURCHASE REQUEST APPROVAL</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">REQUESTED BY</span><div style="font-size:16px;color:#e4e8ff;margin-top:4px;font-weight:600">'+po.requester+'</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">REQUEST TITLE</span><div style="font-size:16px;color:#e4e8ff;margin-top:4px">'+po.title+'</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">JUSTIFICATION</span><div style="font-size:15px;color:#9aa2cc;margin-top:4px">'+po.justification+(po.forEmployee?' \u2014 For: '+po.forEmployee:'')+'</div></div><div style="margin-bottom:16px"><span style="font-size:11px;color:#d4a830;letter-spacing:1px;text-transform:uppercase">URGENCY</span><div style="font-size:15px;color:#e07030;margin-top:4px;font-weight:600">'+po.urgency+'</div></div><table style="width:100%;border-collapse:collapse;margin-bottom:16px;background:#1a1d38"><thead><tr style="background:#282c52"><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">DESCRIPTION</th><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">TYPE</th><th style="padding:8px 12px;text-align:center;font-size:10px;color:#d4a830;letter-spacing:1px">QTY</th><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">UNIT</th><th style="padding:8px 12px;text-align:left;font-size:10px;color:#d4a830;letter-spacing:1px">SUBTOTAL</th></tr></thead><tbody>'+itemsHtml+'</tbody></table><div style="text-align:right;font-size:18px;font-weight:700;color:#d4a830;margin-bottom:24px;font-family:monospace">TOTAL: \u20b1'+po.total.toLocaleString()+'</div><div style="display:flex;gap:12px;justify-content:center"><a href="'+approveUrl+'" style="display:inline-block;padding:13px 32px;background:#15803d;color:#fff;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;border-radius:2px">\u2713 APPROVE</a><a href="'+rejectUrl+'" style="display:inline-block;padding:13px 32px;background:#881630;color:#fff;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:1px;border-radius:2px">\u2717 REJECT</a></div></div></div></body></html>';
-    const mailResp=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:'[ITEM REQUEST] Purchase Approval Required \u2014 '+po.requester,body:{contentType:'HTML',content:htmlBody},toRecipients:[{emailAddress:{address:FINANCE_EMAIL,name:FINANCE_NAME}}]},saveToSentItems:false})});
+    var poApproveUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=approve';
+    var poRejectUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=reject';
+    var poItemsHtml=po.items.map(function(i,idx){
+    var bg=idx%2===0?'#ffffff':'#f8fafc';
+    return'<tr style="background:'+bg+'"><td style="padding:9px 12px;font-size:13px;font-family:Arial,sans-serif;color:#374151;border-bottom:1px solid #f1f5f9">'+i.desc+'</td>'
+      +'<td style="padding:9px 12px;font-size:12px;font-family:monospace;color:#6b7280;border-bottom:1px solid #f1f5f9">'+i.type+'</td>'
+      +'<td style="padding:9px 12px;font-size:13px;font-family:Arial,sans-serif;color:#374151;text-align:center;border-bottom:1px solid #f1f5f9">'+i.qty+'</td>'
+      +'<td style="padding:9px 12px;font-size:13px;font-family:monospace;color:#374151;border-bottom:1px solid #f1f5f9">₱'+i.price.toLocaleString()+'</td>'
+      +'<td style="padding:9px 12px;font-size:13px;font-family:monospace;color:#111827;font-weight:600;border-bottom:1px solid #f1f5f9">₱'+(i.qty*i.price).toLocaleString()+'</td>'
+      +'</tr>';
+  }).join('');
+  var submittedAt=po.createdAt?new Date(po.createdAt).toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}):'';
+  var urgencyColor={'Low':'#16a34a','Medium':'#ca8a04','High':'#ea580c','Critical':'#dc2626'};
+  var uColor=urgencyColor[po.urgency]||'#374151';
+  var poApproveUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=approve';
+  var poRejectUrl='https://xerxisadmin.github.io/Dedale-Inventory/approve.html?id='+po.id+'&action=reject';
+  var poHtmlBody='<!DOCTYPE html><html><head><meta charset="UTF-8"></head>'
+    +'<body style="margin:0;padding:0;background:#f4f4f5;font-family:Arial,sans-serif;">'
+    +'<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:28px 12px;">'
+    +'<tr><td align="center">'
+    +'<table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;background:#ffffff;border-radius:2px;border:1px solid #e4e4e7;">'
+    /* Top accent bar */
+    +'<tr><td style="background:#cc2244;height:4px;line-height:4px;font-size:4px;">&nbsp;</td></tr>'
+    /* Header */
+    +'<tr><td style="padding:22px 32px 18px;border-bottom:1px solid #f0f0f0;">'
+    +'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
+    +'<td><div style="font-size:13px;font-weight:700;color:#18181b;letter-spacing:1px;font-family:Arial,sans-serif;">DEDALE INTELLIGENCE</div>'
+    +'<div style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;margin-top:2px;">IT Asset Management System</div></td>'
+    +'<td align="right"><div style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;">Purchase Request</div></td>'
+    +'</tr></table></td></tr>'
+    /* Request banner */
+    +'<tr><td style="padding:22px 32px;border-bottom:1px solid #f0f0f0;">'
+    +'<div style="font-size:22px;font-weight:700;color:#09090b;font-family:Arial,sans-serif;margin-bottom:4px;">'+po.title+'</div>'
+    +'<div style="font-size:13px;color:#71717a;font-family:Arial,sans-serif;">Requested by <strong style="color:#374151;">'+po.requester+'</strong>'+(po.forEmployee?' &bull; For: <strong style="color:#374151;">'+po.forEmployee+'</strong>':'')+'</div>'
+    +'</td></tr>'
+    /* Details */
+    +'<tr><td style="padding:20px 32px;border-bottom:1px solid #f0f0f0;">'
+    +'<div style="font-size:11px;font-weight:700;color:#cc2244;text-transform:uppercase;letter-spacing:1.5px;font-family:Arial,sans-serif;margin-bottom:12px;">Request Details</div>'
+    +'<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">'
+    +'<tr style="border-top:1px solid #f4f4f5;"><td style="padding:9px 0;font-size:12px;color:#71717a;font-weight:600;width:130px;font-family:Arial,sans-serif;">Justification</td>'
+    +'<td style="padding:9px 0;font-size:13px;color:#09090b;font-weight:600;font-family:Arial,sans-serif;">'+po.justification+'</td></tr>'
+    +'<tr style="border-top:1px solid #f4f4f5;"><td style="padding:9px 0;font-size:12px;color:#71717a;font-weight:600;font-family:Arial,sans-serif;">Urgency</td>'
+    +'<td style="padding:9px 0;font-size:13px;font-weight:700;font-family:Arial,sans-serif;color:'+uColor+';">'+po.urgency+'</td></tr>'
+    +'<tr style="border-top:1px solid #f4f4f5;"><td style="padding:9px 0;font-size:12px;color:#71717a;font-weight:600;font-family:Arial,sans-serif;">Submitted</td>'
+    +'<td style="padding:9px 0;font-size:13px;color:#374151;font-family:Arial,sans-serif;">'+submittedAt+'</td></tr>'
+    +'</table></td></tr>'
+    /* Items table */
+    +'<tr><td style="padding:20px 32px;border-bottom:1px solid #f0f0f0;">'
+    +'<div style="font-size:11px;font-weight:700;color:#cc2244;text-transform:uppercase;letter-spacing:1.5px;font-family:Arial,sans-serif;margin-bottom:12px;">Items Requested</div>'
+    +'<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e4e4e7;">'
+    +'<tr style="background:#fafafa;">'
+    +'<th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#71717a;font-weight:600;border-bottom:1px solid #e4e4e7;text-transform:uppercase;letter-spacing:0.5px;">Description</th>'
+    +'<th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#71717a;font-weight:600;border-bottom:1px solid #e4e4e7;text-transform:uppercase;letter-spacing:0.5px;">Type</th>'
+    +'<th style="padding:8px 12px;text-align:center;font-size:11px;font-family:Arial,sans-serif;color:#71717a;font-weight:600;border-bottom:1px solid #e4e4e7;text-transform:uppercase;letter-spacing:0.5px;">Qty</th>'
+    +'<th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#71717a;font-weight:600;border-bottom:1px solid #e4e4e7;text-transform:uppercase;letter-spacing:0.5px;">Unit</th>'
+    +'<th style="padding:8px 12px;text-align:left;font-size:11px;font-family:Arial,sans-serif;color:#71717a;font-weight:600;border-bottom:1px solid #e4e4e7;text-transform:uppercase;letter-spacing:0.5px;">Subtotal</th>'
+    +'</tr>'+poItemsHtml+'</table>'
+    +'<div style="text-align:right;padding:12px 0 4px;font-size:15px;font-weight:700;color:#09090b;font-family:Arial,sans-serif;">Total: <span style="color:#cc2244;">₱'+po.total.toLocaleString()+'</span></div>'
+    +'</td></tr>'
+    /* Action buttons */
+    +'<tr><td style="padding:24px 32px;border-bottom:1px solid #f0f0f0;text-align:center;">'
+    +'<table cellpadding="0" cellspacing="0" style="margin:0 auto;"><tr>'
+    +'<td style="padding-right:12px;"><a href="'+poApproveUrl+'" style="display:inline-block;padding:12px 32px;background:#16a34a;color:#fff;text-decoration:none;font-weight:700;font-size:13px;font-family:Arial,sans-serif;border-radius:2px;letter-spacing:0.5px;">✓ Approve</a></td>'
+    +'<td><a href="'+poRejectUrl+'" style="display:inline-block;padding:12px 32px;background:#dc2626;color:#fff;text-decoration:none;font-weight:700;font-size:13px;font-family:Arial,sans-serif;border-radius:2px;letter-spacing:0.5px;">✕ Reject</a></td>'
+    +'</tr></table>'
+    +'</td></tr>'
+    /* Footer */
+    +'<tr><td style="padding:14px 32px;">'
+    +'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
+    +'<td><span style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;">INTEL-SYS &bull; '+submittedAt+'</span></td>'
+    +'<td align="right"><span style="font-size:11px;color:#a1a1aa;font-family:Arial,sans-serif;">Dedale Intelligence</span></td>'
+    +'</tr></table></td></tr>'
+    +'</table></td></tr></table></body></html>';
+  const mailResp=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:'[ITEM REQUEST] Purchase Approval Required \u2014 '+po.requester,body:{contentType:'HTML',content:poHtmlBody},toRecipients:[{emailAddress:{address:FINANCE_EMAIL,name:FINANCE_NAME}}]},saveToSentItems:false})});
     if(!mailResp.ok){
       var errText=await mailResp.text();
       throw new Error('Graph API returned '+mailResp.status+': '+errText);

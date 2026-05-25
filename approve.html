@@ -3,129 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dedale — Purchase Order Approval</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Purchase Order — Dedale Intelligence</title>
+<script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Rajdhani',sans-serif;background:#0e0f1a;color:#e4e8ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background-image:repeating-linear-gradient(0deg,rgba(26,42,58,0.3) 0px,rgba(26,42,58,0.3) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,rgba(26,42,58,0.3) 0px,rgba(26,42,58,0.3) 1px,transparent 1px,transparent 40px);}
-.card{background:#1a1d38;border:1px solid #383d72;padding:36px 40px;width:560px;max-width:95vw;position:relative;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#cc2244,#d4a830 66%,transparent);}
-.logo{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:#fff;letter-spacing:3px;margin-bottom:4px;}
-.sub{font-family:'Share Tech Mono',monospace;font-size:9px;color:#cc2244;letter-spacing:3px;margin-bottom:28px;}
-.label{font-family:'Share Tech Mono',monospace;font-size:10px;color:#d4a830;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
-.value{font-size:16px;font-weight:600;color:#e4e8ff;margin-bottom:16px;}
-.divider{height:1px;background:#383d72;margin:20px 0;}
-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
-thead th{padding:8px 12px;text-align:left;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#d4a830;background:#222646;border-bottom:1px solid #383d72;font-family:'Share Tech Mono',monospace;}
-tbody td{padding:8px 12px;border-bottom:1px solid #2a2e58;font-size:14px;color:#e4e8ff;}
-.total{text-align:right;font-family:'Share Tech Mono',monospace;font-size:16px;font-weight:700;color:#d4a830;margin-bottom:24px;}
-.btn-row{display:flex;gap:12px;justify-content:center;}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;font-family:'Orbitron',monospace;font-size:10px;font-weight:600;letter-spacing:2px;cursor:pointer;border:none;transition:all 0.15s;text-transform:uppercase;}
-.btn-approve{background:linear-gradient(135deg,#0f6b38,#15803d);color:#fff;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));}
-.btn-approve:hover{background:linear-gradient(135deg,#15803d,#22c55e);}
-.btn-reject{background:linear-gradient(135deg,#881630,#cc2244);color:#fff;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));}
-.btn-reject:hover{background:linear-gradient(135deg,#cc2244,#ff2255);}
-#status-msg{display:none;margin-top:20px;padding:14px 18px;font-family:'Share Tech Mono',monospace;font-size:13px;text-align:center;}
-.msg-success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.4);color:#22c55e;}
-.msg-error{background:rgba(204,34,68,0.1);border:1px solid rgba(204,34,68,0.4);color:#cc2244;}
-#loading{text-align:center;padding:40px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#9aa2cc;letter-spacing:2px;}
-#po-content{display:none;}
-#login-section{display:none;text-align:center;padding:20px 0;}
+body{font-family:Arial,sans-serif;background:#f4f4f5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;border-radius:2px;border:1px solid #e4e4e7;width:100%;max-width:520px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+.accent{background:#cc2244;height:4px;}
+.header{padding:20px 28px 18px;border-bottom:1px solid #f0f0f0;}
+.header-top{display:flex;justify-content:space-between;align-items:center;}
+.company{font-size:13px;font-weight:700;color:#18181b;letter-spacing:1px;}
+.system{font-size:11px;color:#a1a1aa;margin-top:2px;}
+.body{padding:28px;}
+.icon-wrap{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.icon-wrap.success{background:#dcfce7;}
+.icon-wrap.error{background:#fee2e2;}
+.icon-wrap.pending{background:#f1f5f9;}
+.title{font-size:18px;font-weight:700;color:#09090b;text-align:center;margin-bottom:6px;}
+.subtitle{font-size:13px;color:#71717a;text-align:center;margin-bottom:20px;line-height:1.5;}
+.po-box{background:#fafafa;border:1px solid #e4e4e7;padding:14px 18px;border-radius:2px;margin-bottom:20px;}
+.po-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;}
+.po-row:last-child{border-bottom:none;}
+.po-label{color:#71717a;font-weight:600;font-size:12px;}
+.po-value{color:#09090b;font-weight:600;}
+.btn{display:block;width:100%;padding:12px;text-align:center;font-size:13px;font-weight:700;font-family:Arial,sans-serif;letter-spacing:0.5px;border:none;border-radius:2px;cursor:pointer;text-decoration:none;margin-bottom:8px;}
+.btn-approve{background:#16a34a;color:#fff;}
+.btn-reject{background:#dc2626;color:#fff;}
+.btn-home{background:#f4f4f5;color:#374151;font-size:12px;margin-top:4px;}
+.spinner{width:32px;height:32px;border:3px solid #e4e4e7;border-top-color:#cc2244;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;}
+.badge-approved{background:#dcfce7;color:#16a34a;}
+.badge-rejected{background:#fee2e2;color:#dc2626;}
+.badge-pending{background:#fff7ed;color:#ea580c;}
+.footer{padding:12px 28px;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;}
+.footer span{font-size:11px;color:#a1a1aa;}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="logo">DEDALE INTELLIGENCE</div>
-  <div class="sub">PURCHASE ORDER APPROVAL</div>
-  <div id="loading">AUTHENTICATING...</div>
-  <div id="login-section">
-    <p style="font-size:14px;color:#9aa2cc;margin-bottom:20px">Sign in with your Dedale Microsoft account to approve or reject this purchase request.</p>
-    <button onclick="signIn()" style="padding:13px 28px;background:linear-gradient(135deg,#881630,#cc2244);color:#fff;border:none;font-family:'Orbitron',monospace;font-size:10px;font-weight:600;letter-spacing:2px;cursor:pointer;display:inline-flex;align-items:center;gap:10px">
-      <svg width="18" height="18" viewBox="0 0 21 21" fill="none"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
-      SIGN IN WITH MICROSOFT
-    </button>
-  </div>
-  <div id="po-content">
-    <div class="label">Requested By</div><div class="value" id="po-requester"></div>
-    <div class="label">Justification</div><div class="value" id="po-justification"></div>
-    <div class="label">For Employee</div><div class="value" id="po-employee"></div>
-    <div class="label">Urgency</div><div class="value" id="po-urgency"></div>
-    <div class="divider"></div>
-    <table><thead><tr><th>Description</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead><tbody id="po-items"></tbody></table>
-    <div class="total">TOTAL: <span id="po-total"></span></div>
-    <div class="btn-row">
-      <button class="btn btn-approve" onclick="updateStatus('Approved')">✓ APPROVE</button>
-      <button class="btn btn-reject" onclick="updateStatus('Rejected')">✗ REJECT</button>
+  <div class="accent"></div>
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="company">DEDALE INTELLIGENCE</div>
+        <div class="system">IT Asset Management System</div>
+      </div>
+      <div style="font-size:11px;color:#a1a1aa;">Purchase Request</div>
     </div>
-    <div id="status-msg"></div>
+  </div>
+  <div class="body" id="main-body">
+    <div class="spinner"></div>
+    <div class="title">Processing...</div>
+    <div class="subtitle">Please wait while we update the purchase request.</div>
+  </div>
+  <div class="footer">
+    <span>INTEL-SYS v1.0</span>
+    <span>Dedale Intelligence</span>
   </div>
 </div>
-<script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+
 <script>
 const CLIENT_ID='4cda57d2-0ef7-4ed4-b683-91d59c94ff86';
 const TENANT_ID='115d6eac-9c52-4e39-9c4c-f8d77ede8a9d';
 const FILE_NAME='dedale-inventory-data.json';
-let msalInstance=null,accessToken=null,poData=null,poId=null;
+const SCOPES=['Files.ReadWrite','User.Read'];
 
 const params=new URLSearchParams(window.location.search);
-poId=params.get('id');
-const action=params.get('action');
+const poId=params.get('id');
+const action=params.get('action'); // 'approve' or 'reject'
 
-async function init(){
-  msalInstance=new msal.PublicClientApplication({
-    auth:{clientId:CLIENT_ID,authority:'https://login.microsoftonline.com/'+TENANT_ID,redirectUri:'https://xerxisadmin.github.io/Dedale-Inventory/approve.html'},
-    cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true}
-  });
-  await msalInstance.initialize();
+function showState(type, title, subtitle, extra){
+  const icons={
+    success:'<svg width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>',
+    error:'<svg width="28" height="28" fill="none" stroke="#dc2626" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    pending:'<svg width="28" height="28" fill="none" stroke="#71717a" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>'
+  };
+  document.getElementById('main-body').innerHTML=
+    '<div class="icon-wrap '+type+'">'+icons[type]+'</div>'
+    +'<div class="title">'+title+'</div>'
+    +'<div class="subtitle">'+subtitle+'</div>'
+    +(extra||'')
+    +'<a href="https://xerxisadmin.github.io/Dedale-Inventory/" class="btn btn-home">← Back to INTEL-SYS</a>';
+}
+
+async function run(){
+  if(!poId||!action){
+    showState('error','Invalid Link','This approval link is missing required information. Please use the link from the email.');
+    return;
+  }
+  if(action!=='approve'&&action!=='reject'){
+    showState('error','Invalid Action','The action in this link is not recognized.');
+    return;
+  }
+
+  let msalInstance, accessToken;
+
+  try{
+    msalInstance=new msal.PublicClientApplication({
+      auth:{clientId:CLIENT_ID,authority:'https://login.microsoftonline.com/'+TENANT_ID,
+        redirectUri:'https://xerxisadmin.github.io/Dedale-Inventory/approve.html',
+        navigateToLoginRequestUrl:false},
+      cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true},
+      system:{allowNativeBroker:false}
+    });
+    await msalInstance.initialize();
+  }catch(e){
+    showState('error','Authentication Error','Could not initialize sign-in. Please try again.');
+    return;
+  }
+
+  /* Handle redirect */
   let response=null;
   try{response=await msalInstance.handleRedirectPromise();}catch(e){}
-  if(response&&response.accessToken){accessToken=response.accessToken;await loadAndShow();}
-  else{
+  if(response&&response.accessToken){accessToken=response.accessToken;}
+
+  /* Try silent token */
+  if(!accessToken){
     const accounts=msalInstance.getAllAccounts();
     if(accounts.length>0){
-      try{const r=await msalInstance.acquireTokenSilent({scopes:['Files.ReadWrite'],account:accounts[0]});accessToken=r.accessToken;await loadAndShow();}
-      catch(e){showLogin();}
-    }else showLogin();
+      try{
+        const r=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:accounts[0]});
+        if(r&&r.accessToken)accessToken=r.accessToken;
+      }catch(e){}
+    }
   }
-}
-function showLogin(){document.getElementById('loading').style.display='none';document.getElementById('login-section').style.display='block';}
-async function signIn(){await msalInstance.loginRedirect({scopes:['Files.ReadWrite'],prompt:'select_account'});}
 
-async function loadAndShow(){
+  /* Redirect to login if no token */
+  if(!accessToken){
+    try{
+      await msalInstance.loginRedirect({scopes:SCOPES,
+        state:window.location.search, /* preserve params through redirect */
+        prompt:'select_account'});
+    }catch(e){
+      showState('error','Sign-in Required','Please sign in with your Dedale Microsoft account to process this request.');
+    }
+    return;
+  }
+
+  /* Load OneDrive data */
+  let data;
   try{
-    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});
-    const data=await r.json();
-    const po=data.purchaseOrders&&data.purchaseOrders.find(p=>p.id===poId);
-    if(!po){showError('Purchase request not found.');return;}
-    poData={data,po};
-    document.getElementById('po-requester').textContent=po.requester||'—';
-    document.getElementById('po-justification').textContent=po.justification||'—';
-    document.getElementById('po-employee').textContent=po.forEmployee||'N/A';
-    document.getElementById('po-urgency').textContent=po.urgency||'—';
-    document.getElementById('po-total').textContent='₱'+(po.total||0).toLocaleString();
-    document.getElementById('po-items').innerHTML=(po.items||[]).map(i=>'<tr><td>'+i.desc+'</td><td style="font-family:\'Share Tech Mono\',monospace;font-size:11px">'+i.type+'</td><td style="font-family:\'Share Tech Mono\',monospace">'+i.qty+'</td><td style="font-family:\'Share Tech Mono\',monospace">₱'+i.price.toLocaleString()+'</td><td style="font-family:\'Share Tech Mono\',monospace;font-weight:600">₱'+(i.qty*i.price).toLocaleString()+'</td></tr>').join('');
-    document.getElementById('loading').style.display='none';
-    document.getElementById('po-content').style.display='block';
-    if(po.status!=='Pending'){showMsg('This request has already been '+po.status.toLowerCase()+'.',false);document.querySelector('.btn-row').style.display='none';}
-    else if(action==='approve')updateStatus('Approved');
-    else if(action==='reject')updateStatus('Rejected');
-  }catch(e){showError('Failed to load purchase request.');}
-}
-async function updateStatus(status){
-  if(!poData)return;
+    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',
+      {headers:{'Authorization':'Bearer '+accessToken}});
+    if(!r.ok)throw new Error('Load failed: '+r.status);
+    data=await r.json();
+  }catch(e){
+    showState('error','Could Not Load Data','Unable to load the inventory data from OneDrive. Please check your connection and try again.<br><br><small style="color:#9ca3af">'+e.message+'</small>');
+    return;
+  }
+
+  /* Find PO */
+  const pos=data.purchaseOrders||[];
+  const poIdx=pos.findIndex(function(p){return p.id===poId;});
+  if(poIdx===-1){
+    showState('error','Request Not Found','This purchase request could not be found. It may have been deleted.');
+    return;
+  }
+  const po=pos[poIdx];
+
+  /* Check if already processed */
+  if(po.status==='Approved'||po.status==='Rejected'){
+    const badge=po.status==='Approved'
+      ?'<span class="badge badge-approved">APPROVED</span>'
+      :'<span class="badge badge-rejected">REJECTED</span>';
+    showState('pending','Already Processed',
+      'This purchase request was already '+po.status.toLowerCase()+'.',
+      '<div class="po-box">'
+        +'<div class="po-row"><span class="po-label">Request</span><span class="po-value">'+po.title+'</span></div>'
+        +'<div class="po-row"><span class="po-label">Requested By</span><span class="po-value">'+po.requester+'</span></div>'
+        +'<div class="po-row"><span class="po-label">Status</span><span class="po-value">'+badge+'</span></div>'
+        +'</div>'
+    );
+    return;
+  }
+
+  /* Update status */
+  const status=action==='approve'?'Approved':'Rejected';
+  data.purchaseOrders[poIdx].status=status;
+  data.purchaseOrders[poIdx].processedAt=new Date().toISOString();
+
+  /* Save back to OneDrive */
   try{
-    const idx=poData.data.purchaseOrders.findIndex(p=>p.id===poId);
-    if(idx===-1){showError('Purchase request not found.');return;}
-    poData.data.purchaseOrders[idx].status=status;
-    poData.data.purchaseOrders[idx].reviewedAt=new Date().toISOString();
-    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify(poData.data)});
-    if(r.ok){showMsg('Purchase request successfully '+status.toLowerCase()+'.',true);document.querySelector('.btn-row').style.display='none';}
-    else showError('Failed to save. Please try again.');
-  }catch(e){showError('An error occurred. Please try again.');}
+    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',
+      {method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
+       body:JSON.stringify(data,null,2)});
+    if(!r.ok)throw new Error('Save failed: '+r.status);
+  }catch(e){
+    showState('error','Could Not Save','The status was updated but could not be saved to OneDrive. Please try again.<br><br><small style="color:#9ca3af">'+e.message+'</small>');
+    return;
+  }
+
+  /* Success */
+  const isApproved=status==='Approved';
+  const badge=isApproved
+    ?'<span class="badge badge-approved">APPROVED</span>'
+    :'<span class="badge badge-rejected">REJECTED</span>';
+  const totalStr='\u20b1'+(po.total||0).toLocaleString();
+  showState(
+    isApproved?'success':'error',
+    isApproved?'Request Approved':'Request Rejected',
+    isApproved
+      ?'The purchase request has been approved and saved successfully.'
+      :'The purchase request has been rejected and saved successfully.',
+    '<div class="po-box">'
+      +'<div class="po-row"><span class="po-label">Request</span><span class="po-value">'+po.title+'</span></div>'
+      +'<div class="po-row"><span class="po-label">Requested By</span><span class="po-value">'+po.requester+'</span></div>'
+      +'<div class="po-row"><span class="po-label">Total</span><span class="po-value">'+totalStr+'</span></div>'
+      +'<div class="po-row"><span class="po-label">Status</span><span class="po-value">'+badge+'</span></div>'
+      +'</div>'
+  );
 }
-function showMsg(msg,success){const el=document.getElementById('status-msg');el.textContent=msg;el.className='msg-'+(success?'success':'error');el.style.display='block';}
-function showError(msg){document.getElementById('loading').style.display='none';showMsg(msg,false);}
-window.addEventListener('DOMContentLoaded',init);
+
+run();
 </script>
 </body>
 </html>

@@ -4,50 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Purchase Order — Dedale Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial,sans-serif;background:#f4f4f5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-.card{background:#fff;border-radius:2px;border:1px solid #e4e4e7;width:100%;max-width:520px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-.accent{background:#cc2244;height:4px;}
-.header{padding:20px 28px 18px;border-bottom:1px solid #f0f0f0;}
-.header-top{display:flex;justify-content:space-between;align-items:center;}
-.company{font-size:13px;font-weight:700;color:#18181b;letter-spacing:1px;}
-.system{font-size:11px;color:#a1a1aa;margin-top:2px;}
-.body{padding:28px;}
-.icon-wrap{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
-.icon-wrap.success{background:#dcfce7;}
-.icon-wrap.error{background:#fee2e2;}
-.icon-wrap.pending{background:#f1f5f9;}
-.title{font-size:18px;font-weight:700;color:#09090b;text-align:center;margin-bottom:6px;}
-.subtitle{font-size:13px;color:#71717a;text-align:center;margin-bottom:20px;line-height:1.5;}
-.po-box{background:#fafafa;border:1px solid #e4e4e7;padding:14px 18px;border-radius:2px;margin-bottom:20px;}
-.po-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;}
+:root{--navy:#141628;--navy-mid:#1a1d38;--surface:#222646;--border:#383d72;--crimson:#cc2244;--crimson-dark:#881630;--gold:#d4a830;--green:#22cc88;--text:#e4e8ff;--text2:#9aa2cc;--text3:#565e90;}
+body{font-family:'Rajdhani',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background-image:repeating-linear-gradient(0deg,rgba(26,42,58,0.3) 0px,rgba(26,42,58,0.3) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,rgba(26,42,58,0.3) 0px,rgba(26,42,58,0.3) 1px,transparent 1px,transparent 40px);}
+.card{background:var(--surface);border:1px solid var(--border);width:100%;max-width:520px;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));position:relative;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--crimson),var(--gold) 60%,transparent);z-index:1;}
+.header{padding:22px 28px 18px;border-bottom:1px solid var(--border);}
+.company{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;}
+.system{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--crimson);letter-spacing:2px;text-transform:uppercase;margin-top:3px;}
+.header-right{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;}
+.body{padding:32px 28px;}
+.icon-wrap{width:56px;height:56px;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.icon-wrap.success{background:rgba(34,204,136,0.15);}
+.icon-wrap.error{background:rgba(196,18,48,0.15);}
+.icon-wrap.pending{background:rgba(86,94,144,0.2);}
+.title{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:#fff;text-align:center;margin-bottom:8px;letter-spacing:1px;}
+.subtitle{font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--text2);text-align:center;margin-bottom:22px;line-height:1.6;}
+.po-box{background:var(--navy-mid);border:1px solid var(--border);padding:14px 18px;margin-bottom:20px;}
+.po-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(56,61,114,0.5);font-size:13px;}
 .po-row:last-child{border-bottom:none;padding-bottom:0;}
-.po-label{color:#71717a;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
-.po-value{color:#09090b;font-weight:600;}
-.btn{display:block;width:100%;padding:12px;text-align:center;font-size:13px;font-weight:700;font-family:Arial,sans-serif;letter-spacing:0.5px;border:none;border-radius:2px;cursor:pointer;text-decoration:none;margin-bottom:8px;}
-.btn-home{background:#f4f4f5;color:#374151;font-size:12px;}
-.spinner{width:32px;height:32px;border:3px solid #e4e4e7;border-top-color:#cc2244;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
+.po-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;}
+.po-value{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;color:var(--text);}
+.btn{display:block;width:100%;padding:12px;text-align:center;font-family:'Orbitron',monospace;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;margin-bottom:8px;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));}
+.btn-home{background:transparent;color:var(--text3);border:1px solid var(--border);clip-path:none;font-size:10px;}
+.btn-home:hover{color:var(--text2);border-color:var(--border);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--crimson);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 18px;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;}
-.badge-approved{background:#dcfce7;color:#16a34a;}
-.badge-rejected{background:#fee2e2;color:#dc2626;}
-.footer{padding:12px 28px;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;}
-.footer span{font-size:11px;color:#a1a1aa;}
+.badge{display:inline-block;padding:3px 10px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
+.badge-approved{background:rgba(34,204,136,0.15);color:var(--green);}
+.badge-rejected{background:rgba(196,18,48,0.15);color:var(--crimson);}
+.footer{padding:12px 28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;}
+.footer span{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:1px;}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="accent"></div>
-  <div class="header">
-    <div class="header-top">
-      <div>
-        <div class="company">DEDALE INTELLIGENCE</div>
-        <div class="system">IT Asset Management System</div>
-      </div>
-      <div style="font-size:11px;color:#a1a1aa;">Purchase Request</div>
+  <div class="header" style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+      <div class="company">DEDALE INTELLIGENCE</div>
+      <div class="system">INTEL-SYS // Purchase Request</div>
     </div>
+    <div class="header-right">Approval Portal</div>
   </div>
   <div class="body" id="main-body">
     <div class="spinner"></div>
@@ -64,7 +64,6 @@ body{font-family:Arial,sans-serif;background:#f4f4f5;min-height:100vh;display:fl
 const CLIENT_ID='4cda57d2-0ef7-4ed4-b683-91d59c94ff86';
 const TENANT_ID='115d6eac-9c52-4e39-9c4c-f8d77ede8a9d';
 const FILE_NAME='dedale-inventory-data.json';
-const FILE_OWNER='xerxis.dalanon@dedale.com';
 const SCOPES=['Files.ReadWrite','User.Read'];
 
 const params=new URLSearchParams(window.location.search);
@@ -73,9 +72,9 @@ const action=params.get('action');
 
 function showState(type,title,subtitle,extra){
   const icons={
-    success:'<svg width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>',
-    error:'<svg width="28" height="28" fill="none" stroke="#dc2626" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
-    pending:'<svg width="28" height="28" fill="none" stroke="#71717a" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>'
+    success:'<svg width="26" height="26" fill="none" stroke="#22cc88" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>',
+    error:'<svg width="26" height="26" fill="none" stroke="#cc2244" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    pending:'<svg width="26" height="26" fill="none" stroke="#565e90" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>'
   };
   document.getElementById('main-body').innerHTML=
     '<div class="icon-wrap '+type+'">'+icons[type]+'</div>'
@@ -85,23 +84,15 @@ function showState(type,title,subtitle,extra){
     +'<a href="https://xerxisadmin.github.io/Dedale-Inventory/" class="btn btn-home">\u2190 Back to INTEL-SYS</a>';
 }
 
-/* Try multiple endpoints to load the data file */
 async function loadData(accessToken){
-  /* 1. Try me/drive (works if approver IS the owner) */
   try{
-    const r=await fetch(
-      'https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',
+    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',
       {headers:{'Authorization':'Bearer '+accessToken}});
-    if(r.ok){
-      const data=await r.json();
-      return{data,endpoint:'me/drive/root:/'+FILE_NAME+':/content'};
-    }
+    if(r.ok)return{data:await r.json(),endpoint:'me/drive/root:/'+FILE_NAME+':/content'};
   }catch(e){}
 
-  /* 2. Try sharedWithMe (works if owner shared the file with approver) (works if owner shared the file with approver) */
   try{
-    const sr=await fetch(
-      'https://graph.microsoft.com/v1.0/me/drive/sharedWithMe',
+    const sr=await fetch('https://graph.microsoft.com/v1.0/me/drive/sharedWithMe',
       {headers:{'Authorization':'Bearer '+accessToken}});
     if(sr.ok){
       const shared=await sr.json();
@@ -109,13 +100,9 @@ async function loadData(accessToken){
       if(file){
         const driveId=file.remoteItem?file.remoteItem.parentReference.driveId:file.parentReference.driveId;
         const itemId=file.remoteItem?file.remoteItem.id:file.id;
-        const r2=await fetch(
-          'https://graph.microsoft.com/v1.0/drives/'+driveId+'/items/'+itemId+'/content',
+        const r2=await fetch('https://graph.microsoft.com/v1.0/drives/'+driveId+'/items/'+itemId+'/content',
           {headers:{'Authorization':'Bearer '+accessToken}});
-        if(r2.ok){
-          const data=await r2.json();
-          return{data,endpoint:'drives/'+driveId+'/items/'+itemId+'/content'};
-        }
+        if(r2.ok)return{data:await r2.json(),endpoint:'drives/'+driveId+'/items/'+itemId+'/content'};
       }
     }
   }catch(e){}
@@ -132,86 +119,57 @@ async function saveData(accessToken,endpoint,data){
 
 async function run(){
   if(!poId||!action){
-    showState('error','Invalid Link','This approval link is missing required information. Please use the link from the email.');
-    return;
-  }
-  if(action!=='approve'&&action!=='reject'){
-    showState('error','Invalid Action','The action in this link is not recognized.');
+    showState('error','Invalid Link','This approval link is missing required information.<br>Please use the link from the email.');
     return;
   }
 
   let msalInstance,accessToken;
   try{
     msalInstance=new msal.PublicClientApplication({
-      auth:{clientId:CLIENT_ID,
-        authority:'https://login.microsoftonline.com/'+TENANT_ID,
+      auth:{clientId:CLIENT_ID,authority:'https://login.microsoftonline.com/'+TENANT_ID,
         redirectUri:'https://xerxisadmin.github.io/Dedale-Inventory/approve.html',
         navigateToLoginRequestUrl:false},
       cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true},
       system:{allowNativeBroker:false}
     });
     await msalInstance.initialize();
-  }catch(e){
-    showState('error','Authentication Error','Could not initialize sign-in. Please try again.');
-    return;
-  }
+  }catch(e){showState('error','Auth Error','Could not initialize sign-in. Please try again.');return;}
 
-  /* Handle redirect */
-  try{
-    const resp=await msalInstance.handleRedirectPromise();
-    if(resp&&resp.accessToken)accessToken=resp.accessToken;
-  }catch(e){}
+  try{const resp=await msalInstance.handleRedirectPromise();if(resp&&resp.accessToken)accessToken=resp.accessToken;}catch(e){}
 
-  /* Try silent token */
   if(!accessToken){
     const accounts=msalInstance.getAllAccounts();
     if(accounts.length>0){
-      try{
-        const r=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:accounts[0]});
-        if(r&&r.accessToken)accessToken=r.accessToken;
-      }catch(e){}
+      try{const r=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:accounts[0]});if(r&&r.accessToken)accessToken=r.accessToken;}catch(e){}
     }
   }
 
-  /* Redirect to login if no token */
   if(!accessToken){
-    try{
-      await msalInstance.loginRedirect({scopes:SCOPES,prompt:'select_account'});
-    }catch(e){
-      showState('error','Sign-in Required','Please sign in with your Dedale Microsoft account to process this request.');
-    }
+    try{await msalInstance.loginRedirect({scopes:SCOPES,prompt:'select_account'});}
+    catch(e){showState('error','Sign-in Required','Please sign in with your Dedale Microsoft account.');}
     return;
   }
 
-  /* Load data */
   const result=await loadData(accessToken);
   if(!result){
     showState('error','Could Not Load Data',
       'Unable to find the inventory data file.<br><br>'
-      +'<span style="font-size:12px;color:#6b7280;">Ask <strong>Xerxis</strong> to share the file '
-      +'<code style="background:#f4f4f5;padding:2px 6px;border-radius:2px;">'+FILE_NAME+'</code> '
-      +'from his OneDrive with your Dedale account (edit access), then try again.</span>');
+      +'<span style="font-family:\'Share Tech Mono\',monospace;font-size:11px;color:#565e90;">Ask Xerxis to share <strong style="color:#9aa2cc;">'+FILE_NAME+'</strong> from his OneDrive with your Dedale account (edit access), then try again.</span>');
     return;
   }
 
   const{data,endpoint}=result;
-
-  /* Find PO */
   const pos=data.purchaseOrders||[];
   const poIdx=pos.findIndex(function(p){return p.id===poId;});
-  if(poIdx===-1){
-    showState('error','Request Not Found','This purchase request could not be found. It may have been deleted.');
-    return;
-  }
+  if(poIdx===-1){showState('error','Not Found','This purchase request could not be found. It may have been deleted.');return;}
   const po=pos[poIdx];
 
-  /* Already processed? */
   if(po.status==='Approved'||po.status==='Rejected'){
     const badge=po.status==='Approved'
       ?'<span class="badge badge-approved">APPROVED</span>'
       :'<span class="badge badge-rejected">REJECTED</span>';
     showState('pending','Already Processed',
-      'This purchase request was already '+po.status.toLowerCase()+'.',
+      'This request was already '+po.status.toLowerCase()+'.',
       '<div class="po-box">'
         +'<div class="po-row"><span class="po-label">Request</span><span class="po-value">'+po.title+'</span></div>'
         +'<div class="po-row"><span class="po-label">Requested By</span><span class="po-value">'+po.requester+'</span></div>'
@@ -220,19 +178,13 @@ async function run(){
     return;
   }
 
-  /* Update status */
   const status=action==='approve'?'Approved':'Rejected';
   data.purchaseOrders[poIdx].status=status;
   data.purchaseOrders[poIdx].processedAt=new Date().toISOString();
 
-  /* Save */
   const saved=await saveData(accessToken,endpoint,data);
-  if(!saved){
-    showState('error','Could Not Save','The status was updated but failed to save. Please try again.');
-    return;
-  }
+  if(!saved){showState('error','Save Failed','The status could not be saved. Please try again.');return;}
 
-  /* Success */
   const isApproved=status==='Approved';
   const badge=isApproved
     ?'<span class="badge badge-approved">APPROVED</span>'
@@ -240,9 +192,7 @@ async function run(){
   showState(
     isApproved?'success':'error',
     isApproved?'Request Approved':'Request Rejected',
-    isApproved
-      ?'The purchase request has been approved and saved successfully.'
-      :'The purchase request has been rejected and saved successfully.',
+    isApproved?'The purchase request has been approved and saved.':'The purchase request has been rejected and saved.',
     '<div class="po-box">'
       +'<div class="po-row"><span class="po-label">Request</span><span class="po-value">'+po.title+'</span></div>'
       +'<div class="po-row"><span class="po-label">Requested By</span><span class="po-value">'+po.requester+'</span></div>'

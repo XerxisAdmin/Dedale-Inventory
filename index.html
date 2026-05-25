@@ -567,7 +567,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
   <div class="modal-title" id="equip-modal-title">Add Equipment</div>
   <div class="form-grid">
     <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select></div>
-    <div class="form-group"><label>Brand</label><select id="f-brand"><option value="">&#8212; Select Brand &#8212;</option><option>Lenovo</option></select></div>
+    <div class="form-group"><label>Brand</label><select id="f-brand" onchange="updateModelOnBrand()"><option value="">&#8212; Select Brand &#8212;</option><option>Lenovo</option><option>Jabra</option><option>Rapoo</option><option>N-Vision</option></select></div>
     <div class="form-group full"><label>Model</label>
       <select id="f-model-select" style="display:none"><option value="">- Select Model -</option><option>14ALC7</option><option>15IAH8 (Type 83ER)</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>LOQ 15IAX9 (Type 83GS)</option><option>15IRH8 (Type 83EM)</option><option>15IRH10 (Type 83K1)</option><option>15IRU8 (Type 82X7)</option><option>16IAH8 (Type 83BG)</option></select>
       <input autocomplete="new-password" id="f-model" placeholder="e.g. XPS 15, MX Master 3">
@@ -2001,6 +2001,11 @@ function toggleModelField(val){
   const brandMap={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo']};
   const brandSelect=document.getElementById('f-brand'),brands=brandMap[type]||[];
   brandSelect.innerHTML='<option value="">\u2014 Select Brand \u2014</option>'+brands.map(b=>'<option>'+b+'</option>').join('');
+  /* If only one brand for this type, auto-select it and populate model immediately */
+  if(brands.length===1){
+    brandSelect.value=brands[0];
+    updateModelOnBrand();
+  }
 }
 function buildAssignedDropdown(filter){
   const dd=document.getElementById('f-assigned-dropdown');if(!dd)return;

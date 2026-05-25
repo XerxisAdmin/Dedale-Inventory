@@ -1992,21 +1992,52 @@ function updateModelOnBrand(){
   }
 }
 function toggleModelField(val){
-  const type=val||document.getElementById('f-type').value,input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
-  /* Reset both — updateModelOnBrand will show the right one after brand is selected */
+  var type=val||document.getElementById('f-type').value;
+  var input=document.getElementById('f-model');
+  var select=document.getElementById('f-model-select');
+  var brandSelect=document.getElementById('f-brand');
+  /* Reset */
+  input.value='';select.value='';
   input.style.display='none';select.style.display='none';
-  input.value='';select.value='';select.innerHTML='<option value="">- Select Model -</option>';
-  if(type==='Laptop'){select.style.display='';} /* Laptop shows select immediately for Lenovo */
-  else{input.style.display='';} /* Others show text until brand reveals dropdown */
-  const brandMap={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo']};
-  const brandSelect=document.getElementById('f-brand'),brands=brandMap[type]||[];
-  brandSelect.innerHTML='<option value="">\u2014 Select Brand \u2014</option>'+brands.map(b=>'<option>'+b+'</option>').join('');
-  /* If only one brand for this type, auto-select it and populate model immediately */
+  select.innerHTML='<option value="">- Select Model -</option>';
+  /* Set brand options for this type */
+  var brandMap={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo']};
+  var brands=brandMap[type]||[];
+  brandSelect.innerHTML='<option value="">\u2014 Select Brand \u2014</option>'+brands.map(function(b){return'<option>'+b+'</option>';}).join('');
+  /* Auto-select single brand and populate model */
   if(brands.length===1){
     brandSelect.value=brands[0];
-    updateModelOnBrand();
+    _populateEquipModel(brands[0]);
+  }else{
+    input.style.display='';
   }
 }
+function updateModelOnBrand(){
+  var brand=document.getElementById('f-brand').value;
+  _populateEquipModel(brand);
+}
+var _equipModelMap={
+  Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)',
+    'LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+  Jabra:['Evolve 20'],
+  Rapoo:['M20']
+};
+function _populateEquipModel(brand){
+  var input=document.getElementById('f-model');
+  var select=document.getElementById('f-model-select');
+  var models=_equipModelMap[brand]||[];
+  if(models.length>0){
+    select.innerHTML='<option value="">- Select Model -</option>'+models.map(function(m){return'<option>'+m+'</option>';}).join('');
+    select.style.display='';
+    input.style.display='none';
+    input.value='';
+  }else{
+    select.style.display='none';
+    select.value='';
+    input.style.display='';
+  }
+}
+
 function buildAssignedDropdown(filter){
   const dd=document.getElementById('f-assigned-dropdown');if(!dd)return;
   const q=(filter||'').toLowerCase(),list=[{id:'',name:'\u2014 Unassigned \u2014'},...employees],matches=q?list.filter(e=>e.name.toLowerCase().includes(q)):list;

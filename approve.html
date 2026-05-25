@@ -65,7 +65,7 @@ const CLIENT_ID='4cda57d2-0ef7-4ed4-b683-91d59c94ff86';
 const TENANT_ID='115d6eac-9c52-4e39-9c4c-f8d77ede8a9d';
 const FILE_NAME='dedale-inventory-data.json';
 const FILE_OWNER='xerxis.dalanon@dedale.com';
-const SCOPES=['Files.ReadWrite','Files.ReadWrite.All','User.Read'];
+const SCOPES=['Files.ReadWrite','User.Read'];
 
 const params=new URLSearchParams(window.location.search);
 const poId=params.get('id');
@@ -87,18 +87,7 @@ function showState(type,title,subtitle,extra){
 
 /* Try multiple endpoints to load the data file */
 async function loadData(accessToken){
-  /* 1. Try owner's drive directly (works if token has Files.ReadWrite.All) */
-  try{
-    const r=await fetch(
-      'https://graph.microsoft.com/v1.0/users/'+FILE_OWNER+'/drive/root:/'+FILE_NAME+':/content',
-      {headers:{'Authorization':'Bearer '+accessToken}});
-    if(r.ok){
-      const data=await r.json();
-      return{data,endpoint:'users/'+FILE_OWNER+'/drive/root:/'+FILE_NAME+':/content'};
-    }
-  }catch(e){}
-
-  /* 2. Try me/drive (works if approver IS the owner) */
+  /* 1. Try me/drive (works if approver IS the owner) */
   try{
     const r=await fetch(
       'https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',
@@ -109,7 +98,7 @@ async function loadData(accessToken){
     }
   }catch(e){}
 
-  /* 3. Try sharedWithMe (works if owner shared the file with approver) */
+  /* 2. Try sharedWithMe (works if owner shared the file with approver) (works if owner shared the file with approver) */
   try{
     const sr=await fetch(
       'https://graph.microsoft.com/v1.0/me/drive/sharedWithMe',

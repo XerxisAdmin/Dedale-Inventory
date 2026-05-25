@@ -1973,13 +1973,31 @@ function openEmployeeDetail(id){
 }
 
 function updateModelOnBrand(){
-  var type=document.getElementById('f-type').value,brand=document.getElementById('f-brand').value,input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
+  var type=document.getElementById('f-type').value,brand=document.getElementById('f-brand').value,
+    input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
   input.style.display='none';select.style.display='none';input.value='';select.value='';
-  if(!brand)return;if(type==='Laptop'){select.style.display='';}else{input.style.display='';}
+  if(!brand)return;
+  var modelMap={
+    Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)',
+      'LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+    Jabra:['Evolve 20'],
+    Rapoo:['M20']
+  };
+  var models=modelMap[brand]||[];
+  if(models.length>0){
+    select.innerHTML='<option value="">- Select Model -</option>'+models.map(function(m){return'<option>'+m+'</option>';}).join('');
+    select.style.display='';
+  }else{
+    input.style.display='';
+  }
 }
 function toggleModelField(val){
   const type=val||document.getElementById('f-type').value,input=document.getElementById('f-model'),select=document.getElementById('f-model-select');
-  if(type==='Laptop'){input.style.display='none';select.style.display='';input.value='';}else{input.style.display='';select.style.display='none';select.value='';}
+  /* Reset both — updateModelOnBrand will show the right one after brand is selected */
+  input.style.display='none';select.style.display='none';
+  input.value='';select.value='';select.innerHTML='<option value="">- Select Model -</option>';
+  if(type==='Laptop'){select.style.display='';} /* Laptop shows select immediately for Lenovo */
+  else{input.style.display='';} /* Others show text until brand reveals dropdown */
   const brandMap={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo']};
   const brandSelect=document.getElementById('f-brand'),brands=brandMap[type]||[];
   brandSelect.innerHTML='<option value="">\u2014 Select Brand \u2014</option>'+brands.map(b=>'<option>'+b+'</option>').join('');

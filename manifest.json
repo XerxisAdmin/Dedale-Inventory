@@ -6,17 +6,5 @@
   "display": "standalone",
   "background_color": "#141628",
   "theme_color": "#cc2244",
-  "orientation": "any",
-  "icons": [
-    {
-      "src": "https://via.placeholder.com/192/cc2244/ffffff?text=DI",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://via.placeholder.com/512/cc2244/ffffff?text=DI",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "orientation": "any"
 }

@@ -1133,7 +1133,8 @@ function clearNHPhoto(){
 }
 
 function resetNewHireForm(){
-  ['nh-name','nh-empid','nh-role','nh-email'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['nh-name','nh-empid','nh-role','nh-email'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';})
+  var nhEmpId=document.getElementById('nh-empid');if(nhEmpId)nhEmpId.value=getNextEmployeeId();;
   var site=document.getElementById('nh-site');if(site)site.value='';
   var sd=document.getElementById('nh-start-date');if(sd)sd.value='';
   clearNHSignature();clearNHPhoto();
@@ -1946,6 +1947,18 @@ function initEmployeeView(){
   filterEmployees();
 }
 
+function getNextEmployeeId(){
+  /* Find highest numeric suffix among all employee IDs matching C2023-XXXX pattern */
+  var max=0;
+  employees.forEach(function(e){
+    if(e.empid){
+      var m=e.empid.match(/(\d+)$/);
+      if(m){var n=parseInt(m[1],10);if(n>max)max=n;}
+    }
+  });
+  var next=max+1;
+  return 'C2023-'+String(next).padStart(4,'0');
+}
 function openEmployeeDetail(id){
   const emp=employees.find(e=>e.id===id);if(!emp)return;
   const items=equipment.filter(e=>e.assignedTo===emp.id),icons={'Laptop':'\u{1F4BB}','Monitor':'\u{1F5A5}','Headset':'\u{1F3A7}','Mouse':'\u{1F5B1}'};
@@ -2192,7 +2205,7 @@ function savePurchase(){
 }
 
 let editingEmpId=null;
-function openEmployeeModal(){editingEmpId=null;document.getElementById('employee-modal').querySelector('.modal-title').textContent='Add Employee';['e-empid','e-name','e-role','e-email'].forEach(id=>document.getElementById(id).value='');document.getElementById('e-site').value='';document.getElementById('employee-modal').classList.add('open');}
+function openEmployeeModal(){editingEmpId=null;document.getElementById('employee-modal').querySelector('.modal-title').textContent='Add Employee';['e-empid','e-name','e-role','e-email'].forEach(id=>document.getElementById(id).value='');document.getElementById('e-empid').value=getNextEmployeeId();document.getElementById('e-site').value='';document.getElementById('employee-modal').classList.add('open');}
 function editEmployee(id){const emp=employees.find(e=>e.id===id);if(!emp)return;editingEmpId=id;document.getElementById('employee-modal').querySelector('.modal-title').textContent='Edit Employee';document.getElementById('e-empid').value=emp.empid||'';document.getElementById('e-name').value=emp.name;document.getElementById('e-role').value=emp.role||'';document.getElementById('e-email').value=emp.email||'';document.getElementById('e-site').value=emp.site||'';document.getElementById('employee-modal').classList.add('open');}
 function saveEmployee(){
   const name=document.getElementById('e-name').value.trim();if(!name)return alert('Full name is required.');

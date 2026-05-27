@@ -446,7 +446,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
         <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
         <button class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none" id="equip-add-mobile-btn">+ Add Equipment</button>
-        <select class="filter-select" onchange="filterEquipment();updateModelFilter()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
+        <select class="filter-select" onchange="filterEquipment();updateModelFilter()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-model-filter" style="display:none"><option value="">All Models</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
@@ -472,7 +472,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="view" id="view-assignments" style="display:flex;flex-direction:column;min-height:0;">
       <div style="background:var(--surface2);padding:12px 16px;flex-shrink:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <input autocomplete="new-password" class="search-input" placeholder="Search assignments..." oninput="filterAssignments()" id="assign-search" style="flex:1;min-width:160px;max-width:400px;">
-        <select class="filter-select" onchange="filterAssignments()" id="assign-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select>
+        <select class="filter-select" onchange="filterAssignments()" id="assign-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select>
         <select class="filter-select" onchange="filterAssignments()" id="assign-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
         <select class="filter-select" onchange="filterAssignments()" id="assign-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
       </div>
@@ -707,7 +707,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
 <div class="modal-overlay" id="equip-modal"><div class="modal" autocomplete="new-password">
   <div class="modal-title" id="equip-modal-title">Add Equipment</div>
   <div class="form-grid">
-    <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select></div>
+    <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select></div>
     <div class="form-group"><label>Brand</label><select id="f-brand" onchange="updateModelOnBrand()"><option value="">&#8212; Select Brand &#8212;</option><option>Lenovo</option><option>Jabra</option><option>Rapoo</option><option>N-Vision</option></select></div>
     <div class="form-group full"><label>Model</label>
       <select id="f-model-select" style="display:none"><option value="">- Select Model -</option><option>14ALC7</option><option>15IAH8 (Type 83ER)</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>LOQ 15IAX9 (Type 83GS)</option><option>15IRH8 (Type 83EM)</option><option>15IRH10 (Type 83K1)</option><option>15IRU8 (Type 82X7)</option><option>16IAH8 (Type 83BG)</option></select>
@@ -1298,7 +1298,7 @@ function addNHEquipRow(){
     +'<div class="form-grid" style="grid-template-columns:1fr 1fr;gap:10px;">'
     +'<div class="form-group"><label>Type *</label>'
     +'<select class="nh-eq-type" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;" onchange="updateNHEqBrands(this)">'
-    +'<option value="">— Type —</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option>'
+    +'<option value="">— Type —</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option>'
     +'</select></div>'
     +'<div class="form-group"><label>Brand</label>'
     +'<select class="nh-eq-brand" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;" onchange="updateNHEqModels(this)">'
@@ -1323,9 +1323,9 @@ function addNHEquipRow(){
     +'</div>';
   container.appendChild(row);
 }
-var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo']};
+var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo'],Memory:['Kingston']};
 var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
-  Jabra:['Evolve 20'],Rapoo:['M20'],'N-Vision':[]};
+  Jabra:['Evolve 20'],Rapoo:['M20'],'N-Vision':[],Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
 function updateNHEqBrands(typeSelect){
   var row=typeSelect.closest('.nh-equip-row'),type=typeSelect.value;
   var bs=row.querySelector('.nh-eq-brand');
@@ -2184,7 +2184,7 @@ function toggleModelField(val){
   input.style.display='none';select.style.display='none';
   select.innerHTML='<option value="">- Select Model -</option>';
   /* Set brand options for this type */
-  var brandMap={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo']};
+  var brandMap={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo'],Memory:['Kingston']};
   var brands=brandMap[type]||[];
   brandSelect.innerHTML='<option value="">\u2014 Select Brand \u2014</option>'+brands.map(function(b){return'<option>'+b+'</option>';}).join('');
   /* Auto-select single brand and populate model */
@@ -2353,7 +2353,7 @@ function openPurchaseModal(){
 function addPurchaseItem(){
   const container=document.getElementById('p-items-container'),div=document.createElement('div');div.className='p-item-row';
   div.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;padding:10px;background:var(--surface2);border:1px solid var(--border)';
-  div.innerHTML='<div class="form-group"><label>Type *</label><select class="p-item-type" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:\'Share Tech Mono\',monospace;font-size:12px"><option value="">\u2014 Select Type \u2014</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option></select></div>'
+  div.innerHTML='<div class="form-group"><label>Type *</label><select class="p-item-type" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:\'Share Tech Mono\',monospace;font-size:12px"><option value="">\u2014 Select Type \u2014</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select></div>'
     +'<div class="form-group"><label>Brand</label><input autocomplete="new-password" class="p-item-brand" placeholder="Brand" style="width:100%"></div>'
     +'<div class="form-group"><label>Model</label><input autocomplete="new-password" class="p-item-model" placeholder="Model" style="width:100%"></div>'
     +'<div class="form-group"><label>Serial Number</label><input autocomplete="new-password" class="p-item-serial" placeholder="e.g. SN-001234" style="width:100%"></div>'
@@ -2474,7 +2474,7 @@ function showPODropdown(){const q=document.getElementById('po-employee-search').
 function hidePODropdown(){document.getElementById('po-employee-dropdown').style.display='none';}
 
 const PO_BRANDS={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo'],'Memory':['Kingston'],'Other':[]};
-const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','NV2 256GB SSD','NV2 512GB SSD']};
+const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
 
 function updatePOBrands(typeSelect){
   const row=typeSelect.closest('.po-item-row'),type=typeSelect.value,bs=row.querySelector('.po-item-brand'),ms=row.querySelector('.po-item-model');

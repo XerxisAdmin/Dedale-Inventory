@@ -714,6 +714,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <input autocomplete="new-password" id="f-model" placeholder="e.g. XPS 15, MX Master 3">
     </div>
     <div class="form-group"><label>Serial Number</label><input id="f-serial" autocomplete="new-password" placeholder="e.g. SN-001234"></div>
+    <div class="form-group"><label>Quantity / No. of Pieces</label><input id="f-qty" autocomplete="new-password" type="number" min="1" value="1" placeholder="1"></div>
     <div class="form-group"><label>Condition</label><select id="f-condition"><option>New</option><option>Good</option><option>Fair</option><option>Damaged</option></select></div>
     <div class="form-group"><label>Status</label><select id="f-status"><option>In Stock</option><option>In Use</option><option>Under Repair</option><option>Retired</option></select></div>
     <div class="form-group"><label>Assigned To</label>
@@ -1313,6 +1314,9 @@ function addNHEquipRow(){
     +'<div class="form-group"><label>Serial No.</label>'
     +'<input class="nh-eq-serial" autocomplete="new-password" placeholder="e.g. SN-001234" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
     +'</div>'
+    +'<div class="form-group"><label>Qty / Pieces</label>'
+    +'<input class="nh-eq-qty" autocomplete="new-password" type="number" min="1" value="1" placeholder="1" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
+    +'</div>'
     +'<div class="form-group"><label>Condition</label>'
     +'<select class="nh-eq-cond" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;">'
     +'<option>New</option><option>Good</option><option>Fair</option><option>Damaged</option>'
@@ -1353,9 +1357,10 @@ function getNHEquipItems(){
     var modelSel=row.querySelector('.nh-eq-model');
     var model=(modelSel.style.display!=='none'?modelSel.value:row.querySelector('.nh-eq-model-txt').value)||'';
     var serial=row.querySelector('.nh-eq-serial').value.trim();
+    var qty=parseInt(row.querySelector('.nh-eq-qty')?row.querySelector('.nh-eq-qty').value:1)||1;
     var cond=row.querySelector('.nh-eq-cond').value;
     var price=parseFloat(row.querySelector('.nh-eq-price').value)||0;
-    items.push({type:type,brand:brand,model:model,serial:serial,condition:cond,price:price});
+    items.push({type:type,brand:brand,model:model,serial:serial,qty:qty,condition:cond,price:price});
   });
   return items;
 }
@@ -1919,7 +1924,7 @@ function buildEquipRow(eq){
   var id=eq.id;
   return '<tr onclick="openMobileEquipRow(\'' + id + '\')" style="cursor:pointer">'
     +'<td style="text-align:left"><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
-    +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+'</td>'
+    +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+(eq.qty&&eq.qty>1?' <span style="font-size:10px;color:var(--gold);font-family:Share Tech Mono,monospace;">×'+eq.qty+'</span>':'')+'</td>'
     +'<td style="text-align:left;font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
     +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
     +'<td style="text-align:left">'+statusBadge(eq.status)+'</td>'
@@ -2087,7 +2092,7 @@ function renderEmployees(list){
       +(emp.email?'<div class="emp-meta-row"><span class="emp-meta-label">Email</span><span class="emp-meta-value">'+emp.email+'</span></div>':'')
       +(emp.site?'<div class="emp-meta-row"><span class="emp-meta-label">Site</span><span class="emp-meta-value"><span class="site-pill">'+emp.site+'</span></span></div>':'')
       +'</div><div style="height:1px;background:var(--border);margin-bottom:10px"></div>'
-      +'<div class="emp-equipment">'+(items.length?items.map(e=>'<div class="emp-equip-item">'+(icons[e.type]||'\u{1F4E6}')+' '+e.brand+' '+e.model+(e.serial?' <span style="color:var(--gold);font-size:10px;font-family:\'Share Tech Mono\',monospace;font-weight:600"> S/N: '+e.serial+'</span>':'')+'</div>').join(''):'<div style="font-size:12px;color:var(--text3)">No equipment assigned</div>')+'</div>'
+      +'<div class="emp-equipment">'+(items.length?items.map(e=>'<div class="emp-equip-item">'+(icons[e.type]||'\u{1F4E6}')+' '+e.brand+' '+e.model+(e.qty&&e.qty>1?' <span style="color:var(--blue);font-size:10px;font-family:\\'Share Tech Mono\\',monospace">×'+e.qty+'</span>':'')+(e.serial?' <span style="color:var(--gold);font-size:10px;font-family:\'Share Tech Mono\',monospace;font-weight:600"> S/N: '+e.serial+'</span>':'')+'</div>').join(''):'<div style="font-size:12px;color:var(--text3)">No equipment assigned</div>')+'</div>'
       +'</div>';
   }).join(''):'<div class="empty-state"><p>No employees found</p></div>';
 }
@@ -2238,6 +2243,7 @@ function setModelValue(type,val){toggleModelField(type);if(type==='Laptop')docum
 function openAddModal(){
   editingId=null;document.getElementById('equip-modal-title').textContent='Add Equipment';
   ['f-type','f-brand','f-serial','f-condition','f-status','f-assigned','f-location','f-purchase-date','f-price','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.tagName==='SELECT'?el.options[0].value:'';});
+  var fqty=document.getElementById('f-qty');if(fqty)fqty.value=1;
   document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';
   document.getElementById('f-condition').value='New';document.getElementById('f-status').value='In Stock';
   toggleModelField('Laptop');document.getElementById('equip-modal').classList.add('open');
@@ -2246,7 +2252,7 @@ function editEquipment(id){
   const eq=equipment.find(e=>e.id===id);if(!eq)return;
   editingId=id;document.getElementById('equip-modal-title').textContent='Edit Equipment';
   document.getElementById('f-type').value=eq.type;toggleModelField(eq.type);document.getElementById('f-brand').value=eq.brand;setModelValue(eq.type,eq.model);
-  document.getElementById('f-serial').value=eq.serial;document.getElementById('f-condition').value=eq.condition;document.getElementById('f-status').value=eq.status;
+  document.getElementById('f-serial').value=eq.serial;var fq=document.getElementById('f-qty');if(fq)fq.value=eq.qty||1;document.getElementById('f-condition').value=eq.condition;document.getElementById('f-status').value=eq.status;
   const _emp=employees.find(e=>e.id===eq.assignedTo);
   document.getElementById('f-assigned').value=eq.assignedTo||'';document.getElementById('f-assigned-search').value=_emp?_emp.name:'';
   document.getElementById('f-location').value=eq.location||'';document.getElementById('f-purchase-date').value=eq.purchaseDate||'';
@@ -2255,7 +2261,7 @@ function editEquipment(id){
   document.getElementById('equip-modal').classList.add('open');
 }
 function saveEquipment(){
-  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:(function(){var mm=document.getElementById('f-warranty-mm')?.value,yy=document.getElementById('f-warranty-yy')?.value;return(mm&&yy)?mm+'/'+yy:'';})(),price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
+  const data={type:document.getElementById('f-type').value,brand:document.getElementById('f-brand').value,model:getModelValue(),serial:document.getElementById('f-serial').value.trim(),qty:parseInt(document.getElementById('f-qty').value)||1,condition:document.getElementById('f-condition').value,status:document.getElementById('f-status').value,assignedTo:document.getElementById('f-assigned').value,location:document.getElementById('f-location').value,purchaseDate:document.getElementById('f-purchase-date').value,warrantyExpiry:(function(){var mm=document.getElementById('f-warranty-mm')?.value,yy=document.getElementById('f-warranty-yy')?.value;return(mm&&yy)?mm+'/'+yy:'';})(),price:parseFloat(document.getElementById('f-price').value)||0,notes:document.getElementById('f-notes').value};
   if(data.serial){const dup=equipment.find(e=>e.serial&&e.serial.trim().toLowerCase()===data.serial.toLowerCase()&&e.id!==editingId);if(dup)return alert('Serial number "'+data.serial+'" is already assigned to '+dup.brand+' '+dup.model+' ('+dup.type+'). Please use a unique serial number.');}
   if(editingId){
     const prev=equipment.find(e=>e.id===editingId),prevAssigned=prev?prev.assignedTo:'';
@@ -3030,6 +3036,7 @@ function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName,
       return'<tr style="background:'+bg+'"><td style="padding:8px 12px;font-size:12px;color:#374151;border-bottom:1px solid #e5e7eb;">'+(idx+1)+'</td>'
         +'<td style="padding:8px 12px;font-size:12px;color:#111827;font-weight:600;border-bottom:1px solid #e5e7eb;">'+item.brand+' '+item.model+'</td>'
         +'<td style="padding:8px 12px;font-size:12px;color:#374151;border-bottom:1px solid #e5e7eb;">'+item.type+'</td>'
+        +'<td style="padding:8px 12px;font-size:12px;text-align:center;color:#374151;border-bottom:1px solid #e5e7eb;">'+(item.qty||1)+'</td>'
         +'<td style="padding:8px 12px;font-size:12px;font-family:monospace;color:#6b7280;border-bottom:1px solid #e5e7eb;">'+(item.serial||'&mdash;')+'</td>'
         +'<td style="padding:8px 12px;font-size:12px;color:#374151;border-bottom:1px solid #e5e7eb;">'+item.condition+'</td></tr>';
     }).join('');
@@ -3074,6 +3081,7 @@ function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName,
     +'<tr style="background:#f9fafb;"><th style="padding:7px 12px;text-align:left;font-size:10px;color:#6b7280;border-bottom:1px solid #e5e7eb;">#</th>'
     +'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Brand / Model</th>'
     +'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Type</th>'
+    +'<th style="padding:7px 12px;text-align:center;font-size:10px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Qty</th>'
     +'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Serial No.</th>'
     +'<th style="padding:7px 12px;text-align:left;font-size:10px;color:#6b7280;border-bottom:1px solid #e5e7eb;">Condition</th></tr>'
     +equipRows+'</table></td></tr>':'')

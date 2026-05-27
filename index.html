@@ -543,19 +543,147 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <div class="section-header"><span class="section-title">ANALYTICS &amp; INSIGHTS</span></div>
       <div id="analytics-content"></div>
     </div>
-    <div class="view" id="view-new-hire" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;"><div class="section-header" style="margin-bottom:20px"><span class="section-title">New Hire Form</span></div><div id="nh-main-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1280px;"><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:16px">Personal Information</div><div class="form-grid"><div class="form-group full"><label>Full Name *</label><input id="nh-name" autocomplete="new-password" placeholder="First Last"></div><div class="form-group"><label>Employee ID</label><input id="nh-empid" autocomplete="new-password" placeholder="e.g. C2024-0001"></div><div class="form-group"><label>Role / Position</label><input id="nh-role" autocomplete="new-password" placeholder="e.g. Analyst"></div><div class="form-group"><label>Email Address *</label><input id="nh-email" autocomplete="new-password" type="email" placeholder="name@dedale.com"></div><div class="form-group"><label>Site *</label><select id="nh-site"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div><div class="form-group"><label>Start Date *</label><input id="nh-start-date" autocomplete="new-password" type="date"></div>
-<div class="form-group full"><label>Supervisor / Manager *</label><select id="nh-supervisor" style="width:100%;padding:10px 14px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none;letter-spacing:0.5px"><option value="">— Select Supervisor/Manager —</option>
-<option value="Princess Dacillo">Princess Dacillo — PH Director</option>
-<option value="Diane Christel Galatcha">Diane Christel Galatcha — Head - Operations</option>
-<option value="Melvin de Leon">Melvin de Leon — Manager - Network Research</option>
-<option value="Earl Corregidor III">Earl Corregidor III — Manager - Data Operations</option>
-<option value="Alvin Kim Villena">Alvin Kim Villena — Manager - Finance</option>
-<option value="Ingrid Cielo Calinawan">Ingrid Cielo Calinawan — Head - Planning</option>
-<option value="Mary Anne Kleine Guape">Mary Anne Kleine Guape — Manager - Training and Development</option>
-<option value="Nikki Martee Bueno Apao">Nikki Martee Bueno Apao — Associate Content Manager</option>
-<option value="Rambo Joinani">Rambo Joinani — Director of PH Research Team</option>
-<option value="Cecille Hernandez">Cecille Hernandez — Manager - Human Resources</option>
-</select></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">ID Photo / Document</div><div style="font-size:11px;color:var(--text3);margin-bottom:12px">Upload a photo or scanned ID. Image will be included in the notification email.</div><div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;"><div><input autocomplete="new-password" type="file" id="nh-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleNHPhotoUpload(event)"><button class="btn btn-outline btn-sm" onclick="document.getElementById('nh-photo-input').click()" style="margin-bottom:10px;">📷 Upload Photo / ID</button></div><div id="nh-photo-preview-wrap" style="display:none"><img id="nh-photo-preview" style="max-width:160px;max-height:160px;border:1px solid var(--border);display:block;"><button onclick="clearNHPhoto()" style="background:transparent;border:none;color:var(--crimson);font-size:11px;cursor:pointer;font-family:Share Tech Mono,monospace;margin-top:5px;">✕ Remove</button></div></div></div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:12px">Signature *</div><div style="font-size:11px;color:var(--text3);margin-bottom:10px">Draw your signature below using your finger (mobile) or mouse.</div><div style="border:1px solid var(--border);background:var(--navy-mid);margin-bottom:8px;position:relative;touch-action:none;" ontouchstart="event.stopPropagation()"><canvas id="nh-signature-canvas" tabindex="0" style="display:block;width:100%;height:160px;cursor:crosshair;touch-action:none;outline:none;"></canvas><div id="nh-sig-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:var(--text3);font-family:Share Tech Mono,monospace;pointer-events:none;letter-spacing:1px;">Sign here</div></div><button class="btn btn-outline btn-sm" onclick="clearNHSignature()">Clear Signature</button></div></div><div><div class="dash-card" style="margin-bottom:16px;"><div class="dash-card-title" style="margin-bottom:4px">Equipment to Assign</div><div style="font-size:11px;color:var(--text3);margin-bottom:14px">Items will be added to the Equipment Registry and assigned to this employee automatically.</div><div id="nh-equip-container"></div><button class="btn btn-outline btn-sm" onclick="addNHEquipRow()" style="margin-top:4px;">+ Add Item</button></div></div></div><div id="nh-action-btns" style="display:flex;gap:10px;justify-content:center;padding-bottom:30px;max-width:1280px;margin-top:4px;"><button class="btn btn-outline" onclick="resetNewHireForm()">Clear Form</button><button class="btn btn-primary" onclick="saveNewHire()">Submit New Hire</button></div></div>
+    <div class="view" id="view-new-hire" style="overflow-y:auto;overflow-x:hidden;padding:26px 30px;min-height:0;">
+  <div class="section-header" style="margin-bottom:20px"><span class="section-title">New Hire Form</span></div>
+
+  <!-- Step Indicator -->
+  <div id="nh-steps" style="display:flex;align-items:center;gap:0;margin-bottom:24px;max-width:640px;">
+    <div style="display:flex;align-items:center;gap:10px;flex:1">
+      <div id="nh-step1-num" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;flex-shrink:0;background:var(--crimson);color:#fff;box-shadow:0 0 12px rgba(204,34,68,0.5);transition:all 0.3s;">1</div>
+      <div id="nh-step1-lbl" style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--crimson);">PERSONAL INFO</div>
+    </div>
+    <div id="nh-step-line" style="flex:1;height:1px;background:var(--border2);margin:0 12px;transition:background 0.3s;max-width:120px;"></div>
+    <div style="display:flex;align-items:center;gap:10px;flex:1">
+      <div id="nh-step2-num" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;flex-shrink:0;background:var(--surface2);color:var(--text3);border:1px solid var(--border);transition:all 0.3s;">2</div>
+      <div id="nh-step2-lbl" style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text3);transition:all 0.3s;">TERMS & SIGN</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: Personal Info -->
+  <div id="nh-panel-step1">
+    <div id="nh-main-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1280px;">
+      <div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dash-card-title" style="margin-bottom:16px">Personal Information</div>
+          <div class="form-grid">
+            <div class="form-group full"><label>Full Name *</label><input id="nh-name" autocomplete="new-password" placeholder="First Last"></div>
+            <div class="form-group"><label>Employee ID</label><input id="nh-empid" autocomplete="new-password" placeholder="e.g. C2024-0001"></div>
+            <div class="form-group"><label>Role / Position</label><input id="nh-role" autocomplete="new-password" placeholder="e.g. Analyst"></div>
+            <div class="form-group"><label>Email Address *</label><input id="nh-email" autocomplete="new-password" type="email" placeholder="name@dedale.com"></div>
+            <div class="form-group"><label>Site *</label><select id="nh-site"><option value="">— Select Site —</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select></div>
+            <div class="form-group"><label>Start Date *</label><input id="nh-start-date" autocomplete="new-password" type="date"></div>
+            <div class="form-group full"><label>Supervisor / Manager *</label>
+              <select id="nh-supervisor" style="width:100%;padding:10px 14px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;outline:none;letter-spacing:0.5px">
+                <option value="">— Select Supervisor/Manager —</option>
+                <option value="Princess Dacillo">Princess Dacillo — PH Director</option>
+                <option value="Diane Christel Galatcha">Diane Christel Galatcha — Head - Operations</option>
+                <option value="Melvin de Leon">Melvin de Leon — Manager - Network Research</option>
+                <option value="Earl Corregidor III">Earl Corregidor III — Manager - Data Operations</option>
+                <option value="Alvin Kim Villena">Alvin Kim Villena — Manager - Finance</option>
+                <option value="Ingrid Cielo Calinawan">Ingrid Cielo Calinawan — Head - Planning</option>
+                <option value="Mary Anne Kleine Guape">Mary Anne Kleine Guape — Manager - Training and Development</option>
+                <option value="Nikki Martee Bueno Apao">Nikki Martee Bueno Apao — Associate Content Manager</option>
+                <option value="Rambo Joinani">Rambo Joinani — Director of PH Research Team</option>
+                <option value="Cecille Hernandez">Cecille Hernandez — Manager - Human Resources</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dash-card-title" style="margin-bottom:12px">ID Photo / Document</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:12px">Upload a photo or scanned ID. Image will be included in the notification email.</div>
+          <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+            <div><input autocomplete="new-password" type="file" id="nh-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleNHPhotoUpload(event)"><button class="btn btn-outline btn-sm" onclick="document.getElementById('nh-photo-input').click()" style="margin-bottom:10px;">📷 Upload Photo / ID</button></div>
+            <div id="nh-photo-preview-wrap" style="display:none"><img id="nh-photo-preview" style="max-width:160px;max-height:160px;border:1px solid var(--border);display:block;"><button onclick="clearNHPhoto()" style="background:transparent;border:none;color:var(--crimson);font-size:11px;cursor:pointer;font-family:Share Tech Mono,monospace;margin-top:5px;">✕ Remove</button></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dash-card-title" style="margin-bottom:4px">Equipment to Assign</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Items will be added to the Equipment Registry and assigned to this employee automatically.</div>
+          <div id="nh-equip-container"></div>
+          <button class="btn btn-outline btn-sm" onclick="addNHEquipRow()" style="margin-top:4px;">+ Add Item</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;max-width:1280px;margin-top:4px;">
+      <button class="btn btn-outline" onclick="resetNewHireForm()">Clear Form</button>
+      <button class="btn btn-primary" onclick="nhGoToStep2()">&#9654; NEXT — TERMS &amp; SIGN</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Terms & Signatures -->
+  <div id="nh-panel-step2" style="display:none;max-width:900px;">
+
+    <!-- Acknowledgement & Terms Box -->
+    <div class="dash-card" style="margin-bottom:16px;">
+      <div class="dash-card-title" style="margin-bottom:12px;">Acknowledgement and Terms</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6;">I acknowledge that the equipment issued to me is a valuable company asset and critical to operations. By accepting these items, I agree to the following:</div>
+      <div style="background:var(--navy-mid);border:1px solid var(--border2);padding:16px 20px;max-height:240px;overflow-y:auto;margin-bottom:12px;">
+        <div style="margin-bottom:12px;"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:5px;">1. SAFEKEEPING AND PROPER USE</div><ul style="list-style:none;padding-left:10px;font-size:13px;color:var(--text2);line-height:1.7;"><li style="position:relative;padding-left:12px;">— I am responsible for the safekeeping and proper use of the equipment.</li><li style="position:relative;padding-left:12px;">— Proper use includes: Using the equipment only for authorized work purposes, Preventing unauthorized access, lending, or modification, Avoiding installation of unapproved software or applications.</li></ul></div>
+        <div style="margin-bottom:12px;"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:5px;">2. CARE AND MAINTENANCE</div><ul style="list-style:none;padding-left:10px;font-size:13px;color:var(--text2);line-height:1.7;"><li style="position:relative;padding-left:12px;">— I will take reasonable precautions to prevent damage, theft, or misuse.</li><li style="position:relative;padding-left:12px;">— I will store and handle the equipment in a safe manner and follow any provided care guidelines.</li><li style="position:relative;padding-left:12px;">— I will immediately report any loss, theft, malfunction, or damage to the company.</li></ul></div>
+        <div style="margin-bottom:12px;"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:5px;">3. RETURN OF EQUIPMENT</div><ul style="list-style:none;padding-left:10px;font-size:13px;color:var(--text2);line-height:1.7;"><li style="position:relative;padding-left:12px;">— I agree to return all issued items upon request, when no longer required for my role, or at the end of my employment.</li><li style="position:relative;padding-left:12px;">— Items must be returned in their original condition, except for normal wear and tear.</li></ul></div>
+        <div style="margin-bottom:12px;"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:5px;">4. LIABILITY FOR LOSS OR DAMAGE</div><ul style="list-style:none;padding-left:10px;font-size:13px;color:var(--text2);line-height:1.7;"><li style="position:relative;padding-left:12px;">— In the event of loss, theft, or damage due to negligence, I understand that I may be responsible for the repair or replacement cost.</li></ul></div>
+        <div style="margin-bottom:12px;"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:5px;">5. FINAL SETTLEMENT</div><ul style="list-style:none;padding-left:10px;font-size:13px;color:var(--text2);line-height:1.7;"><li style="position:relative;padding-left:12px;">— Failure to return these items at the end of my employment may result in deductions from my final salary, as per company policy.</li></ul></div>
+        <div style="margin-bottom:4px;"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:5px;">6. PERIODIC CHECKS</div><ul style="list-style:none;padding-left:10px;font-size:13px;color:var(--text2);line-height:1.7;"><li style="position:relative;padding-left:12px;">— I acknowledge that the company may conduct periodic inspections or audits of the equipment to ensure compliance.</li></ul></div>
+      </div>
+      <div style="font-size:13px;color:var(--text2);font-style:italic;">By signing below, I confirm that I have read, understood, and agree to these terms.</div>
+    </div>
+
+    <!-- 3 Signature Canvases -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
+
+      <!-- Employee Signature -->
+      <div class="dash-card" style="position:relative;border-top:2px solid var(--blue);">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:2px;margin-bottom:6px;">EMPLOYEE SIGNATURE</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;" id="nh-sig-emp-name">New Hire</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span id="nh-emp-sig-badge" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;background:rgba(212,168,48,0.12);color:var(--gold);">⬤ PENDING</span>
+          <button onclick="clearNH3Sig('emp')" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;">CLEAR</button>
+        </div>
+        <div style="border:1px solid var(--border2);background:var(--navy-mid);position:relative;">
+          <canvas id="nh3-sig-emp" style="display:block;width:100%;height:120px;cursor:crosshair;touch-action:none;"></canvas>
+          <div id="nh3-ph-emp" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);pointer-events:none;letter-spacing:1px;white-space:nowrap;">Sign here with finger</div>
+        </div>
+      </div>
+
+      <!-- Supervisor Signature -->
+      <div class="dash-card" style="position:relative;border-top:2px solid var(--gold);">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">SUPERVISOR SIGNATURE</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;" id="nh-sig-sup-name">Supervisor</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span id="nh-sup-sig-badge" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;background:rgba(212,168,48,0.12);color:var(--gold);">⬤ PENDING</span>
+          <button onclick="clearNH3Sig('sup')" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;">CLEAR</button>
+        </div>
+        <div style="border:1px solid var(--border2);background:var(--navy-mid);position:relative;">
+          <canvas id="nh3-sig-sup" style="display:block;width:100%;height:120px;cursor:crosshair;touch-action:none;"></canvas>
+          <div id="nh3-ph-sup" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);pointer-events:none;letter-spacing:1px;white-space:nowrap;">Hand device to supervisor</div>
+        </div>
+      </div>
+
+      <!-- IT Signature -->
+      <div class="dash-card" style="position:relative;border-top:2px solid var(--crimson);">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--crimson);letter-spacing:2px;margin-bottom:6px;">IT SIGNATURE</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;">Xerxis Dalanon</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span id="nh-it-sig-badge" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;background:rgba(204,34,68,0.12);color:var(--crimson);">⬤ PENDING</span>
+          <button onclick="clearNH3Sig('it')" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;">CLEAR</button>
+        </div>
+        <div style="border:1px solid var(--border2);background:var(--navy-mid);position:relative;">
+          <canvas id="nh3-sig-it" style="display:block;width:100%;height:120px;cursor:crosshair;touch-action:none;"></canvas>
+          <div id="nh3-ph-it" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);pointer-events:none;letter-spacing:1px;white-space:nowrap;">IT Admin signs here</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:4px;padding-bottom:30px;">
+      <button class="btn btn-outline" onclick="nhGoToStep1()">&#9664; BACK</button>
+      <button class="btn btn-primary" onclick="saveNewHire()">Submit New Hire</button>
+    </div>
+  </div>
+
 <div class="view" id="view-employees" style="overflow-y:auto;overflow-x:hidden;min-height:0;">
       <div style="background:var(--bg);padding:16px 30px 12px;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -995,7 +1123,7 @@ function showView(name){
   if(name==='analytics')renderAnalytics();
   if(name==='audit')renderAuditLog();
   if(name==='settings')renderSettings();
-  if(name==='new-hire'){_nhSigCtx=null;resetNewHireForm();setTimeout(initNHSignature,100);}
+  if(name==='new-hire'){_nhSigCtx=null;_nh3Sigs={emp:{ctx:null,drawing:false,has:false},sup:{ctx:null,drawing:false,has:false},it:{ctx:null,drawing:false,has:false}};resetNewHireForm();setTimeout(initNHSignature,100);}
   closeMobileMenu();
 }
 
@@ -1152,6 +1280,9 @@ function resetNewHireForm(){
   var sd=document.getElementById('nh-start-date');if(sd)sd.value='';
   var sup=document.getElementById('nh-supervisor');if(sup)sup.value='';
   clearNHSignature();clearNHPhoto();
+  ['emp','sup','it'].forEach(function(id){clearNH3Sig(id);});
+  _nh3Sigs={emp:{ctx:null,drawing:false,has:false},sup:{ctx:null,drawing:false,has:false},it:{ctx:null,drawing:false,has:false}};
+  nhGoToStep1();
   var ec=document.getElementById('nh-equip-container');if(ec)ec.innerHTML='';
 }
 
@@ -1243,16 +1374,19 @@ function saveNewHire(){
   if(!site)return alert('Please select a site.');
   if(!startDate)return alert('Start date is required.');
   if(!supervisor)return alert('Please select a Supervisor/Manager.');
-  if(isNHSigEmpty())return alert('Please provide a signature before submitting.');
+  if(!_nh3Sigs.emp.has)return alert('Employee signature is required.');
+  if(!_nh3Sigs.sup.has)return alert('Supervisor signature is required.');
+  if(!_nh3Sigs.it.has)return alert('IT signature is required.');
 
   if(empid&&employees.some(function(e){return e.empid&&e.empid.toLowerCase()===empid.toLowerCase();}))
     return alert('Employee ID "'+empid+'" already exists.');
   if(email&&employees.some(function(e){return e.email&&e.email.toLowerCase()===email.toLowerCase();}))
     return alert('An employee with email "'+email+'" already exists.');
 
-  var canvas=document.getElementById('nh-signature-canvas');
-  var sigData=canvas?canvas.toDataURL('image/png'):null;
-  var sigDataEmail=canvas?getNHSigForEmail(canvas):null;
+  var sigData=getNH3SigData('emp');
+  var sigDataEmail=sigData;
+  var supSigData=getNH3SigData('sup');
+  var itSigData=getNH3SigData('it');
 
   var newEmp={id:genId(),empid:empid,name:name,role:role,email:email,site:site,
     startDate:startDate,supervisor:supervisor,signature:sigData,photo:_nhPhotoData||null,
@@ -1403,7 +1537,7 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
   /* Send acknowledgement document to new hire */
   if(emp.email){
     try{
-      var ackHtml=generateAcknowledgementHTML(emp,equipItems,sigDataEmail,emp.supervisor||'');
+      var ackHtml=generateAcknowledgementHTML(emp,equipItems,sigDataEmail,emp.supervisor||'',supSigData,itSigData);
       await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{
         method:'POST',
         headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
@@ -2743,8 +2877,148 @@ async function manualBackup(){
 
 window.addEventListener('pageshow',function(e){if(e.persisted)window.location.reload();});
 
+/* ── NEW HIRE 3-SIGNATURE STEP FLOW ── */
+var _nh3Sigs={emp:{ctx:null,drawing:false,has:false},sup:{ctx:null,drawing:false,has:false},it:{ctx:null,drawing:false,has:false}};
+
+function nhGoToStep2(){
+  var name=document.getElementById('nh-name').value.trim();
+  var email=document.getElementById('nh-email').value.trim();
+  var site=document.getElementById('nh-site').value;
+  var startDate=document.getElementById('nh-start-date').value;
+  var supervisor=document.getElementById('nh-supervisor').value;
+  if(!name)return alert('Full name is required.');
+  if(!email)return alert('Email address is required.');
+  if(!site)return alert('Please select a site.');
+  if(!startDate)return alert('Start date is required.');
+  if(!supervisor)return alert('Please select a Supervisor/Manager.');
+  /* Update names on sig cards */
+  document.getElementById('nh-sig-emp-name').textContent=name;
+  var supVal=document.getElementById('nh-supervisor').value;
+  document.getElementById('nh-sig-sup-name').textContent=supVal||'Supervisor';
+  /* Show step 2 */
+  document.getElementById('nh-panel-step1').style.display='none';
+  document.getElementById('nh-panel-step2').style.display='block';
+  /* Update step indicators */
+  document.getElementById('nh-step1-num').style.background='var(--green)';
+  document.getElementById('nh-step1-num').style.boxShadow='none';
+  document.getElementById('nh-step1-num').textContent='✓';
+  document.getElementById('nh-step1-lbl').style.color='var(--green)';
+  document.getElementById('nh-step-line').style.background='var(--green)';
+  document.getElementById('nh-step2-num').style.background='var(--crimson)';
+  document.getElementById('nh-step2-num').style.color='#fff';
+  document.getElementById('nh-step2-num').style.boxShadow='0 0 12px rgba(204,34,68,0.5)';
+  document.getElementById('nh-step2-num').style.border='none';
+  document.getElementById('nh-step2-lbl').style.color='var(--crimson)';
+  /* Init signature canvases */
+  setTimeout(initNH3Sigs, 100);
+  window.scrollTo(0,0);
+}
+
+function nhGoToStep1(){
+  document.getElementById('nh-panel-step2').style.display='none';
+  document.getElementById('nh-panel-step1').style.display='block';
+  /* Reset step 2 indicators */
+  document.getElementById('nh-step1-num').style.background='var(--crimson)';
+  document.getElementById('nh-step1-num').style.boxShadow='0 0 12px rgba(204,34,68,0.5)';
+  document.getElementById('nh-step1-num').textContent='1';
+  document.getElementById('nh-step1-lbl').style.color='var(--crimson)';
+  document.getElementById('nh-step-line').style.background='var(--border2)';
+  document.getElementById('nh-step2-num').style.background='var(--surface2)';
+  document.getElementById('nh-step2-num').style.color='var(--text3)';
+  document.getElementById('nh-step2-num').style.boxShadow='none';
+  document.getElementById('nh-step2-num').style.border='1px solid var(--border)';
+  document.getElementById('nh-step2-lbl').style.color='var(--text3)';
+  window.scrollTo(0,0);
+}
+
+function initNH3Sigs(){
+  ['emp','sup','it'].forEach(function(id){
+    var canvas=document.getElementById('nh3-sig-'+id);
+    if(!canvas||_nh3Sigs[id].ctx)return;
+    var rect=canvas.getBoundingClientRect();
+    canvas.width=rect.width||280;
+    canvas.height=120;
+    var ctx=canvas.getContext('2d');
+    ctx.strokeStyle='#e4e8ff';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
+    _nh3Sigs[id].ctx=ctx;
+    canvas.addEventListener('mousedown',function(e){nh3SigStart(id,e);});
+    canvas.addEventListener('mousemove',function(e){nh3SigMove(id,e);});
+    canvas.addEventListener('mouseup',function(){_nh3Sigs[id].drawing=false;});
+    canvas.addEventListener('mouseleave',function(){_nh3Sigs[id].drawing=false;});
+    canvas.addEventListener('touchstart',function(e){e.preventDefault();nh3SigStart(id,e.touches[0]);},{passive:false});
+    canvas.addEventListener('touchmove',function(e){e.preventDefault();nh3SigMove(id,e.touches[0]);},{passive:false});
+    canvas.addEventListener('touchend',function(e){e.preventDefault();_nh3Sigs[id].drawing=false;},{passive:false});
+  });
+}
+
+function nh3SigPos(id,e){
+  var canvas=document.getElementById('nh3-sig-'+id);
+  var rect=canvas.getBoundingClientRect();
+  return{x:(e.clientX-rect.left)*(canvas.width/rect.width),y:(e.clientY-rect.top)*(canvas.height/rect.height)};
+}
+
+function nh3SigStart(id,e){
+  if(!_nh3Sigs[id].ctx)return;
+  _nh3Sigs[id].drawing=true;
+  var p=nh3SigPos(id,e);
+  _nh3Sigs[id].ctx.beginPath();
+  _nh3Sigs[id].ctx.moveTo(p.x,p.y);
+  var ph=document.getElementById('nh3-ph-'+id);
+  if(ph)ph.style.display='none';
+}
+
+function nh3SigMove(id,e){
+  if(!_nh3Sigs[id].drawing||!_nh3Sigs[id].ctx)return;
+  var p=nh3SigPos(id,e);
+  _nh3Sigs[id].ctx.lineTo(p.x,p.y);
+  _nh3Sigs[id].ctx.stroke();
+  _nh3Sigs[id].has=true;
+  nh3UpdateBadge(id);
+}
+
+function nh3UpdateBadge(id){
+  var badges={emp:'nh-emp-sig-badge',sup:'nh-sup-sig-badge',it:'nh-it-sig-badge'};
+  var colors={emp:'rgba(34,204,136,0.15)',sup:'rgba(34,204,136,0.15)',it:'rgba(34,204,136,0.15)'};
+  var el=document.getElementById(badges[id]);
+  if(el&&_nh3Sigs[id].has){el.style.background=colors[id];el.style.color='var(--green)';el.textContent='✓ SIGNED';}
+}
+
+function clearNH3Sig(id){
+  if(!_nh3Sigs[id].ctx)return;
+  var canvas=document.getElementById('nh3-sig-'+id);
+  _nh3Sigs[id].ctx.clearRect(0,0,canvas.width,canvas.height);
+  _nh3Sigs[id].has=false;
+  var ph=document.getElementById('nh3-ph-'+id);if(ph)ph.style.display='';
+  var badges={emp:'nh-emp-sig-badge',sup:'nh-sup-sig-badge',it:'nh-it-sig-badge'};
+  var el=document.getElementById(badges[id]);
+  if(el){
+    var pendingColors={emp:'rgba(212,168,48,0.12)',sup:'rgba(212,168,48,0.12)',it:'rgba(204,34,68,0.12)'};
+    var pendingText={emp:'var(--gold)',sup:'var(--gold)',it:'var(--crimson)'};
+    el.style.background=pendingColors[id];el.style.color=pendingText[id];el.textContent='● PENDING';
+  }
+}
+
+function getNH3SigData(id){
+  var canvas=document.getElementById('nh3-sig-'+id);
+  if(!canvas||!_nh3Sigs[id].has)return null;
+  /* White background version for email */
+  var tmp=document.createElement('canvas');
+  tmp.width=canvas.width;tmp.height=canvas.height;
+  var ctx=tmp.getContext('2d');
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,tmp.width,tmp.height);
+  var src=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
+  var dst=ctx.createImageData(src.width,src.height);
+  for(var i=0;i<src.data.length;i+=4){
+    if(src.data[i+3]>10){dst.data[i]=0;dst.data[i+1]=0;dst.data[i+2]=0;dst.data[i+3]=255;}
+    else{dst.data[i]=255;dst.data[i+1]=255;dst.data[i+2]=255;dst.data[i+3]=255;}
+  }
+  ctx.putImageData(dst,0,0);
+  return tmp.toDataURL('image/png');
+}
+
+
 /* ── ACKNOWLEDGEMENT DOCUMENT ── */
-function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName){
+function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName,supSigData,itSigData){
   var today=new Date();
   var dateStr=today.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
   var startFormatted=emp.startDate?new Date(emp.startDate+'T00:00:00').toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}):dateStr;
@@ -2815,13 +3089,13 @@ function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName)
     +'</td>'
     +'<td style="width:31%;padding-right:12px;">'
     +'<div style="font-size:10px;color:#6b7280;margin-bottom:6px;">Supervisor/Manager Signature:</div>'
-    +'<div style="width:150px;border-bottom:1px solid #374151;height:50px;margin-bottom:4px;"></div>'
+    +(supSigData?'<img src="'+supSigData+'" style="max-width:150px;max-height:50px;display:block;border-bottom:1px solid #374151;padding-bottom:4px;">':'<div style="width:150px;border-bottom:1px solid #374151;height:50px;margin-bottom:4px;"></div>')
     +'<div style="font-size:11px;font-weight:700;color:#111827;margin-top:5px;">'+(supervisorName||'')+'</div>'
-    +'<div style="font-size:10px;color:#6b7280;margin-top:2px;">Date: ___________</div>'
+    +'<div style="font-size:10px;color:#6b7280;margin-top:2px;">Date: '+dateStr+'</div>'
     +'</td>'
     +'<td style="width:31%;">'
     +'<div style="font-size:10px;color:#6b7280;margin-bottom:6px;">IT Name &amp; Signature:</div>'
-    +'<div style="width:150px;border-bottom:1px solid #374151;height:50px;margin-bottom:4px;"></div>'
+    +(itSigData?'<img src="'+itSigData+'" style="max-width:150px;max-height:50px;display:block;border-bottom:1px solid #374151;padding-bottom:4px;">':'<div style="width:150px;border-bottom:1px solid #374151;height:50px;margin-bottom:4px;"></div>')
     +'<div style="font-size:11px;font-weight:700;color:#111827;margin-top:5px;">Xerxis Dalanon</div>'
     +'<div style="font-size:10px;color:#6b7280;margin-top:2px;">Date: '+dateStr+'</div>'
     +'</td>'

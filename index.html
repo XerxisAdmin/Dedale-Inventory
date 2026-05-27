@@ -982,7 +982,7 @@ function showView(name){
   if(name==='analytics')renderAnalytics();
   if(name==='audit')renderAuditLog();
   if(name==='settings')renderSettings();
-  if(name==='new-hire'){_nhSigCtx=null;setTimeout(initNHSignature,100);}
+  if(name==='new-hire'){_nhSigCtx=null;resetNewHireForm();setTimeout(initNHSignature,100);}
   closeMobileMenu();
 }
 

@@ -585,6 +585,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
                 <option value="Nikki Martee Bueno Apao">Nikki Martee Bueno Apao — Associate Content Manager</option>
                 <option value="Rambo Joinani">Rambo Joinani — Director of PH Research Team</option>
                 <option value="Cecille Hernandez">Cecille Hernandez — Manager - Human Resources</option>
+                <option value="Xerxis Dalanon">Xerxis Dalanon — IT Admin</option>
               </select>
             </div>
           </div>
@@ -1276,7 +1277,7 @@ function clearNHPhoto(){
 
 function resetNewHireForm(){
   ['nh-name','nh-empid','nh-role','nh-email'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';})
-  var nhEmpId=document.getElementById('nh-empid');if(nhEmpId)nhEmpId.value=getNextEmployeeId();;
+  /* auto-empid removed */
   var site=document.getElementById('nh-site');if(site)site.value='';
   var sd=document.getElementById('nh-start-date');if(sd)sd.value='';
   var sup=document.getElementById('nh-supervisor');if(sup)sup.value='';
@@ -2080,21 +2081,46 @@ function renderPurchases(){
 }
 
 function renderEmployees(list){
-  const src=list||employees,icons={'Laptop':'\u{1F4BB}','Monitor':'\u{1F5A5}','Headset':'\u{1F3A7}','Mouse':'\u{1F5B1}'};
-  document.getElementById('employees-grid').innerHTML=src.length?src.map(emp=>{
-    const items=equipment.filter(e=>e.assignedTo===emp.id);
-    return '<div class="emp-card" onclick="openEmployeeDetail(\''+emp.id+'\')" style="cursor:pointer" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">'
-      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div class="emp-name">'+emp.name+'</div>'
-      +'<div style="display:flex;gap:5px" onclick="event.stopPropagation()"><button class="btn btn-outline btn-sm" onclick="editEmployee(\''+emp.id+'\')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteEmployee(\''+emp.id+'\')">Delete</button></div></div>'
-      +'<div class="emp-role">'
-      +(emp.empid?'<div class="emp-meta-row"><span class="emp-meta-label">ID</span><span class="emp-meta-value">'+emp.empid+'</span></div>':'')
-      +(emp.role?'<div class="emp-meta-row"><span class="emp-meta-label">Role</span><span class="emp-meta-value">'+emp.role+'</span></div>':'')
-      +(emp.email?'<div class="emp-meta-row"><span class="emp-meta-label">Email</span><span class="emp-meta-value">'+emp.email+'</span></div>':'')
-      +(emp.site?'<div class="emp-meta-row"><span class="emp-meta-label">Site</span><span class="emp-meta-value"><span class="site-pill">'+emp.site+'</span></span></div>':'')
-      +'</div><div style="height:1px;background:var(--border);margin-bottom:10px"></div>'
-      +'<div class="emp-equipment">'+(items.length?items.map(e=>'<div class="emp-equip-item">'+(icons[e.type]||'\u{1F4E6}')+' '+e.brand+' '+e.model+(e.qty&&e.qty>1?' x'+e.qty+' ':'')+(e.serial?' <span style="color:var(--gold);font-size:10px;font-family:\'Share Tech Mono\',monospace;font-weight:600"> S/N: '+e.serial+'</span>':'')+'</div>').join(''):'<div style="font-size:12px;color:var(--text3)">No equipment assigned</div>')+'</div>'
-      +'</div>';
-  }).join(''):'<div class="empty-state"><p>No employees found</p></div>';
+  var src=list||employees;
+  var icons={Laptop:'💻',Monitor:'🖥',Headset:'🎧',Mouse:'🖱'};
+  var grid=document.getElementById('employees-grid');
+  if(!grid)return;
+  if(!src||!src.length){grid.innerHTML='<div class="empty-state"><p>No employees found</p></div>';return;}
+  var html='';
+  for(var i=0;i<src.length;i++){
+    var emp=src[i];
+    var items=equipment.filter(function(e){return e.assignedTo===emp.id;});
+    var equipHtml='';
+    if(items.length){
+      for(var j=0;j<items.length;j++){
+        var e=items[j];
+        var icon=icons[e.type]||'📦';
+        equipHtml+='<div class="emp-equip-item">'+icon+' '+e.brand+' '+e.model;
+        if(e.qty&&e.qty>1)equipHtml+=' <span style="color:var(--blue);font-size:10px;font-weight:700">x'+e.qty+'</span>';
+        if(e.serial)equipHtml+=' <span style="color:var(--gold);font-size:10px;font-weight:600"> S/N: '+e.serial+'</span>';
+        equipHtml+='</div>';
+      }
+    }else{
+      equipHtml='<div style="font-size:12px;color:var(--text3)">No equipment assigned</div>';
+    }
+    html+='<div class="emp-card" onclick="openEmployeeDetail(''+emp.id+'')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
+    html+='<div class="emp-name">'+emp.name+'</div>';
+    html+='<div style="display:flex;gap:5px" onclick="event.stopPropagation()">';
+    html+='<button class="btn btn-outline btn-sm" onclick="editEmployee(''+emp.id+'')">Edit</button>';
+    html+='<button class="btn btn-danger btn-sm" onclick="deleteEmployee(''+emp.id+'')">Delete</button>';
+    html+='</div></div>';
+    html+='<div class="emp-role">';
+    if(emp.empid)html+='<div class="emp-meta-row"><span class="emp-meta-label">ID</span><span class="emp-meta-value">'+emp.empid+'</span></div>';
+    if(emp.role)html+='<div class="emp-meta-row"><span class="emp-meta-label">Role</span><span class="emp-meta-value">'+emp.role+'</span></div>';
+    if(emp.email)html+='<div class="emp-meta-row"><span class="emp-meta-label">Email</span><span class="emp-meta-value">'+emp.email+'</span></div>';
+    if(emp.site)html+='<div class="emp-meta-row"><span class="emp-meta-label">Site</span><span class="emp-meta-value"><span class="site-pill">'+emp.site+'</span></span></div>';
+    html+='</div>';
+    html+='<div style="height:1px;background:var(--border);margin-bottom:10px"></div>';
+    html+='<div class="emp-equipment">'+equipHtml+'</div>';
+    html+='</div>';
+  }
+  grid.innerHTML=html;
 }
 
 function filterEmployees(){
@@ -2383,7 +2409,7 @@ function savePurchase(){
 }
 
 let editingEmpId=null;
-function openEmployeeModal(){editingEmpId=null;document.getElementById('employee-modal').querySelector('.modal-title').textContent='Add Employee';['e-empid','e-name','e-role','e-email'].forEach(id=>document.getElementById(id).value='');document.getElementById('e-empid').value=getNextEmployeeId();document.getElementById('e-site').value='';document.getElementById('employee-modal').classList.add('open');}
+function openEmployeeModal(){editingEmpId=null;document.getElementById('employee-modal').querySelector('.modal-title').textContent='Add Employee';['e-empid','e-name','e-role','e-email'].forEach(id=>document.getElementById(id).value='');/* auto-empid removed */document.getElementById('e-site').value='';document.getElementById('employee-modal').classList.add('open');}
 function editEmployee(id){const emp=employees.find(e=>e.id===id);if(!emp)return;editingEmpId=id;document.getElementById('employee-modal').querySelector('.modal-title').textContent='Edit Employee';document.getElementById('e-empid').value=emp.empid||'';document.getElementById('e-name').value=emp.name;document.getElementById('e-role').value=emp.role||'';document.getElementById('e-email').value=emp.email||'';document.getElementById('e-site').value=emp.site||'';document.getElementById('employee-modal').classList.add('open');}
 function saveEmployee(){
   const name=document.getElementById('e-name').value.trim();if(!name)return alert('Full name is required.');

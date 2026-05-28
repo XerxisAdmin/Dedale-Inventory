@@ -2082,45 +2082,54 @@ function renderPurchases(){
 
 function renderEmployees(list){
   var src=list||employees;
-  var icons={Laptop:'💻',Monitor:'🖥',Headset:'🎧',Mouse:'🖱'};
   var grid=document.getElementById('employees-grid');
   if(!grid)return;
   if(!src||!src.length){grid.innerHTML='<div class="empty-state"><p>No employees found</p></div>';return;}
-  var html='';
+  var rows=[];
   for(var i=0;i<src.length;i++){
     var emp=src[i];
     var items=equipment.filter(function(e){return e.assignedTo===emp.id;});
     var equipHtml='';
-    if(items.length){
-      for(var j=0;j<items.length;j++){
-        var e=items[j];
-        var icon=icons[e.type]||'📦';
-        equipHtml+='<div class="emp-equip-item">'+icon+' '+e.brand+' '+e.model;
-        if(e.qty&&e.qty>1)equipHtml+=' <span style="color:var(--blue);font-size:10px;font-weight:700">x'+e.qty+'</span>';
-        if(e.serial)equipHtml+=' <span style="color:var(--gold);font-size:10px;font-weight:600"> S/N: '+e.serial+'</span>';
-        equipHtml+='</div>';
-      }
-    }else{
-      equipHtml='<div style="font-size:12px;color:var(--text3)">No equipment assigned</div>';
+    for(var j=0;j<items.length;j++){
+      var eq=items[j];
+      var icon=eq.type==='Laptop'?'[L]':eq.type==='Headset'?'[H]':eq.type==='Mouse'?'[M]':eq.type==='Monitor'?'[D]':'[E]';
+      equipHtml+='<div class="emp-equip-item">';
+      equipHtml+=eq.brand+' '+eq.model;
+      if(eq.qty&&eq.qty>1)equipHtml+=' <span style="color:var(--blue);font-size:10px;font-weight:700"> x'+eq.qty+'</span>';
+      if(eq.serial)equipHtml+=' <span style="color:var(--gold);font-size:10px;font-weight:600"> S/N: '+eq.serial+'</span>';
+      equipHtml+='</div>';
     }
-    html+='<div class="emp-card" onclick="openEmployeeDetail(''+emp.id+'')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
-    html+='<div class="emp-name">'+emp.name+'</div>';
-    html+='<div style="display:flex;gap:5px" onclick="event.stopPropagation()">';
-    html+='<button class="btn btn-outline btn-sm" onclick="editEmployee(''+emp.id+'')">Edit</button>';
-    html+='<button class="btn btn-danger btn-sm" onclick="deleteEmployee(''+emp.id+'')">Delete</button>';
-    html+='</div></div>';
-    html+='<div class="emp-role">';
-    if(emp.empid)html+='<div class="emp-meta-row"><span class="emp-meta-label">ID</span><span class="emp-meta-value">'+emp.empid+'</span></div>';
-    if(emp.role)html+='<div class="emp-meta-row"><span class="emp-meta-label">Role</span><span class="emp-meta-value">'+emp.role+'</span></div>';
-    if(emp.email)html+='<div class="emp-meta-row"><span class="emp-meta-label">Email</span><span class="emp-meta-value">'+emp.email+'</span></div>';
-    if(emp.site)html+='<div class="emp-meta-row"><span class="emp-meta-label">Site</span><span class="emp-meta-value"><span class="site-pill">'+emp.site+'</span></span></div>';
-    html+='</div>';
-    html+='<div style="height:1px;background:var(--border);margin-bottom:10px"></div>';
-    html+='<div class="emp-equipment">'+equipHtml+'</div>';
-    html+='</div>';
+    if(!equipHtml)equipHtml='<div style="font-size:12px;color:var(--text3)">No equipment assigned</div>';
+    var card='<div class="emp-card" data-empid="'+emp.id+'" style="cursor:pointer" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">';
+    card+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
+    card+='<div class="emp-name">'+emp.name+'</div>';
+    card+='<div style="display:flex;gap:5px" onclick="event.stopPropagation()">';
+    card+='<button class="btn btn-outline btn-sm" data-edit="'+emp.id+'">Edit</button>';
+    card+='<button class="btn btn-danger btn-sm" data-del="'+emp.id+'">Delete</button>';
+    card+='</div></div>';
+    card+='<div class="emp-role">';
+    if(emp.empid)card+='<div class="emp-meta-row"><span class="emp-meta-label">ID</span><span class="emp-meta-value">'+emp.empid+'</span></div>';
+    if(emp.role)card+='<div class="emp-meta-row"><span class="emp-meta-label">Role</span><span class="emp-meta-value">'+emp.role+'</span></div>';
+    if(emp.email)card+='<div class="emp-meta-row"><span class="emp-meta-label">Email</span><span class="emp-meta-value">'+emp.email+'</span></div>';
+    if(emp.site)card+='<div class="emp-meta-row"><span class="emp-meta-label">Site</span><span class="emp-meta-value"><span class="site-pill">'+emp.site+'</span></span></div>';
+    card+='</div><div style="height:1px;background:var(--border);margin-bottom:10px"></div>';
+    card+='<div class="emp-equipment">'+equipHtml+'</div>';
+    card+='</div>';
+    rows.push(card);
   }
-  grid.innerHTML=html;
+  grid.innerHTML=rows.join('');
+  /* Attach click handlers after render */
+  grid.querySelectorAll('.emp-card').forEach(function(c){
+    c.addEventListener('click',function(ev){
+      if(!ev.target.closest('button'))openEmployeeDetail(c.getAttribute('data-empid'));
+    });
+  });
+  grid.querySelectorAll('button[data-edit]').forEach(function(b){
+    b.addEventListener('click',function(ev){ev.stopPropagation();editEmployee(b.getAttribute('data-edit'));});
+  });
+  grid.querySelectorAll('button[data-del]').forEach(function(b){
+    b.addEventListener('click',function(ev){ev.stopPropagation();deleteEmployee(b.getAttribute('data-del'));});
+  });
 }
 
 function filterEmployees(){

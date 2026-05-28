@@ -1315,14 +1315,14 @@ function addNHEquipRow(){
     +'<input class="nh-eq-serial" autocomplete="new-password" placeholder="e.g. SN-001234" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
     +'</div>'
     +'<div class="form-group"><label>Qty / Pieces</label>'
-    +'<input class="nh-eq-qty" autocomplete="new-password" type="number" min="1" value="1" placeholder="1" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
+    +'<input class="nh-eq-qty" autocomplete="new-password" type="number" min="1" value="1" placeholder="1" oninput="updateNHRowTotal(this)" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
     +'</div>'
     +'<div class="form-group"><label>Condition</label>'
     +'<select class="nh-eq-cond" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;">'
     +'<option>New</option><option>Good</option><option>Fair</option><option>Damaged</option>'
     +'</select></div>'
-    +'<div class="form-group"><label>Purchase Price (₱)</label>'
-    +'<input class="nh-eq-price" autocomplete="new-password" type="number" placeholder="0.00" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
+    +'<div class="form-group"><label>Purchase Price (₱) <span class="nh-eq-total" style="color:var(--gold);font-size:9px;font-family:Share Tech Mono,monospace;"></span></label>'
+    +'<input class="nh-eq-price" autocomplete="new-password" type="number" placeholder="0.00 per unit" oninput="updateNHRowTotal(this)" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
     +'</div>'
     +'</div>';
   container.appendChild(row);
@@ -2884,6 +2884,17 @@ async function manualBackup(){
 }
 
 window.addEventListener('pageshow',function(e){if(e.persisted)window.location.reload();})
+
+function updateNHRowTotal(el){
+  var row=el.closest('.nh-equip-row');
+  if(!row)return;
+  var qty=parseInt(row.querySelector('.nh-eq-qty')?.value)||1;
+  var price=parseFloat(row.querySelector('.nh-eq-price')?.value)||0;
+  var label=row.querySelector('.nh-eq-total');
+  if(label){
+    label.textContent=(qty>1&&price>0)?'= ₱'+(qty*price).toLocaleString()+' total':'';
+  }
+}
 
 function updateEquipTotalPrice(){
   var qty=parseInt(document.getElementById('f-qty')?.value)||1;

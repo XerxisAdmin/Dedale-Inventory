@@ -522,6 +522,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
           <span class="section-title">Purchase Orders</span>
           <div style="display:flex;gap:8px;">
             <button class="btn btn-outline btn-sm" onclick="downloadPOHistory()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download History</button>
+            <button class="btn btn-danger btn-sm" id="po-clear-all-btn" onclick="clearAllPOs()" style="display:none;">&#128465; Clear All Logs</button>
             <button class="btn btn-primary btn-sm" onclick="openPOModal()">+ New Purchase Request</button>
           </div>
         </div>
@@ -1643,6 +1644,9 @@ function applyRolePermissions(){
   /* Clear Audit Log button — Super Admin only */
   var clearAuditBtn=document.querySelector('[onclick="clearAuditLog()"]');
   if(clearAuditBtn)clearAuditBtn.style.display=isSuperAdmin?'':'none';
+  /* Clear All POs button — Super Admin only */
+  var clearPOBtn=document.getElementById('po-clear-all-btn');
+  if(clearPOBtn)clearPOBtn.style.display=isSuperAdmin?'':'none';
 
   /* Approve/Reject PO buttons — Super Admin and Finance only */
   if(!isSuperAdmin&&!isFinance){
@@ -2643,6 +2647,18 @@ function filterPOByStatus(status){
   ['Pending','Approved','Rejected'].forEach(s=>{const card=document.getElementById('po-card-'+s.toLowerCase());if(!card)return;if(sf&&sf.value===s){card.style.borderColor='var(--crimson)';card.style.boxShadow='0 0 12px rgba(204,34,68,0.3)';}else{card.style.borderColor='';card.style.boxShadow='';}});
   renderPurchaseOrders();
 }
+function clearAllPOs(){
+  if(getUserRole()!=='superadmin'){alert('Access denied. Super Admin only.');return;}
+  if(!purchaseOrders.length){alert('No purchase order logs to clear.');return;}
+  if(!confirm('Clear ALL purchase order logs? This cannot be undone.\n\nTotal records: '+purchaseOrders.length))return;
+  purchaseOrders=[];
+  localStorage.setItem('dd_purchase_orders','[]');
+  logAudit('DELETE','PO','All Purchase Orders','Bulk clear by Super Admin');
+  saveData();
+  renderPurchaseOrders();
+  alert('All purchase order logs cleared.');
+}
+
 function downloadPOHistory(){
   if(!purchaseOrders.length){alert('No purchase orders to export.');return;}
   const rows=[['PO ID','Title','Requested By','Justification','For Employee','Urgency','Status','Items','Total (PHP)','Date Submitted']];

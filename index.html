@@ -593,6 +593,19 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
                 <option value="Rambo Joinani">Rambo Joinani — Director of PH Research Team</option>
                 <option value="Cecille Hernandez">Cecille Hernandez — Manager - Human Resources</option>
                 <option value="Xerxis Dalanon">Xerxis Dalanon — IT Admin</option>
+                <option value="Aurelle Mace Cresencio">Aurelle Mace Cresencio — Content Team Lead</option>
+                <option value="Avito Jr Villaverde">Avito Jr Villaverde — Lead - Planning</option>
+                <option value="Cheyenne Lai Adlawan Geonzon">Cheyenne Lai Adlawan Geonzon — Lead - CDE Leader</option>
+                <option value="Christian Gech Bunal">Christian Gech Bunal — Lead - Planning</option>
+                <option value="Cielo Laburada">Cielo Laburada — Lead - Planning</option>
+                <option value="Eve Quinatadcan">Eve Quinatadcan — Lead - Network Research Planner</option>
+                <option value="Jenny Dee Camello">Jenny Dee Camello — Lead - Planning</option>
+                <option value="Jose Rafael Algabre">Jose Rafael Algabre — Lead - Content Operations</option>
+                <option value="Michael Galatcha">Michael Galatcha — Lead - Data Operations Support</option>
+                <option value="Paul Simon Montemayor">Paul Simon Montemayor — Content Lead</option>
+                <option value="Renante Estrada Toremotcha">Renante Estrada Toremotcha — Lead - Content Engagement</option>
+                <option value="Reyna Jane Vicada Bacalso">Reyna Jane Vicada Bacalso — Lead - Planning</option>
+                <option value="Via Andrino">Via Andrino — Lead - Data Operations Support</option>
               </select>
             </div>
           </div>
@@ -659,14 +672,39 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
       <!-- Supervisor Signature -->
       <div class="dash-card" style="position:relative;border-top:2px solid var(--gold);">
         <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">SUPERVISOR SIGNATURE</div>
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:10px;" id="nh-sig-sup-name">Supervisor</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span id="nh-sup-sig-badge" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;background:rgba(212,168,48,0.12);color:var(--gold);">⬤ PENDING</span>
-          <button onclick="clearNH3Sig('sup')" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;">CLEAR</button>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;" id="nh-sig-sup-name">Supervisor</div>
+        <!-- Not present toggle -->
+        <div style="margin-bottom:10px;">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.5px;">
+            <input type="checkbox" id="nh-sup-not-present" onchange="toggleSupNotPresent()" style="accent-color:var(--crimson);width:14px;height:14px;cursor:pointer;">
+            Supervisor not present during onboarding
+          </label>
         </div>
-        <div style="border:1px solid var(--border2);background:var(--navy-mid);position:relative;">
-          <canvas id="nh3-sig-sup" style="display:block;width:100%;height:120px;cursor:crosshair;touch-action:none;"></canvas>
-          <div id="nh3-ph-sup" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);pointer-events:none;letter-spacing:1px;white-space:nowrap;">Hand device to supervisor</div>
+        <!-- Reason dropdown — shown when not present -->
+        <div id="nh-sup-reason-wrap" style="display:none;margin-bottom:10px;">
+          <label style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:1px;display:block;margin-bottom:5px;">REASON *</label>
+          <select id="nh-sup-reason" style="width:100%;padding:8px 10px;border:1px solid var(--gold);background:var(--navy-mid);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;outline:none;">
+            <option value="">— Select reason —</option>
+            <option value="Remote Work">Remote Work — supervisor is working remotely</option>
+            <option value="On Leave">On Leave — supervisor is on approved leave</option>
+            <option value="Business Travel">Business Travel — supervisor is travelling</option>
+            <option value="Unavailable">Temporarily Unavailable — could not attend</option>
+            <option value="Different Site">Different Site — supervisor is at another office</option>
+          </select>
+          <div style="margin-top:8px;padding:8px 10px;background:rgba(204,34,68,0.08);border:1px solid rgba(204,34,68,0.3);font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);line-height:1.6;">
+            ⚠ IT Admin will countersign on behalf. Reason will be documented on the acknowledgement form. Supervisor will receive a copy via email.
+          </div>
+        </div>
+        <!-- Signature canvas — hidden when not present -->
+        <div id="nh-sup-sig-wrap">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span id="nh-sup-sig-badge" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;background:rgba(212,168,48,0.12);color:var(--gold);">⬤ PENDING</span>
+            <button onclick="clearNH3Sig('sup')" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;">CLEAR</button>
+          </div>
+          <div style="border:1px solid var(--border2);background:var(--navy-mid);position:relative;">
+            <canvas id="nh3-sig-sup" style="display:block;width:100%;height:120px;cursor:crosshair;touch-action:none;"></canvas>
+            <div id="nh3-ph-sup" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);pointer-events:none;letter-spacing:1px;white-space:nowrap;">Hand device to supervisor</div>
+          </div>
         </div>
       </div>
 
@@ -1307,6 +1345,7 @@ function resetNewHireForm(){
   var sup=document.getElementById('nh-supervisor');if(sup)sup.value='';
   clearNHSignature();clearNHPhoto();
   ['emp','sup','it'].forEach(function(id){clearNH3Sig(id);});
+  var supChk=document.getElementById('nh-sup-not-present');if(supChk){supChk.checked=false;toggleSupNotPresent();}
   _nh3Sigs={emp:{ctx:null,drawing:false,has:false},sup:{ctx:null,drawing:false,has:false},it:{ctx:null,drawing:false,has:false}};
   nhGoToStep1();
   var ec=document.getElementById('nh-equip-container');if(ec)ec.innerHTML='';
@@ -1405,7 +1444,13 @@ function saveNewHire(){
   if(!startDate)return alert('Start date is required.');
   if(!supervisor)return alert('Please select a Supervisor/Manager.');
   if(!_nh3Sigs.emp.has)return alert('Employee signature is required.');
-  if(!_nh3Sigs.sup.has)return alert('Supervisor signature is required.');
+  var supNotPresent=document.getElementById('nh-sup-not-present')&&document.getElementById('nh-sup-not-present').checked;
+  if(supNotPresent){
+    var supReason=getSupNotPresentReason();
+    if(!supReason)return alert('Please select a reason for supervisor absence.');
+  }else{
+    if(!_nh3Sigs.sup.has)return alert('Supervisor signature is required. If supervisor is not present, check the \"Supervisor not present\" box.');
+  }
   if(!_nh3Sigs.it.has)return alert('IT signature is required.');
 
   if(empid&&employees.some(function(e){return e.empid&&e.empid.toLowerCase()===empid.toLowerCase();}))
@@ -1567,14 +1612,31 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
   /* Send acknowledgement document to new hire */
   if(emp.email){
     try{
-      var ackHtml=generateAcknowledgementHTML(emp,equipItems,sigDataEmail,emp.supervisor||'',supSigData,itSigData);
+      var supNotPresentReason=getSupNotPresentReason();
+    var ackHtml=generateAcknowledgementHTML(emp,equipItems,sigDataEmail,emp.supervisor||'',supSigData,itSigData,supNotPresentReason);
+      /* Generate Word .doc attachment */
+      var docContent=generateWordDoc(emp,equipItems,supNotPresentReason);
+      var docB64=btoa(unescape(encodeURIComponent(docContent)));
+      var docFileName='Equipment_Acknowledgement_'+emp.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.doc';
       await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{
         method:'POST',
         headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
-        body:JSON.stringify({message:{subject:'[DEDALE IT] Equipment Acknowledgement & Terms — '+emp.name,
+        body:JSON.stringify({message:{
+          subject:'[DEDALE IT] Equipment Acknowledgement & Terms — '+emp.name,
           body:{contentType:'HTML',content:ackHtml},
           toRecipients:[{emailAddress:{address:emp.email,name:emp.name}}],
-          ccRecipients:[{emailAddress:{address:SUPER_ADMIN_EMAIL,name:'Xerxis Dalanon'}}]},
+          ccRecipients:[
+            {emailAddress:{address:SUPER_ADMIN_EMAIL,name:'Xerxis Dalanon'}},
+            {emailAddress:{address:'honey.blateria@dedale.com',name:'Honey Blateria'}},
+            {emailAddress:{address:'cecille.hernandez@dedale.com',name:'Cecille Hernandez'}},
+            {emailAddress:{address:'ella.euldan@dedale.com',name:'Ella Euldan'}}
+          ],
+          attachments:[{
+            '@odata.type':'#microsoft.graph.fileAttachment',
+            name:docFileName,
+            contentType:'application/msword',
+            contentBytes:docB64
+          }]},
           saveToSentItems:false})
       });
     }catch(e){console.error('Acknowledgement email failed:',e);}
@@ -3047,6 +3109,33 @@ function checkSaveCountBackup(){
 
 window.addEventListener('pageshow',function(e){if(e.persisted)window.location.reload();})
 
+function toggleSupNotPresent(){
+  var chk=document.getElementById('nh-sup-not-present');
+  var reasonWrap=document.getElementById('nh-sup-reason-wrap');
+  var sigWrap=document.getElementById('nh-sup-sig-wrap');
+  var badge=document.getElementById('nh-sup-sig-badge');
+  if(chk&&chk.checked){
+    if(reasonWrap)reasonWrap.style.display='block';
+    if(sigWrap)sigWrap.style.display='none';
+    if(badge){badge.style.background='rgba(204,34,68,0.12)';badge.style.color='var(--crimson)';badge.textContent='⬤ NOT PRESENT';}
+    /* Mark as handled so validation passes */
+    _nh3Sigs.sup.has=true;
+  }else{
+    if(reasonWrap)reasonWrap.style.display='none';
+    if(sigWrap)sigWrap.style.display='block';
+    if(badge){badge.style.background='rgba(212,168,48,0.12)';badge.style.color='var(--gold)';badge.textContent='⬤ PENDING';}
+    _nh3Sigs.sup.has=false;
+    clearNH3Sig('sup');
+  }
+}
+
+function getSupNotPresentReason(){
+  var chk=document.getElementById('nh-sup-not-present');
+  if(!chk||!chk.checked)return null;
+  var sel=document.getElementById('nh-sup-reason');
+  return sel?sel.value:'';
+}
+
 function updateNHRowTotal(el){
   var row=el.closest('.nh-equip-row');
   if(!row)return;
@@ -3213,7 +3302,107 @@ function getNH3SigData(id){
 
 
 /* ── ACKNOWLEDGEMENT DOCUMENT ── */
-function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName,supSigData,itSigData){
+function generateWordDoc(emp,equipItems,supNotPresentReason){
+  var today=new Date();
+  var dateStr=today.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
+  var startFormatted=emp.startDate?new Date(emp.startDate+'T12:00:00').toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}):'—';
+  var rows='';
+  for(var i=0;i<equipItems.length;i++){
+    var eq=equipItems[i];
+    var bg=i%2===0?'#f9fafb':'#ffffff';
+    rows+='<tr style="background:'+bg+';">'
+      +'<td style="padding:7px 10px;border:1px solid #d1d5db;font-size:11pt;">'+(i+1)+'</td>'
+      +'<td style="padding:7px 10px;border:1px solid #d1d5db;font-size:11pt;font-weight:bold;">'+eq.brand+' '+eq.model+'</td>'
+      +'<td style="padding:7px 10px;border:1px solid #d1d5db;font-size:11pt;">'+eq.type+'</td>'
+      +'<td style="padding:7px 10px;border:1px solid #d1d5db;font-size:11pt;text-align:center;">'+(eq.qty||1)+'</td>'
+      +'<td style="padding:7px 10px;border:1px solid #d1d5db;font-size:11pt;font-family:Courier New;">'+(eq.serial||'—')+'</td>'
+      +'<td style="padding:7px 10px;border:1px solid #d1d5db;font-size:11pt;">'+eq.condition+'</td>'
+      +'</tr>';
+  }
+  var supBlock=supNotPresentReason
+    ?'<p style="font-size:10pt;color:#dc2626;font-weight:bold;margin:0;">NOT PRESENT — '+supNotPresentReason+'</p>'
+     +'<p style="font-size:9pt;color:#6b7280;margin:4pt 0 0;">Countersigned by IT Admin on behalf</p>'
+     +'<div style="width:200pt;border-bottom:1pt solid #374151;margin-top:30pt;"></div>'
+    :'<div style="width:200pt;border-bottom:1pt solid #374151;margin-top:50pt;"></div>';
+  return '<?xml version="1.0" encoding="UTF-8"?>'
+    +'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+    +'<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/1999/xhtml">'
+    +'<head><meta charset="UTF-8">'
+    +'<style>'
+    +'body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#111827;margin:2cm;}'
+    +'h1{font-size:16pt;color:#1e3a5f;margin-bottom:4pt;}'
+    +'h2{font-size:12pt;color:#374151;font-weight:bold;margin:16pt 0 6pt;border-bottom:1pt solid #e5e7eb;padding-bottom:3pt;}'
+    +'table{border-collapse:collapse;width:100%;margin-bottom:16pt;}'
+    +'th{background:#1e3a5f;color:#ffffff;padding:7px 10px;font-size:10pt;text-align:left;border:1px solid #1e3a5f;}'
+    +'p{margin:4pt 0;font-size:11pt;}'
+    +'</style></head>'
+    +'<body>'
+    +'<div style="text-align:center;margin-bottom:20pt;">'
+    +'<h1>DEDALE INTELLIGENCE</h1>'
+    +'<p style="font-size:10pt;color:#6b7280;margin:2pt 0;">IT Department — Equipment Acknowledgement & Terms</p>'
+    +'<p style="font-size:10pt;color:#6b7280;">'+dateStr+'</p>'
+    +'</div>'
+    +'<div style="border:1pt solid #e5e7eb;padding:12pt;margin-bottom:16pt;background:#f9fafb;">'
+    +'<table style="border:none;width:100%;"><tr>'
+    +'<td style="border:none;width:50%;"><p><b>Employee:</b> '+emp.name+'</p>'
+    +(emp.empid?'<p><b>Employee ID:</b> '+emp.empid+'</p>':'')
+    +(emp.role?'<p><b>Role:</b> '+emp.role+'</p>':'')
+    +'</td>'
+    +'<td style="border:none;width:50%;"><p><b>Email:</b> '+(emp.email||'—')+'</p>'
+    +(emp.site?'<p><b>Site:</b> '+emp.site+'</p>':'')
+    +'<p><b>Start Date:</b> '+startFormatted+'</p>'
+    +(emp.supervisor?'<p><b>Supervisor:</b> '+emp.supervisor+'</p>':'')
+    +'</td>'
+    +'</tr></table>'
+    +'</div>'
+    +'<h2>Equipment Issued</h2>'
+    +'<table><thead><tr>'
+    +'<th style="width:5%">#</th>'
+    +'<th style="width:30%">Brand / Model</th>'
+    +'<th style="width:15%">Type</th>'
+    +'<th style="width:8%;text-align:center;">Qty</th>'
+    +'<th style="width:22%">Serial No.</th>'
+    +'<th style="width:20%">Condition</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<h2>Acknowledgement & Terms</h2>'
+    +'<p>I acknowledge that the equipment issued to me is a valuable company asset. By accepting these items, I agree to:</p>'
+    +'<ol style="font-size:10pt;line-height:1.7;">'
+    +'<li><b>Safekeeping & Proper Use</b> — Use only for authorized work purposes, prevent unauthorized access, and avoid installing unapproved software.</li>'
+    +'<li><b>Care & Maintenance</b> — Take reasonable precautions to prevent damage, theft, or misuse. Report any issues immediately.</li>'
+    +'<li><b>Return of Equipment</b> — Return all items upon request or at end of employment in original condition.</li>'
+    +'<li><b>Liability</b> — I may be responsible for repair or replacement costs in case of loss or damage due to negligence.</li>'
+    +'<li><b>Final Settlement</b> — Failure to return items may result in deductions from final salary per company policy.</li>'
+    +'<li><b>Periodic Checks</b> — The company may conduct periodic inspections or audits of the equipment.</li>'
+    +'</ol>'
+    +'<div style="margin-top:30pt;">'
+    +'<table style="border:none;width:100%;"><tr>'
+    +'<td style="border:none;width:33%;vertical-align:top;">'
+    +'<p style="font-size:9pt;color:#6b7280;margin-bottom:3pt;">Employee Signature:</p>'
+    +'<div style="width:150pt;border-bottom:1pt solid #374151;margin-top:50pt;"></div>'
+    +'<p style="font-size:10pt;font-weight:bold;margin-top:5pt;">'+emp.name+'</p>'
+    +'<p style="font-size:9pt;color:#6b7280;">Date: '+dateStr+'</p>'
+    +'</td>'
+    +'<td style="border:none;width:33%;vertical-align:top;">'
+    +'<p style="font-size:9pt;color:#6b7280;margin-bottom:3pt;">Supervisor/Manager Signature:</p>'
+    +supBlock
+    +'<p style="font-size:10pt;font-weight:bold;margin-top:5pt;">'+(emp.supervisor||'')+'</p>'
+    +'<p style="font-size:9pt;color:#6b7280;">Date: '+dateStr+'</p>'
+    +'</td>'
+    +'<td style="border:none;width:33%;vertical-align:top;">'
+    +'<p style="font-size:9pt;color:#6b7280;margin-bottom:3pt;">IT Admin Signature:</p>'
+    +'<div style="width:150pt;border-bottom:1pt solid #374151;margin-top:50pt;"></div>'
+    +'<p style="font-size:10pt;font-weight:bold;margin-top:5pt;">Xerxis Dalanon</p>'
+    +'<p style="font-size:9pt;color:#6b7280;">Date: '+dateStr+'</p>'
+    +'</td>'
+    +'</tr></table>'
+    +'</div>'
+    +'<p style="font-size:8pt;color:#9ca3af;text-align:center;margin-top:30pt;border-top:1pt solid #e5e7eb;padding-top:8pt;">'
+    +'Generated by INTEL-SYS — Dedale Intelligence IT Asset Management — '+dateStr
+    +'</p>'
+    +'</body></html>';
+}
+
+function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName,supSigData,itSigData,supNotPresentReason){
   var today=new Date();
   var dateStr=today.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
   var startFormatted=emp.startDate?new Date(emp.startDate+'T00:00:00').toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}):dateStr;
@@ -3285,7 +3474,7 @@ function generateAcknowledgementHTML(emp,equipItems,sigDataEmail,supervisorName,
     +'<div style="font-size:10px;color:#6b7280;margin-top:2px;">Date: '+startFormatted+'</div>'
     +'</td>'
     +'<td style="width:31%;padding-right:12px;">'
-    +'<div style="font-size:10px;color:#6b7280;margin-bottom:6px;">Supervisor/Manager Signature:</div>'
+    +(supNotPresentReason?'<div style="font-size:10px;color:#6b7280;margin-bottom:6px;">Supervisor/Manager Signature:</div><div style="font-size:9px;color:#dc2626;font-weight:700;margin-bottom:4px;">NOT PRESENT — '+supNotPresentReason+'</div><div style="font-size:9px;color:#6b7280;margin-bottom:6px;">Countersigned by IT Admin on behalf</div>':'<div style="font-size:10px;color:#6b7280;margin-bottom:6px;">Supervisor/Manager Signature:</div>')
     +(supSigData?'<img src="'+supSigData+'" style="max-width:150px;max-height:50px;display:block;border-bottom:1px solid #374151;padding-bottom:4px;">':'<div style="width:150px;border-bottom:1px solid #374151;height:50px;margin-bottom:4px;"></div>')
     +'<div style="font-size:11px;font-weight:700;color:#111827;margin-top:5px;">'+(supervisorName||'')+'</div>'
     +'<div style="font-size:10px;color:#6b7280;margin-top:2px;">Date: '+dateStr+'</div>'

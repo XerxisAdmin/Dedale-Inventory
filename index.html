@@ -175,6 +175,7 @@ select option{background:var(--navy-mid);color:var(--text);}
 .stat-value{font-size:28px !important;}
 .dash-grid{grid-template-columns:1fr !important;}
 .emp-grid{grid-template-columns:1fr !important;}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 .purchase-summary{grid-template-columns:1fr !important;}
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;max-width:100%;}
 td{padding:8px;font-size:12px;}
@@ -1174,6 +1175,7 @@ function showView(name){
   if(name==='purchase-orders'){const sf=document.getElementById('po-filter-status');if(sf&&sf.value==='')sf.value='Pending';renderPurchaseOrders();setTimeout(()=>filterPOByStatus('Pending'),50);}
   if(name==='employees')initEmployeeView();
   if(name==='analytics')renderAnalytics();
+  if(name!=='new-hire')unlockNHOrientation();
   if(name==='audit')renderAuditLog();
   if(name==='settings')renderSettings();
   if(name==='new-hire'){
@@ -1188,6 +1190,8 @@ function showView(name){
       employees.forEach(function(e){if(e.empid){var m=e.empid.match(/(\d+)$/);if(m){var n=parseInt(m[1],10);if(n>max)max=n;}}});
       nhLatest.textContent=max>0?'C2023-'+String(max).padStart(4,'0'):'—';
     }
+    /* Request landscape orientation on mobile */
+    lockNHOrientation();
   }
   closeMobileMenu();
 }
@@ -1617,9 +1621,19 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
     var ackHtml=generateAcknowledgementHTML(emp,equipItems,sigDataEmail,emp.supervisor||'',supSigData,itSigData,supNotPresentReason);
       /* Generate Word .doc attachment */
       var docContent=generateWordDoc(emp,equipItems,supNotPresentReason);
-      var docB64=btoa(unescape(encodeURIComponent(docContent)));
+      /* Reliable base64 encoding for Unicode HTML content */
+      var docB64;
+      try{
+        var encoder=new TextEncoder();
+        var bytes=encoder.encode(docContent);
+        var binary='';
+        for(var bi=0;bi<bytes.length;bi++)binary+=String.fromCharCode(bytes[bi]);
+        docB64=btoa(binary);
+      }catch(b64err){
+        docB64=btoa(unescape(encodeURIComponent(docContent)));
+      }
       var docFileName='Equipment_Acknowledgement_'+emp.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.doc';
-      await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{
+      var r2=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{
         method:'POST',
         headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
         body:JSON.stringify({message:{
@@ -1648,7 +1662,14 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
           }]},
           saveToSentItems:false})
       });
-    }catch(e){console.error('Acknowledgement email failed:',e);}
+      if(r2&&!r2.ok){
+        var errText=await r2.text().catch(function(){return 'unknown';});
+        console.error('[AckEmail] Graph API error:',r2.status,errText);
+        alert('Warning: Acknowledgement email failed to send ('+r2.status+'). Check console for details.');
+      }else{
+        console.log('[AckEmail] Sent successfully');
+      }
+    }catch(e){console.error('Acknowledgement email failed:',e);alert('Acknowledgement email error: '+e.message);}
   }
 }
 
@@ -3117,6 +3138,60 @@ function checkSaveCountBackup(){
 }
 
 window.addEventListener('pageshow',function(e){if(e.persisted)window.location.reload();})
+
+/* ── ORIENTATION LOCK FOR NEW HIRE FORM ── */
+function lockNHOrientation(){
+  /* Android / Screen Orientation API */
+  if(screen.orientation&&screen.orientation.lock){
+    screen.orientation.lock('landscape').then(function(){
+      console.log('[Orientation] Locked to landscape');
+      removeRotateBanner();
+    }).catch(function(){
+      /* Lock failed (iOS or desktop) — show banner instead */
+      showRotateBanner();
+    });
+  } else if(window.screen&&window.screen.lockOrientation){
+    /* Legacy API */
+    window.screen.lockOrientation('landscape');
+    removeRotateBanner();
+  } else {
+    /* Not supported — show banner on portrait mobile */
+    showRotateBanner();
+  }
+}
+
+function unlockNHOrientation(){
+  try{
+    if(screen.orientation&&screen.orientation.unlock){
+      screen.orientation.unlock();
+    } else if(window.screen&&window.screen.unlockOrientation){
+      window.screen.unlockOrientation();
+    }
+  }catch(e){}
+  removeRotateBanner();
+}
+
+function showRotateBanner(){
+  /* Only show on mobile portrait */
+  if(window.innerWidth>768)return;
+  if(document.getElementById('nh-rotate-banner'))return;
+  var banner=document.createElement('div');
+  banner.id='nh-rotate-banner';
+  banner.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(20,30,50,0.95);border:1px solid var(--gold);border-radius:8px;padding:12px 20px;display:flex;align-items:center;gap:12px;font-family:Share Tech Mono,monospace;font-size:11px;color:var(--gold);letter-spacing:1px;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+  banner.innerHTML='<span style="font-size:22px;animation:spin 2s linear infinite;">&#8635;</span> ROTATE DEVICE FOR BEST EXPERIENCE';
+  document.body.appendChild(banner);
+  /* Auto-hide when rotated */
+  window.addEventListener('orientationchange',function(){
+    setTimeout(function(){
+      if(window.innerWidth>window.innerHeight)removeRotateBanner();
+    },300);
+  });
+}
+
+function removeRotateBanner(){
+  var b=document.getElementById('nh-rotate-banner');
+  if(b)b.remove();
+}
 
 function toggleSupNotPresent(){
   var chk=document.getElementById('nh-sup-not-present');

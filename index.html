@@ -700,6 +700,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <span id="nh-sup-sig-badge" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;background:rgba(212,168,48,0.12);color:var(--gold);">⬤ PENDING</span>
             <button onclick="clearNH3Sig('sup')" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;">CLEAR</button>
+          <button onclick="deleteSupSig()" style="background:transparent;border:1px solid var(--crimson);color:var(--crimson);padding:3px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;" title="Delete saved signature from OneDrive">DEL SAVED</button>
           </div>
           <div style="border:1px solid var(--border2);background:var(--navy-mid);position:relative;">
             <canvas id="nh3-sig-sup" style="display:block;width:100%;height:120px;cursor:crosshair;touch-action:none;"></canvas>
@@ -1625,12 +1626,20 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
           subject:'[DEDALE IT] Equipment Acknowledgement & Terms — '+emp.name,
           body:{contentType:'HTML',content:ackHtml},
           toRecipients:[{emailAddress:{address:emp.email,name:emp.name}}],
-          ccRecipients:[
-            {emailAddress:{address:SUPER_ADMIN_EMAIL,name:'Xerxis Dalanon'}},
-            {emailAddress:{address:'honey.blateria@dedale.com',name:'Honey Blateria'}},
-            {emailAddress:{address:'cecille.hernandez@dedale.com',name:'Cecille Hernandez'}},
-            {emailAddress:{address:'ella.euldan@dedale.com',name:'Ella Euldan'}}
-          ],
+          ccRecipients:(function(){
+            var ccs=[
+              {emailAddress:{address:SUPER_ADMIN_EMAIL,name:'Xerxis Dalanon'}},
+              {emailAddress:{address:'honey.blateria@dedale.com',name:'Honey Blateria'}},
+              {emailAddress:{address:'cecille.hernandez@dedale.com',name:'Cecille Hernandez'}},
+              {emailAddress:{address:'ella.euldan@dedale.com',name:'Ella Euldan'}}
+            ];
+            /* Add supervisor if they have a dedale.com email */
+            if(emp.supervisor){
+              var supEmail=emp.supervisor.toLowerCase().replace(/\s+/g,'.').replace(/[^a-z0-9.]/g,'')+'@dedale.com';
+              ccs.push({emailAddress:{address:supEmail,name:emp.supervisor}});
+            }
+            return ccs;
+          })(),
           attachments:[{
             '@odata.type':'#microsoft.graph.fileAttachment',
             name:docFileName,
@@ -3136,6 +3145,110 @@ function getSupNotPresentReason(){
   return sel?sel.value:'';
 }
 
+/* ── SUPERVISOR SIGNATURE LIBRARY ── */
+function getSupSigKey(supervisorName){
+  return 'sup-sig-'+supervisorName.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
+}
+
+async function saveSupSigToOneDrive(supervisorName,sigDataUrl){
+  if(!accessToken||!supervisorName||!sigDataUrl)return;
+  try{
+    /* Convert dataURL to blob */
+    var parts=sigDataUrl.split(',');
+    var byteStr=atob(parts[1]);
+    var ab=new ArrayBuffer(byteStr.length);
+    var ia=new Uint8Array(ab);
+    for(var i=0;i<byteStr.length;i++)ia[i]=byteStr.charCodeAt(i);
+    var blob=new Blob([ab],{type:'image/png'});
+    var fileName=getSupSigKey(supervisorName)+'.png';
+    var r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/Dedale-Inventory-Signatures/'+fileName+':/content',{
+      method:'PUT',
+      headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'image/png'},
+      body:blob
+    });
+    if(r.ok){
+      console.log('[SupSig] Saved signature for: '+supervisorName);
+      /* Cache in sessionStorage for this session */
+      try{sessionStorage.setItem('supsig_'+getSupSigKey(supervisorName),sigDataUrl);}catch(e){}
+    }
+  }catch(e){console.warn('[SupSig] Save failed:',e);}
+}
+
+async function loadSupSigFromOneDrive(supervisorName){
+  if(!accessToken||!supervisorName)return null;
+  /* Check session cache first */
+  try{
+    var cached=sessionStorage.getItem('supsig_'+getSupSigKey(supervisorName));
+    if(cached)return cached;
+  }catch(e){}
+  try{
+    var fileName=getSupSigKey(supervisorName)+'.png';
+    var r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/Dedale-Inventory-Signatures/'+fileName+':/content',{
+      headers:{'Authorization':'Bearer '+accessToken}
+    });
+    if(!r.ok)return null;
+    var blob=await r.blob();
+    return new Promise(function(resolve){
+      var reader=new FileReader();
+      reader.onload=function(e){
+        try{sessionStorage.setItem('supsig_'+getSupSigKey(supervisorName),e.target.result);}catch(err){}
+        resolve(e.target.result);
+      };
+      reader.readAsDataURL(blob);
+    });
+  }catch(e){return null;}
+}
+
+async function applySupSigToCanvas(sigDataUrl){
+  var canvas=document.getElementById('nh3-sig-sup');
+  if(!canvas)return;
+  var ctx=_nh3Sigs.sup.ctx;
+  if(!ctx)return;
+  var img=new Image();
+  img.onload=function(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    _nh3Sigs.sup.has=true;
+    nh3UpdateBadge('sup');
+    /* Update badge to show saved */
+    var badge=document.getElementById('nh-sup-sig-badge');
+    if(badge){badge.style.background='rgba(34,204,136,0.15)';badge.style.color='var(--green)';badge.textContent='✓ SAVED SIG';}
+    var ph=document.getElementById('nh3-ph-sup');if(ph)ph.style.display='none';
+  };
+  img.src=sigDataUrl;
+}
+
+async function deleteSupSig(){
+  var supName=document.getElementById('nh-supervisor')?document.getElementById('nh-supervisor').value:'';
+  if(!supName){alert('No supervisor selected.');return;}
+  if(!confirm('Delete saved signature for '+supName+'?'))return;
+  try{
+    var fileName=getSupSigKey(supName)+'.png';
+    await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/Dedale-Inventory-Signatures/'+fileName,{
+      method:'DELETE',headers:{'Authorization':'Bearer '+accessToken}
+    });
+    try{sessionStorage.removeItem('supsig_'+getSupSigKey(supName));}catch(e){}
+    clearNH3Sig('sup');
+    alert('Saved signature for '+supName+' deleted.');
+  }catch(e){alert('Delete failed.');}
+}
+
+async function checkAndLoadSupSig(supervisorName){
+  if(!supervisorName)return;
+  var badge=document.getElementById('nh-sup-sig-badge');
+  var ph=document.getElementById('nh3-ph-sup');
+  /* Show loading state */
+  if(badge){badge.style.background='rgba(212,168,48,0.12)';badge.style.color='var(--gold)';badge.textContent='⧗ Checking...';}
+  var sigData=await loadSupSigFromOneDrive(supervisorName);
+  if(sigData){
+    /* Wait for canvas to be initialized */
+    setTimeout(function(){applySupSigToCanvas(sigData);},150);
+  }else{
+    if(badge){badge.style.background='rgba(212,168,48,0.12)';badge.style.color='var(--gold)';badge.textContent='● PENDING';}
+    if(ph)ph.textContent='Hand device to supervisor';
+  }
+}
+
 function updateNHRowTotal(el){
   var row=el.closest('.nh-equip-row');
   if(!row)return;
@@ -3193,8 +3306,12 @@ function nhGoToStep2(){
   document.getElementById('nh-step2-num').style.boxShadow='0 0 12px rgba(204,34,68,0.5)';
   document.getElementById('nh-step2-num').style.border='none';
   document.getElementById('nh-step2-lbl').style.color='var(--crimson)';
-  /* Init signature canvases */
-  setTimeout(initNH3Sigs, 100);
+  /* Init signature canvases then check for saved supervisor sig */
+  setTimeout(function(){
+    initNH3Sigs();
+    var supName=document.getElementById('nh-supervisor').value;
+    if(supName)checkAndLoadSupSig(supName);
+  },100);
   window.scrollTo(0,0);
 }
 
@@ -3258,6 +3375,17 @@ function nh3SigMove(id,e){
   _nh3Sigs[id].ctx.stroke();
   _nh3Sigs[id].has=true;
   nh3UpdateBadge(id);
+  /* Auto-save supervisor sig after drawing stops */
+  if(id==='sup'){
+    clearTimeout(_nh3Sigs.sup._saveTimer);
+    _nh3Sigs.sup._saveTimer=setTimeout(function(){
+      var supName=document.getElementById('nh-supervisor')?document.getElementById('nh-supervisor').value:'';
+      if(supName&&_nh3Sigs.sup.has){
+        var sigData=getNH3SigData('sup');
+        if(sigData)saveSupSigToOneDrive(supName,sigData);
+      }
+    },1500);
+  }
 }
 
 function nh3UpdateBadge(id){

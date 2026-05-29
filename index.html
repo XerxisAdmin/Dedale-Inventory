@@ -388,6 +388,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="nav-item" onclick="window.open('qr.html','_blank')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="5" y="5" width="3" height="3" fill="currentColor"/><rect x="16" y="5" width="3" height="3" fill="currentColor"/><rect x="5" y="16" width="3" height="3" fill="currentColor"/></svg>App QR Code</div>
     <div class="nav-item" id="nav-settings" onclick="showView('settings')"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</div>
     <div class="nav-item" onclick="manualBackup()"><svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Backup Now</div>
+  <div id="auto-backup-status" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);letter-spacing:1px;padding:4px 12px 8px;">⬤ Auto-backup active</div>
   </nav>
   <div style="padding:12px 12px 6px">
     <div onclick="openLogoutOverlay()" style="display:flex;align-items:center;gap:9px;padding:9px 10px;cursor:pointer;color:rgba(255,255,255,0.45);font-size:13px;transition:all 0.15s;border:1px solid rgba(255,255,255,0.08)" onmouseover="this.style.background='rgba(255,255,255,0.07)';this.style.color='rgba(255,255,255,0.85)'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.45)'">
@@ -939,7 +940,7 @@ function flushOnReconnect(){
         const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig},null,2);
         const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
         if(r.ok){
-          updateSyncStatus('saved');_lastSyncTime=Date.now();_pendingSync=false;
+          updateSyncStatus('saved');checkSaveCountBackup();_lastSyncTime=Date.now();_pendingSync=false;
           addNotif('✅','Offline changes synced to OneDrive successfully','sync');
         }else{updateSyncStatus('error');}
       }catch(e){updateSyncStatus('error');}
@@ -960,7 +961,8 @@ function showApp(){
   setTimeout(applyRolePermissions,200);
   updateNotifBadge();
   renderNotifPanel();
-  updateOnlineUI();document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-shell').classList.add('visible');assignMissingSites();initAssignmentHistory();renderDashboard();updateUserChip();setTimeout(handleQRCodeURL,500);}
+  updateOnlineUI();document.getElementById('login-screen').classList.add('hidden');document.getElementById('app-shell').classList.add('visible');assignMissingSites();initAssignmentHistory();renderDashboard();updateUserChip();setTimeout(handleQRCodeURL,500);
+  startAutoBackupScheduler();setTimeout(function(){autoBackup('startup');},8000);}
 
 function updateUserChip(){
   if(!currentUser)return;
@@ -2962,6 +2964,85 @@ async function manualBackup(){
     if(r.ok){logActivity('Manual backup created: '+fileName);saveData();if(btn){btn.style.color='var(--green)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Backed Up!');setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Backed Up!','Backup Now');}},3000);}}
     else{if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Failed');setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Failed','Backup Now');}},3000);}}
   }catch(e){if(btn){btn.style.color='var(--crimson)';btn.innerHTML=btn.innerHTML.replace('Backing up...','Failed');setTimeout(()=>{if(btn){btn.style.color='';btn.innerHTML=btn.innerHTML.replace('Failed','Backup Now');}},3000);}}
+}
+
+
+/* ── AUTO-BACKUP SYSTEM ── */
+var _autoBackupInterval=null;
+var _autoBackupSaveCount=0;
+var AUTO_BACKUP_INTERVAL_MS=24*60*60*1000; // 24 hours
+var AUTO_BACKUP_MAX_SNAPSHOTS=7;
+
+async function autoBackup(trigger){
+  if(!accessToken)return;
+  if(!_isOnline)return;
+  try{
+    /* Build filename with trigger label */
+    var timestamp=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+    var label=trigger||'auto';
+    var fileName='Dedale-Inventory-AutoBackup-'+label+'-'+timestamp+'.json';
+    var data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,backedUpAt:new Date().toISOString(),trigger:label},null,2);
+    /* Save new backup */
+    var r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/Dedale-Inventory-Backups/'+fileName+':/content',{
+      method:'PUT',
+      headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
+      body:data
+    });
+    if(r.ok){
+      console.log('[AutoBackup] Saved: '+fileName);
+      updateAutoBackupStatus('✓ Auto-backup: '+new Date().toLocaleTimeString());
+      /* Prune old auto-backups — keep only last 7 */
+      pruneAutoBackups();
+    }
+  }catch(e){
+    console.warn('[AutoBackup] Failed:',e);
+  }
+}
+
+async function pruneAutoBackups(){
+  if(!accessToken)return;
+  try{
+    var r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/Dedale-Inventory-Backups:/children?$orderby=lastModifiedDateTime%20desc&$top=50',{
+      headers:{'Authorization':'Bearer '+accessToken}
+    });
+    if(!r.ok)return;
+    var items=(await r.json()).value||[];
+    /* Filter only auto-backups */
+    var autoFiles=items.filter(function(f){return f.name&&f.name.indexOf('AutoBackup')>-1;});
+    /* Delete everything past the 7th */
+    if(autoFiles.length>AUTO_BACKUP_MAX_SNAPSHOTS){
+      var toDelete=autoFiles.slice(AUTO_BACKUP_MAX_SNAPSHOTS);
+      for(var i=0;i<toDelete.length;i++){
+        await fetch('https://graph.microsoft.com/v1.0/me/drive/items/'+toDelete[i].id,{
+          method:'DELETE',
+          headers:{'Authorization':'Bearer '+accessToken}
+        });
+        console.log('[AutoBackup] Pruned: '+toDelete[i].name);
+      }
+    }
+  }catch(e){console.warn('[AutoBackup] Prune error:',e);}
+}
+
+function startAutoBackupScheduler(){
+  if(_autoBackupInterval)clearInterval(_autoBackupInterval);
+  _autoBackupInterval=setInterval(function(){
+    autoBackup('24hr');
+  },AUTO_BACKUP_INTERVAL_MS);
+  console.log('[AutoBackup] Scheduler started — every 24 hours, max 7 snapshots');
+}
+
+function updateAutoBackupStatus(msg){
+  var el=document.getElementById('auto-backup-status');
+  if(el)el.textContent=msg;
+}
+
+/* Trigger auto-backup every 10 saves */
+function checkSaveCountBackup(){
+  _autoBackupSaveCount++;
+  if(_autoBackupSaveCount>=10){
+    _autoBackupSaveCount=0;
+    autoBackup('10saves');
+  }
 }
 
 window.addEventListener('pageshow',function(e){if(e.persisted)window.location.reload();})

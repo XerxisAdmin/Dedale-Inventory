@@ -1495,7 +1495,7 @@ function saveNewHire(){
   });
 
   saveData();
-  sendNewHireEmail(newEmp,sigData,sigDataEmail,equipItems);
+  sendNewHireEmail(newEmp,sigData,sigDataEmail,equipItems,supSigData,itSigData);
   resetNewHireForm();
 
   /* Success banner */
@@ -1528,7 +1528,7 @@ function getNHSigForEmail(canvas){
   return tmp.toDataURL('image/png');
 }
 
-async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems){
+async async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems,supSigData,itSigData){
   try{
     var r=await msalInstance.acquireTokenSilent({scopes:SCOPES,account:currentUser,forceRefresh:false});
     if(r&&r.accessToken)accessToken=r.accessToken;

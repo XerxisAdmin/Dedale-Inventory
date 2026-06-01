@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/Dedale-Inventory/sw.js').then(function(r){console.log('SW registered');}).catch(function(e){console.log('SW failed:',e);})}</script>
 <meta http-equiv="Pragma" content="no-cache">
@@ -1625,32 +1626,30 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems,supSigData,i
       console.log('[AckEmail] ackHtml generated, length='+ackHtml.length);
       /* Generate Word .doc attachment */
       var docContent=generateWordDoc(emp,equipItems,supNotPresentReason);
-      /* Base64 encode HTML content in chunks to avoid stack overflow */
-      var docB64;
+      /* Generate PDF with embedded signatures */
+      var docB64=null;
+      var docFileName='Equipment_Acknowledgement_'+emp.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.pdf';
       try{
-        var encoder=new TextEncoder();
-        var bytes=encoder.encode(docContent);
-        var chunkSize=8192;
-        var binaryParts=[];
-        for(var bi=0;bi<bytes.length;bi+=chunkSize){
-          binaryParts.push(String.fromCharCode.apply(null,bytes.subarray(bi,bi+chunkSize)));
+        var pdfBuffer=await generatePDFDoc(emp,equipItems,supNotPresentReason,sigDataEmail,supSigData,itSigData);
+        if(pdfBuffer){
+          var pdfBytes=new Uint8Array(pdfBuffer);
+          var chunkSize=8192;var binaryParts=[];
+          for(var bi=0;bi<pdfBytes.length;bi+=chunkSize){
+            binaryParts.push(String.fromCharCode.apply(null,pdfBytes.subarray(bi,bi+chunkSize)));
+          }
+          docB64=btoa(binaryParts.join(''));
+          console.log('[PDF] Generated, b64 length='+docB64.length);
         }
-        docB64=btoa(binaryParts.join(''));
-      }catch(b64err){
-        console.error('[DocB64] Encoding failed:',b64err);
-        docB64=null;
+      }catch(pdfErr){
+        console.error('[PDF] Generation failed:',pdfErr);
       }
-      console.log('[AckEmail] docB64 length='+(docB64?docB64.length:'null'));
-      if(!docB64){
-        console.error('[DocAttach] Skipping attachment — encoding failed');
-      }
-      var docFileName='Equipment_Acknowledgement_'+emp.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.html';
+      /* filename set in PDF generation block */
       var _ackAttachments=[];
       if(docB64){
         _ackAttachments=[{
           '@odata.type':'#microsoft.graph.fileAttachment',
           name:docFileName,
-          contentType:'text/html',
+          contentType:'application/pdf',
           contentBytes:docB64
         }];
       }
@@ -3523,95 +3522,167 @@ function getNH3SigData(id){
 
 
 /* ── ACKNOWLEDGEMENT DOCUMENT ── */
-function generateWordDoc(emp,equipItems,supNotPresentReason){
+async function generatePDFDoc(emp,equipItems,supNotPresentReason,empSigData,supSigData,itSigData){
+  var jsPDFLib=window.jspdf&&window.jspdf.jsPDF?window.jspdf.jsPDF:window.jsPDF;
+  if(!jsPDFLib){console.error('[PDF] jsPDF not loaded');return null;}
+  var doc=new jsPDFLib({orientation:'portrait',unit:'mm',format:'a4'});
   var today=new Date();
   var dateStr=today.toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
   var startFormatted=emp.startDate?new Date(emp.startDate+'T12:00:00').toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'}):'—';
-  var rows='';
-  for(var i=0;i<equipItems.length;i++){
-    var eq=equipItems[i];
-    var bg=i%2===0?'#f9fafb':'#ffffff';
-    rows+='<tr style="background:'+bg+';">'
-      +'<td style="padding:8px 12px;border:1px solid #d1d5db;font-size:12px;">'+(i+1)+'</td>'
-      +'<td style="padding:8px 12px;border:1px solid #d1d5db;font-size:12px;font-weight:bold;">'+eq.brand+' '+eq.model+'</td>'
-      +'<td style="padding:8px 12px;border:1px solid #d1d5db;font-size:12px;">'+eq.type+'</td>'
-      +'<td style="padding:8px 12px;border:1px solid #d1d5db;font-size:12px;text-align:center;">'+(eq.qty||1)+'</td>'
-      +'<td style="padding:8px 12px;border:1px solid #d1d5db;font-size:12px;font-family:Courier New,monospace;">'+(eq.serial||'—')+'</td>'
-      +'<td style="padding:8px 12px;border:1px solid #d1d5db;font-size:12px;">'+eq.condition+'</td>'
-      +'</tr>';
+  var pageW=210,margin=18,contentW=pageW-(margin*2);
+  var y=margin;
+
+  /* ── HEADER ── */
+  doc.setFillColor(30,58,95);
+  doc.rect(0,0,pageW,22,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(14);doc.setFont('helvetica','bold');
+  doc.text('DEDALE INTELLIGENCE',pageW/2,10,{align:'center'});
+  doc.setFontSize(8);doc.setFont('helvetica','normal');
+  doc.text('IT Department — Equipment Acknowledgement & Terms',pageW/2,16,{align:'center'});
+  doc.text(dateStr,pageW/2,20,{align:'center'});
+  y=28;
+
+  /* ── EMPLOYEE INFO BOX ── */
+  doc.setFillColor(249,250,251);
+  doc.setDrawColor(229,231,235);
+  doc.rect(margin,y,contentW,32,'FD');
+  doc.setTextColor(55,65,81);doc.setFontSize(9);
+  var col1=margin+4,col2=margin+contentW/2+4;
+  var infoY=y+6;
+  var infoItems=[
+    ['Employee:',emp.name||'—','Email:',(emp.email||'—')],
+    ['Employee ID:',(emp.empid||'—'),'Site:',(emp.site||'—')],
+    ['Role:',(emp.role||'—'),'Start Date:',startFormatted],
+    ['Supervisor:',(emp.supervisor||'—'),'',''],
+  ];
+  infoItems.forEach(function(row){
+    doc.setFont('helvetica','bold');doc.text(row[0],col1,infoY);
+    doc.setFont('helvetica','normal');doc.text(row[1],col1+22,infoY);
+    if(row[2]){doc.setFont('helvetica','bold');doc.text(row[2],col2,infoY);}
+    if(row[3]){doc.setFont('helvetica','normal');doc.text(row[3],col2+22,infoY);}
+    infoY+=6;
+  });
+  y+=36;
+
+  /* ── EQUIPMENT TABLE ── */
+  doc.setFontSize(9);doc.setFont('helvetica','bold');
+  doc.setTextColor(30,58,95);
+  doc.text('EQUIPMENT ISSUED',margin,y);
+  doc.setDrawColor(30,58,95);
+  doc.line(margin,y+1,margin+contentW,y+1);
+  y+=5;
+  var cols=[8,52,22,12,38,22];
+  var headers=['#','Brand / Model','Type','Qty','Serial No.','Condition'];
+  var colX=margin;
+  doc.setFillColor(30,58,95);
+  doc.rect(margin,y,contentW,6,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(8);
+  headers.forEach(function(h,i){
+    doc.text(h,colX+2,y+4);colX+=cols[i];
+  });
+  y+=6;
+  if(equipItems.length===0){
+    doc.setFillColor(249,250,251);doc.rect(margin,y,contentW,8,'F');
+    doc.setTextColor(107,114,128);doc.setFontSize(8);doc.setFont('helvetica','normal');
+    doc.text('No equipment items recorded',margin+contentW/2,y+5,{align:'center'});
+    y+=8;
+  }else{
+    equipItems.forEach(function(eq,i){
+      var rowH=7;
+      doc.setFillColor(i%2===0?249:255,i%2===0?250:255,i%2===0?251:255);
+      doc.rect(margin,y,contentW,rowH,'F');
+      doc.setDrawColor(209,213,219);doc.rect(margin,y,contentW,rowH,'D');
+      doc.setTextColor(55,65,81);doc.setFontSize(8);doc.setFont('helvetica','normal');
+      var cx=margin;
+      var vals=[(i+1)+'',eq.brand+' '+eq.model,eq.type,''+(eq.qty||1),(eq.serial||'—'),eq.condition];
+      vals.forEach(function(v,vi){
+        var maxW=cols[vi]-3;
+        var txt=doc.splitTextToSize(v,maxW)[0]||'';
+        doc.text(txt,cx+2,y+4.5);cx+=cols[vi];
+      });
+      y+=rowH;
+    });
   }
-  var supSigBlock=supNotPresentReason
-    ?'<div style="margin-top:8px;"><p style="font-size:11px;color:#dc2626;font-weight:bold;margin:0;">NOT PRESENT — '+supNotPresentReason+'</p>'
-     +'<p style="font-size:10px;color:#6b7280;margin:3px 0 0;">Countersigned by IT Admin on behalf</p></div>'
-     +'<div style="width:180px;border-bottom:1px solid #374151;margin-top:35px;"></div>'
-    :'<div style="width:180px;border-bottom:1px solid #374151;margin-top:55px;"></div>';
-  return '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-    +'<style>'
-    +'*{margin:0;padding:0;box-sizing:border-box;}'
-    +'body{font-family:Calibri,Arial,sans-serif;font-size:12px;color:#111827;padding:40px 50px;}'
-    +'.header{text-align:center;padding-bottom:16px;border-bottom:2px solid #1e3a5f;margin-bottom:20px;}'
-    +'.header h1{font-size:18px;color:#1e3a5f;letter-spacing:2px;margin-bottom:4px;}'
-    +'.header p{font-size:11px;color:#6b7280;margin:2px 0;}'
-    +'.info-box{background:#f9fafb;border:1px solid #e5e7eb;padding:14px 18px;margin-bottom:20px;}'
-    +'.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;}'
-    +'.info-item{font-size:12px;} .info-item b{color:#374151;}'
-    +'.section-title{font-size:11px;font-weight:700;color:#1e3a5f;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e7eb;}'
-    +'table{width:100%;border-collapse:collapse;margin-bottom:20px;}'
-    +'thead tr{background:#1e3a5f;} th{color:#fff;padding:8px 12px;text-align:left;font-size:11px;}'
-    +'ol{padding-left:18px;margin-bottom:20px;} ol li{font-size:11px;color:#374151;line-height:1.8;margin-bottom:4px;}'
-    +'.sig-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:20px;}'
-    +'.sig-box{} .sig-label{font-size:10px;color:#6b7280;margin-bottom:4px;}'
-    +'.sig-name{font-size:12px;font-weight:700;margin-top:6px;}'
-    +'.sig-date{font-size:10px;color:#6b7280;}'
-    +'.footer{margin-top:24px;padding-top:10px;border-top:1px solid #e5e7eb;text-align:center;font-size:9px;color:#9ca3af;}'
-    +'</style></head><body>'
-    +'<div class="header"><h1>DEDALE INTELLIGENCE</h1>'
-    +'<p>IT Department — Equipment Acknowledgement &amp; Terms</p>'
-    +'<p>'+dateStr+'</p></div>'
-    +'<div class="info-box"><div class="info-grid">'
-    +'<div class="info-item"><b>Employee:</b> '+emp.name+'</div>'
-    +'<div class="info-item"><b>Email:</b> '+(emp.email||'—')+'</div>'
-    +(emp.empid?'<div class="info-item"><b>Employee ID:</b> '+emp.empid+'</div>':'')
-    +(emp.site?'<div class="info-item"><b>Site:</b> '+emp.site+'</div>':'')
-    +(emp.role?'<div class="info-item"><b>Role:</b> '+emp.role+'</div>':'')
-    +'<div class="info-item"><b>Start Date:</b> '+startFormatted+'</div>'
-    +(emp.supervisor?'<div class="info-item" style="grid-column:1/-1"><b>Supervisor:</b> '+emp.supervisor+'</div>':'')
-    +'</div></div>'
-    +'<div class="section-title">Equipment Issued</div>'
-    +'<table><thead><tr>'
-    +'<th style="width:5%">#</th>'
-    +'<th style="width:30%">Brand / Model</th>'
-    +'<th style="width:15%">Type</th>'
-    +'<th style="width:8%;text-align:center">Qty</th>'
-    +'<th style="width:22%">Serial No.</th>'
-    +'<th style="width:20%">Condition</th>'
-    +'</tr></thead><tbody>'+rows+'</tbody></table>'
-    +'<div class="section-title">Acknowledgement &amp; Terms</div>'
-    +'<p style="font-size:11px;color:#374151;margin-bottom:10px;">I acknowledge that the equipment issued to me is a valuable company asset. By accepting these items, I agree to:</p>'
-    +'<ol>'
-    +'<li><b>Safekeeping &amp; Proper Use</b> — Use only for authorized work, prevent unauthorized access, avoid unapproved software.</li>'
-    +'<li><b>Care &amp; Maintenance</b> — Take precautions to prevent damage or theft. Report any issues immediately to IT.</li>'
-    +'<li><b>Return of Equipment</b> — Return all items upon request or at end of employment in original condition.</li>'
-    +'<li><b>Liability</b> — May be responsible for repair or replacement costs due to negligence or misuse.</li>'
-    +'<li><b>Final Settlement</b> — Failure to return items may result in deductions from final salary per company policy.</li>'
-    +'<li><b>Periodic Checks</b> — The company may conduct periodic inspections or audits of the equipment.</li>'
-    +'</ol>'
-    +'<div class="sig-grid">'
-    +'<div class="sig-box"><div class="sig-label">Employee Signature:</div>'
-    +'<div style="width:150px;border-bottom:1px solid #374151;margin-top:55px;"></div>'
-    +'<div class="sig-name">'+emp.name+'</div>'
-    +'<div class="sig-date">Date: '+dateStr+'</div></div>'
-    +'<div class="sig-box"><div class="sig-label">Supervisor/Manager Signature:</div>'
-    +supSigBlock
-    +'<div class="sig-name">'+(emp.supervisor||'')+'</div>'
-    +'<div class="sig-date">Date: '+dateStr+'</div></div>'
-    +'<div class="sig-box"><div class="sig-label">IT Admin Signature:</div>'
-    +'<div style="width:150px;border-bottom:1px solid #374151;margin-top:55px;"></div>'
-    +'<div class="sig-name">Xerxis Dalanon</div>'
-    +'<div class="sig-date">Date: '+dateStr+'</div></div>'
-    +'</div>'
-    +'<div class="footer">Generated by INTEL-SYS — Dedale Intelligence IT Asset Management — '+dateStr+'</div>'
-    +'</body></html>';
+  y+=4;
+
+  /* ── TERMS ── */
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(30,58,95);
+  doc.text('ACKNOWLEDGEMENT & TERMS',margin,y);
+  doc.line(margin,y+1,margin+contentW,y+1);
+  y+=5;
+  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(55,65,81);
+  doc.text('I acknowledge the equipment issued is a valuable company asset. By accepting these items, I agree to:',margin,y,{maxWidth:contentW});
+  y+=5;
+  var terms=[
+    '1. Safekeeping & Proper Use — Use only for authorized work, prevent unauthorized access, avoid unapproved software.',
+    '2. Care & Maintenance — Take precautions to prevent damage or theft. Report any issues immediately to IT.',
+    '3. Return of Equipment — Return all items upon request or at end of employment in original condition.',
+    '4. Liability — May be responsible for repair or replacement costs due to negligence or misuse.',
+    '5. Final Settlement — Failure to return items may result in deductions from final salary per company policy.',
+    '6. Periodic Checks — The company may conduct periodic inspections or audits of the equipment.',
+  ];
+  terms.forEach(function(t){
+    var lines=doc.splitTextToSize(t,contentW);
+    doc.text(lines,margin,y);
+    y+=lines.length*4+1;
+  });
+  doc.setFont('helvetica','italic');
+  doc.text('By signing below, I confirm that I have read, understood, and agree to these terms.',margin,y,{maxWidth:contentW});
+  y+=8;
+
+  /* ── SIGNATURES ── */
+  var sigW=55,sigH=28,sigSpacing=contentW/3;
+  var sigs=[
+    {label:'EMPLOYEE SIGNATURE',color:[37,99,235],name:emp.name,data:empSigData,notPresent:null},
+    {label:'SUPERVISOR / MANAGER',color:[217,119,6],name:emp.supervisor||'',data:supSigData,notPresent:supNotPresentReason},
+    {label:'IT ADMIN SIGNATURE',color:[220,38,38],name:'Xerxis Dalanon',data:itSigData,notPresent:null},
+  ];
+  sigs.forEach(function(sig,i){
+    var sx=margin+(i*sigSpacing);
+    /* Color top bar */
+    doc.setFillColor(sig.color[0],sig.color[1],sig.color[2]);
+    doc.rect(sx,y,sigSpacing-3,1,'F');
+    /* Label */
+    doc.setFontSize(7);doc.setFont('helvetica','bold');
+    doc.setTextColor(sig.color[0],sig.color[1],sig.color[2]);
+    doc.text(sig.label,sx,y+5);
+    /* Name */
+    doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(17,24,39);
+    doc.text(sig.name||'',sx,y+11,{maxWidth:sigSpacing-4});
+    if(sig.notPresent){
+      /* Not present badge */
+      doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(220,38,38);
+      doc.text('NOT PRESENT: '+sig.notPresent,sx,y+17,{maxWidth:sigSpacing-4});
+      doc.setFont('helvetica','normal');doc.setTextColor(107,114,128);
+      doc.text('Countersigned by IT Admin',sx,y+21);
+      doc.setDrawColor(55,65,81);
+      doc.line(sx,y+sigH,sx+sigW,y+sigH);
+    }else if(sig.data){
+      /* Embed signature image */
+      try{
+        doc.addImage(sig.data,'PNG',sx,y+12,sigW,16);
+        doc.setDrawColor(55,65,81);
+        doc.line(sx,y+sigH,sx+sigW,y+sigH);
+      }catch(e){
+        doc.setDrawColor(55,65,81);
+        doc.line(sx,y+sigH,sx+sigW,y+sigH);
+      }
+    }else{
+      doc.setDrawColor(55,65,81);
+      doc.line(sx,y+sigH,sx+sigW,y+sigH);
+    }
+    /* Date */
+    doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(107,114,128);
+    doc.text('Date: '+dateStr,sx,y+sigH+4);
+  });
+  y+=sigH+10;
+
+  /* ── FOOTER ── */
+  doc.setFontSize(7);doc.setTextColor(156,163,175);
+  doc.text('Generated by INTEL-SYS — Dedale Intelligence IT Asset Management — '+dateStr,pageW/2,285,{align:'center'});
+
+  return doc.output('arraybuffer');
 }
 
 

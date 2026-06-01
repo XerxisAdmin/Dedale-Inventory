@@ -1382,7 +1382,7 @@ function addNHEquipRow(){
     +'<input class="nh-eq-model-txt" autocomplete="new-password" placeholder="Model name" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;">'
     +'</div>'
     +'<div class="form-group"><label>Serial No.</label>'
-    +'<input class="nh-eq-serial" autocomplete="new-password" placeholder="e.g. SN-001234" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
+    +'<select class="nh-eq-serial" onchange="updateNHSerialSelect(this)" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;outline:none;"><option value="">\u2014 Select serial / In Stock \u2014</option><option value="__manual__">\u270f\ufe0f Enter manually...</option></select>'
     +'</div>'
     +'<div class="form-group"><label>Qty / Pieces</label>'
     +'<input class="nh-eq-qty" autocomplete="new-password" type="number" min="1" value="1" placeholder="1" oninput="updateNHRowTotal(this)" style="width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;">'
@@ -1396,6 +1396,7 @@ function addNHEquipRow(){
     +'</div>'
     +'</div>';
   container.appendChild(row);
+  setTimeout(function(){populateNHSerialDropdown(row);},50);
 }
 var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo'],Memory:['Kingston']};
 var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
@@ -3338,6 +3339,50 @@ async function checkAndLoadSupSig(supervisorName){
   }else{
     if(badge){badge.style.background='rgba(212,168,48,0.12)';badge.style.color='var(--gold)';badge.textContent='● PENDING';}
     if(ph)ph.textContent='Hand device to supervisor';
+  }
+}
+
+function populateNHSerialDropdown(row){
+  var typeEl=row.querySelector('.nh-eq-type');
+  var brandEl=row.querySelector('.nh-eq-brand');
+  var modelEl=row.querySelector('.nh-eq-model');
+  var serialEl=row.querySelector('.nh-eq-serial');
+  if(!serialEl||serialEl.tagName!=='SELECT')return;
+  var type=typeEl?typeEl.value:'';
+  var brand=brandEl?brandEl.value:'';
+  var model=modelEl?modelEl.value:'';
+  var currentVal=serialEl.value;
+  serialEl.innerHTML='<option value="">— Select serial / In Stock —</option><option value="__manual__">✏ Enter manually...</option>';
+  var matches=equipment.filter(function(e){
+    return e.status==='In Stock'
+      &&(!type||e.type===type)
+      &&(!brand||e.brand===brand)
+      &&(!model||e.model===model||model==='Other'||model==='');
+  });
+  if(matches.length>0){
+    var grp=document.createElement('optgroup');
+    grp.label='In Stock ('+matches.length+')';
+    matches.forEach(function(e){
+      var label=(e.serial||'No serial')+' — '+e.brand+' '+e.model+(e.condition?' ('+e.condition+')':'');
+      grp.innerHTML+='<option value="'+(e.serial||'')+'" data-eqid="'+e.id+'">'+label+'</option>';
+    });
+    serialEl.appendChild(grp);
+  }else{
+    serialEl.innerHTML+='<option disabled>— No In Stock items match —</option>';
+  }
+  if(currentVal)serialEl.value=currentVal;
+}
+
+function updateNHSerialSelect(sel){
+  if(sel.value==='__manual__'){
+    var row=sel.closest('.nh-equip-row');
+    var input=document.createElement('input');
+    input.className='nh-eq-serial';
+    input.autocomplete='new-password';
+    input.placeholder='e.g. SN-001234';
+    input.style.cssText='width:100%;padding:9px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:Share Tech Mono,monospace;font-size:12px;';
+    sel.parentNode.replaceChild(input,sel);
+    input.focus();
   }
 }
 

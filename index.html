@@ -1621,16 +1621,23 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems,supSigData,i
     var ackHtml=generateAcknowledgementHTML(emp,equipItems,sigDataEmail,emp.supervisor||'',supSigData,itSigData,supNotPresentReason);
       /* Generate Word .doc attachment */
       var docContent=generateWordDoc(emp,equipItems,supNotPresentReason);
-      /* Reliable base64 encoding for Unicode HTML content */
+      /* Base64 encode HTML content in chunks to avoid stack overflow */
       var docB64;
       try{
         var encoder=new TextEncoder();
         var bytes=encoder.encode(docContent);
-        var binary='';
-        for(var bi=0;bi<bytes.length;bi++)binary+=String.fromCharCode(bytes[bi]);
-        docB64=btoa(binary);
+        var chunkSize=8192;
+        var binaryParts=[];
+        for(var bi=0;bi<bytes.length;bi+=chunkSize){
+          binaryParts.push(String.fromCharCode.apply(null,bytes.subarray(bi,bi+chunkSize)));
+        }
+        docB64=btoa(binaryParts.join(''));
       }catch(b64err){
-        docB64=btoa(unescape(encodeURIComponent(docContent)));
+        console.error('[DocB64] Encoding failed:',b64err);
+        docB64=null;
+      }
+      if(!docB64){
+        console.error('[DocAttach] Skipping attachment — encoding failed');
       }
       var docFileName='Equipment_Acknowledgement_'+emp.name.replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.html';
       var r2=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{
@@ -1658,12 +1665,12 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems,supSigData,i
             }
             return ccs;
           })(),
-          attachments:[{
+          attachments:docB64?[{
             '@odata.type':'#microsoft.graph.fileAttachment',
             name:docFileName,
             contentType:'text/html',
             contentBytes:docB64
-          }]},
+          }]:[],
           saveToSentItems:false})
       });
       if(r2&&!r2.ok){

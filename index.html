@@ -1680,8 +1680,8 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems,supSigData,i
             }
             return ccs;
           })(),
-          attachments:_ackAttachments,
-          saveToSentItems:false})
+          attachments:_ackAttachments
+          },saveToSentItems:false})
       });
       if(r2&&!r2.ok){
         var errText=await r2.text().catch(function(){return 'unknown';});

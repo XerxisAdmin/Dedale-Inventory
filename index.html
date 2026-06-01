@@ -1664,10 +1664,7 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems,supSigData,i
           toRecipients:[{emailAddress:{address:emp.email,name:emp.name}}],
           ccRecipients:(function(){
             var ccs=[
-              {emailAddress:{address:SUPER_ADMIN_EMAIL,name:'Xerxis Dalanon'}},
-              {emailAddress:{address:'honey.blateria@dedale.com',name:'Honey Blateria'}},
-              {emailAddress:{address:'cecille.hernandez@dedale.com',name:'Cecille Hernandez'}},
-              {emailAddress:{address:'ella.euldan@dedale.com',name:'Ella Euldan'}}
+              {emailAddress:{address:SUPER_ADMIN_EMAIL,name:'Xerxis Dalanon'}}
             ];
             /* Add supervisor — look up actual email, normalize whitespace */
             if(emp.supervisor){

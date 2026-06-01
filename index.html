@@ -1647,10 +1647,14 @@ async function sendNewHireEmail(emp,sigData,sigDataEmail,equipItems,supSigData,i
               {emailAddress:{address:'cecille.hernandez@dedale.com',name:'Cecille Hernandez'}},
               {emailAddress:{address:'ella.euldan@dedale.com',name:'Ella Euldan'}}
             ];
-            /* Add supervisor if they have a dedale.com email */
+            /* Add supervisor — look up actual email, normalize whitespace */
             if(emp.supervisor){
-              var supEmail=emp.supervisor.toLowerCase().replace(/\s+/g,'.').replace(/[^a-z0-9.]/g,'')+'@dedale.com';
-              ccs.push({emailAddress:{address:supEmail,name:emp.supervisor}});
+              var supNorm=emp.supervisor.replace(/\s+/g,' ').trim().toLowerCase();
+              var supRecord=employees.find(function(e){
+                return e.name&&e.name.replace(/\s+/g,' ').trim().toLowerCase()===supNorm;
+              });
+              var supEmail=supRecord&&supRecord.email?supRecord.email:'';
+              if(supEmail)ccs.push({emailAddress:{address:supEmail,name:emp.supervisor}});
             }
             return ccs;
           })(),

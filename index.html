@@ -760,8 +760,8 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
 <div class="modal-overlay" id="equip-modal"><div class="modal" autocomplete="new-password">
   <div class="modal-title" id="equip-modal-title">Add Equipment</div>
   <div class="form-grid">
-    <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select></div>
-    <div class="form-group"><label>Brand</label><select id="f-brand" onchange="updateModelOnBrand()"><option value="">&#8212; Select Brand &#8212;</option><option>Lenovo</option><option>Jabra</option><option>Rapoo</option><option>N-Vision</option></select></div>
+    <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField();populateBrandDropdown()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select></div>
+    <div class="form-group"><label>Brand</label><select id="f-brand" onchange="populateModelDropdown()"><option value="">&#8212; Select Brand &#8212;</option><option>Lenovo</option><option>Jabra</option><option>Rapoo</option><option>N-Vision</option></select></div>
     <div class="form-group full"><label>Model</label>
       <select id="f-model-select" style="display:none"><option value="">- Select Model -</option><option>14ALC7</option><option>15IAH8 (Type 83ER)</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>LOQ 15IAX9 (Type 83GS)</option><option>15IRH8 (Type 83EM)</option><option>15IRH10 (Type 83K1)</option><option>15IRU8 (Type 82X7)</option><option>16IAH8 (Type 83BG)</option></select>
       <input autocomplete="new-password" id="f-model" placeholder="e.g. XPS 15, MX Master 3">
@@ -880,6 +880,9 @@ let auditLog=JSON.parse(localStorage.getItem('dd_audit')||'[]');
 let notifications=JSON.parse(localStorage.getItem('dd_notifications')||'[]');
 const SUPER_ADMIN_EMAIL='xerxis.dalanon@dedale.com';
 var roleConfig=JSON.parse(localStorage.getItem('dd_roles')||'{"itstaff":[],"finance":["alvin.villena@dedale.com"]}');
+var customTypes=JSON.parse(localStorage.getItem('dd_custom_types')||'[]');
+var customBrands=JSON.parse(localStorage.getItem('dd_custom_brands')||'{}');
+var customModels=JSON.parse(localStorage.getItem('dd_custom_models')||'{}');
 
 if(equipment.length===0){
   employees=[{id:'e1',name:'Rambo Joinani',role:'Analyst',email:'rambo.joinani@dedale.com',site:'PH - Ceb'},{id:'e2',name:'Xerxis Dalanon',role:'IT Admin',email:'xerxis.dalanon@dedale.com',site:'PH - Ceb'},{id:'e3',name:'Sophie Martin',role:'Manager',email:'sophie.martin@dedale.com',site:'PAR'}];
@@ -978,7 +981,7 @@ function flushOnReconnect(){
     (async function(){
       try{
         isSyncing=true;updateSyncStatus('syncing');
-        const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig},null,2);
+        const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig,customTypes,customBrands,customModels},null,2);
         const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
         if(r.ok){
           updateSyncStatus('saved');checkSaveCountBackup();_lastSyncTime=Date.now();_pendingSync=false;
@@ -1051,6 +1054,9 @@ setInterval(async()=>{
     const data=await r.json();
     _isOnline=true;updateOnlineUI();if(data.equipment){equipment=data.equipment;localStorage.setItem('dd_equipment',JSON.stringify(equipment));}
     if(data.employees){employees=data.employees;localStorage.setItem('dd_employees',JSON.stringify(employees));}
+    if(data.customTypes){customTypes=data.customTypes;localStorage.setItem('dd_custom_types',JSON.stringify(customTypes));}
+    if(data.customBrands){customBrands=data.customBrands;localStorage.setItem('dd_custom_brands',JSON.stringify(customBrands));}
+    if(data.customModels){customModels=data.customModels;localStorage.setItem('dd_custom_models',JSON.stringify(customModels));}
     if(data.roleConfig){roleConfig=data.roleConfig;localStorage.setItem('dd_roles',JSON.stringify(roleConfig));}
     if(data.purchaseOrders&&(Date.now()-_localSaveTime>10000)){purchaseOrders=data.purchaseOrders;localStorage.setItem('dd_purchase_orders',JSON.stringify(purchaseOrders));}
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
@@ -2426,6 +2432,7 @@ function openAddModal(){
   ['f-type','f-brand','f-serial','f-condition','f-status','f-assigned','f-location','f-purchase-date','f-price','f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.tagName==='SELECT'?el.options[0].value:'';});
   var fqty=document.getElementById('f-qty');if(fqty)fqty.value=1;
   var fpt=document.getElementById('f-price-total');if(fpt)fpt.textContent='';
+  populateTypeDropdown();populateBrandDropdown();
   document.getElementById('f-model').value='';document.getElementById('f-model-select').value='';document.getElementById('f-assigned-search').value='';
   document.getElementById('f-condition').value='New';document.getElementById('f-status').value='In Stock';
   toggleModelField('Laptop');document.getElementById('equip-modal').classList.add('open');
@@ -2433,7 +2440,7 @@ function openAddModal(){
 function editEquipment(id){
   const eq=equipment.find(e=>e.id===id);if(!eq)return;
   editingId=id;document.getElementById('equip-modal-title').textContent='Edit Equipment';
-  document.getElementById('f-type').value=eq.type;toggleModelField(eq.type);document.getElementById('f-brand').value=eq.brand;setModelValue(eq.type,eq.model);
+  populateTypeDropdown();document.getElementById('f-type').value=eq.type;toggleModelField(eq.type);document.getElementById('f-brand').value=eq.brand;setModelValue(eq.type,eq.model);
   document.getElementById('f-serial').value=eq.serial;var fq=document.getElementById('f-qty');if(fq)fq.value=eq.qty||1;document.getElementById('f-condition').value=eq.condition;document.getElementById('f-status').value=eq.status;
   const _emp=employees.find(e=>e.id===eq.assignedTo);
   document.getElementById('f-assigned').value=eq.assignedTo||'';document.getElementById('f-assigned-search').value=_emp?_emp.name:'';
@@ -3395,6 +3402,136 @@ function updateNHRowTotal(el){
   if(label){
     label.textContent=(qty>1&&price>0)?'= ₱'+(qty*price).toLocaleString()+' total':'';
   }
+}
+
+/* ── CUSTOM TYPE / BRAND / MODEL SYSTEM ── */
+
+var _builtinTypes=['Laptop','Headset','Mouse','Monitor','Memory'];
+var _builtinBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo'],Memory:['Kingston']};
+var _builtinModels={
+  Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)',
+    'LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+  Jabra:['Evolve 20'],Rapoo:['M20'],'N-Vision':[],
+  Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']
+};
+
+function getAllTypes(){
+  return _builtinTypes.concat(customTypes.filter(function(t){return _builtinTypes.indexOf(t)<0;}));
+}
+
+function getAllBrands(type){
+  var builtin=_builtinBrands[type]||[];
+  var custom=customBrands[type]||[];
+  return builtin.concat(custom.filter(function(b){return builtin.indexOf(b)<0;}));
+}
+
+function getAllModels(brand){
+  var builtin=_builtinModels[brand]||[];
+  var custom=customModels[brand]||[];
+  return builtin.concat(custom.filter(function(m){return builtin.indexOf(m)<0;}));
+}
+
+function populateTypeDropdown(){
+  var sel=document.getElementById('f-type');
+  if(!sel)return;
+  var current=sel.value;
+  var types=getAllTypes();
+  sel.innerHTML=types.map(function(t){return'<option value="'+t+'">'+t+'</option>';}).join('')
+    +'<option value="__add_type__">+ Add New Type...</option>';
+  if(current)sel.value=current;
+}
+
+function populateBrandDropdown(){
+  var type=document.getElementById('f-type').value;
+  if(type==='__add_type__'){
+    promptAddNew('type',null,null);
+    document.getElementById('f-type').value='';
+    return;
+  }
+  var sel=document.getElementById('f-brand');
+  if(!sel)return;
+  var brands=getAllBrands(type);
+  sel.innerHTML='<option value="">— Select Brand —</option>'
+    +brands.map(function(b){return'<option>'+b+'</option>';}).join('')
+    +'<option value="__add_brand__">+ Add New Brand...</option>';
+  sel.value='';
+  /* Reset model */
+  var mi=document.getElementById('f-model');
+  var ms=document.getElementById('f-model-select');
+  if(mi){mi.style.display='none';mi.value='';}
+  if(ms){ms.style.display='none';ms.value='';}
+}
+
+function populateModelDropdown(){
+  var brand=document.getElementById('f-brand').value;
+  if(brand==='__add_brand__'){
+    var type=document.getElementById('f-type').value;
+    promptAddNew('brand',type,null);
+    document.getElementById('f-brand').value='';
+    return;
+  }
+  var modelInput=document.getElementById('f-model');
+  var modelSelect=document.getElementById('f-model-select');
+  if(!brand){
+    if(modelInput)modelInput.style.display='none';
+    if(modelSelect)modelSelect.style.display='none';
+    return;
+  }
+  var models=getAllModels(brand);
+  if(modelSelect){
+    modelSelect.innerHTML='<option value="">- Select Model -</option>'
+      +models.map(function(m){return'<option>'+m+'</option>';}).join('')
+      +'<option value="__add_model__">+ Add New Model...</option>';
+    modelSelect.style.display='';
+    modelSelect.onchange=function(){
+      if(this.value==='__add_model__'){
+        promptAddNew('model',document.getElementById('f-type').value,brand);
+        this.value='';
+      }
+    };
+  }
+  if(modelInput)modelInput.style.display='none';
+}
+
+function promptAddNew(kind,type,brand){
+  var label=kind==='type'?'Type':kind==='brand'?'Brand':'Model';
+  var val=prompt('Enter new '+label+' name:');
+  if(!val||!val.trim())return;
+  val=val.trim();
+  if(kind==='type'){
+    if(getAllTypes().indexOf(val)<0){
+      customTypes.push(val);
+      localStorage.setItem('dd_custom_types',JSON.stringify(customTypes));
+    }
+    setTimeout(function(){
+      populateTypeDropdown();
+      var sel=document.getElementById('f-type');
+      if(sel){sel.value=val;populateBrandDropdown();}
+    },50);
+  }else if(kind==='brand'){
+    if(!customBrands[type])customBrands[type]=[];
+    if(getAllBrands(type).indexOf(val)<0){
+      customBrands[type].push(val);
+      localStorage.setItem('dd_custom_brands',JSON.stringify(customBrands));
+    }
+    setTimeout(function(){
+      populateBrandDropdown();
+      var sel=document.getElementById('f-brand');
+      if(sel){sel.value=val;populateModelDropdown();}
+    },50);
+  }else if(kind==='model'){
+    if(!customModels[brand])customModels[brand]=[];
+    if(getAllModels(brand).indexOf(val)<0){
+      customModels[brand].push(val);
+      localStorage.setItem('dd_custom_models',JSON.stringify(customModels));
+    }
+    setTimeout(function(){
+      populateModelDropdown();
+      var sel=document.getElementById('f-model-select');
+      if(sel)sel.value=val;
+    },50);
+  }
+  saveData();
 }
 
 function updateEquipTotalPrice(){

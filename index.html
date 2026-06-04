@@ -982,7 +982,7 @@ function flushOnReconnect(){
       try{
         isSyncing=true;updateSyncStatus('syncing');
         const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig,customTypes,customBrands,customModels},null,2);
-        const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
+        const r=await fetch('https://graph.microsoft.com/v1.0/sites/softwareclub.sharepoint.com,b82a470c-0892-4515-8605-dcca9e46a63d,d6799185-7c1f-4a8f-bac2-ae16fdb46e5b/drive/root:/Inventory/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
         if(r.ok){
           updateSyncStatus('saved');checkSaveCountBackup();_lastSyncTime=Date.now();_pendingSync=false;
           addNotif('✅','Offline changes synced to OneDrive successfully','sync');
@@ -1049,7 +1049,7 @@ setInterval(async()=>{
     const serverTime=new Date(meta.lastModifiedDateTime).getTime();
     checkConflict(meta.lastModifiedDateTime);
     if(_lastServerTime&&serverTime===_lastServerTime)return;
-    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});
+    const r=await fetch('https://graph.microsoft.com/v1.0/sites/softwareclub.sharepoint.com,b82a470c-0892-4515-8605-dcca9e46a63d,d6799185-7c1f-4a8f-bac2-ae16fdb46e5b/drive/root:/Inventory/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});
     if(!r.ok)return;
     const data=await r.json();
     _isOnline=true;updateOnlineUI();if(data.equipment){equipment=data.equipment;localStorage.setItem('dd_equipment',JSON.stringify(equipment));}
@@ -1088,7 +1088,7 @@ async function syncToOneDrive(){
     if(isSyncing)return;isSyncing=true;updateSyncStatus('syncing');
     try{
       const data=JSON.stringify({equipment,employees,purchases,purchaseOrders,activity,roleConfig},null,2);
-      const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
+      const r=await fetch('https://graph.microsoft.com/v1.0/sites/softwareclub.sharepoint.com,b82a470c-0892-4515-8605-dcca9e46a63d,d6799185-7c1f-4a8f-bac2-ae16fdb46e5b/drive/root:/Inventory/'+FILE_NAME+':/content',{method:'PUT',headers:{'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},body:data});
       if(r.status===401){accessToken=null;updateSyncStatus('disconnected');return;}
       if(r.ok){_isOnline=true;updateOnlineUI();updateSyncStatus('saved');_lastSyncTime=Date.now();_pendingSync=false;}else updateSyncStatus('error');
     }catch(e){_isOnline=false;_pendingSync=true;updateOnlineUI();}finally{isSyncing=false;}
@@ -1099,7 +1099,7 @@ async function loadFromOneDrive(){
   if(!accessToken||_blockLoad||_pendingSync)return;
   try{
     updateSyncStatus('syncing');
-    const r=await fetch('https://graph.microsoft.com/v1.0/me/drive/root:/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});
+    const r=await fetch('https://graph.microsoft.com/v1.0/sites/softwareclub.sharepoint.com,b82a470c-0892-4515-8605-dcca9e46a63d,d6799185-7c1f-4a8f-bac2-ae16fdb46e5b/drive/root:/Inventory/'+FILE_NAME+':/content',{headers:{'Authorization':'Bearer '+accessToken}});
     if(r.status===404){await syncToOneDrive();updateSyncStatus('connected');return;}
     if(!r.ok){updateSyncStatus('error');return;}
     const data=await r.json();

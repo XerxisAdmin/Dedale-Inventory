@@ -449,7 +449,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
         <button class="btn btn-outline btn-sm" onclick="runEquipmentAudit()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Data Audit</button>
         <button class="btn btn-outline btn-sm" onclick="openBulkReassign()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg> Bulk Reassign</button>
         <button class="btn btn-primary btn-sm" onclick="openAddModal()" style="display:none" id="equip-add-mobile-btn">+ Add Equipment</button>
-        <select class="filter-select" onchange="filterEquipment();updateModelFilter()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select>
+        <select class="filter-select" onchange="updateModelFilter();filterEquipment()" id="equip-type-filter"><option value="">All Types</option><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-model-filter" style="display:none"><option value="">All Models</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-status-filter"><option value="">All Statuses</option><option>In Use</option><option>In Stock</option><option>Under Repair</option><option>Retired</option></select>
         <select class="filter-select" onchange="filterEquipment()" id="equip-site-filter"><option value="">All Sites</option><option>PH - Ceb</option><option>PH - MNL</option><option>PH - DVO</option><option>PAR</option><option>VN</option></select>
@@ -763,7 +763,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
     <div class="form-group"><label>Type *</label><select id="f-type" onchange="toggleModelField();populateBrandDropdown()"><option>Laptop</option><option>Headset</option><option>Mouse</option><option>Monitor</option><option>Memory</option></select></div>
     <div class="form-group"><label>Brand</label><select id="f-brand" onchange="populateModelDropdown()"><option value="">&#8212; Select Brand &#8212;</option><option>Lenovo</option><option>Jabra</option><option>Rapoo</option><option>N-Vision</option></select></div>
     <div class="form-group full"><label>Model</label>
-      <select id="f-model-select" style="display:none"><option value="">- Select Model -</option><option>14ALC7</option><option>15IAH8 (Type 83ER)</option><option>15IAU7 (Type 82RK)</option><option>LOQ 15IAX9E (Type 83LK)</option><option>LOQ 15IAX9 (Type 83GS)</option><option>15IRH8 (Type 83EM)</option><option>15IRH10 (Type 83K1)</option><option>15IRU8 (Type 82X7)</option><option>16IAH8 (Type 83BG)</option></select>
+      <select id="f-model-select" style="display:none"><option value="">- Select Model -</option><option>14ALC7</option><option>15IAH8 (Type 83ER)</option><option>15IAU7 (Type 82RK)</option><option>15IAX9E (LOQ) (Type 83LK)</option><option>15IAX9 (LOQ) (Type 83GS)</option><option>15IRH8 (Type 83EM)</option><option>15IRH10 (Type 83K1)</option><option>15IRU8 (Type 82X7)</option><option>16IAH8 (Type 83BG)</option></select>
       <input autocomplete="new-password" id="f-model" placeholder="e.g. XPS 15, MX Master 3">
     </div>
     <div class="form-group"><label>Serial Number</label><input id="f-serial" autocomplete="new-password" placeholder="e.g. SN-001234"></div>
@@ -1405,7 +1405,7 @@ function addNHEquipRow(){
   setTimeout(function(){populateNHSerialDropdown(row);},50);
 }
 var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo'],Memory:['Kingston']};
-var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)','15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
   Jabra:['Evolve 20'],Rapoo:['M20'],'N-Vision':[],Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
 function updateNHEqBrands(typeSelect){
   var row=typeSelect.closest('.nh-equip-row'),type=typeSelect.value;
@@ -2179,13 +2179,28 @@ function downloadEquipmentCSV(){
 }
 function updateModelFilter(){
   var type=document.getElementById('equip-type-filter').value,mf=document.getElementById('equip-model-filter');
-  var byType={"Laptop":["14ALC7","15IAH8 (Type 83ER)","15IAU7 (Type 82RK)","LOQ 15IAX9E (Type 83LK)","LOQ 15IAX9 (Type 83GS)","15IRH8 (Type 83EM)","15IRH10 (Type 83K1)","15IRU8 (Type 82X7)","16IAH8 (Type 83BG)"]};
+  var byType={"Laptop":["14ALC7","15IAH8 (Type 83ER)","15IAU7 (Type 82RK)","15IAX9E (LOQ) (Type 83LK)","15IAX9 (LOQ) (Type 83GS)","15IRH8 (Type 83EM)","15IRH10 (Type 83K1)","15IRU8 (Type 82X7)","16IAH8 (Type 83BG)"]};
   if(type&&byType[type]){mf.innerHTML='<option value="">All Models</option>'+byType[type].map(function(m){return'<option>'+m+'</option>';}).join('');mf.style.display='';}
   else{mf.innerHTML='<option value="">All Models</option>';mf.style.display='none';mf.value='';}
 }
 function filterEquipment(){
   const s=document.getElementById('equip-search').value.toLowerCase(),t=document.getElementById('equip-type-filter').value,st=document.getElementById('equip-status-filter').value,si=document.getElementById('equip-site-filter').value||'';
-  renderEquipment(equipment.filter(e=>(!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&(!t||e.type===t)&&(!st||e.status===st)&&(!si||e.location===si)));
+  const mEl=document.getElementById('equip-model-filter'),m=(mEl&&mEl.style.display!=='none'?mEl.value:'')||'';
+  const dwEl=document.getElementById('equip-date-warranty-filter'),dw=dwEl?dwEl.value:'';
+  var normModel=function(v){return String(v||'').toLowerCase().replace(/\(type[^)]*\)/g,'').replace(/\s+/g,' ').trim();};
+  renderEquipment(equipment.filter(e=>(!s||(e.brand+' '+e.model+' '+(e.serial||'')+' '+getEmployeeName(e.assignedTo)).toLowerCase().includes(s))&&(!t||e.type===t)&&(!m||normModel(e.model)===normModel(m))&&(!st||e.status===st)&&(!si||e.location===si)&&matchDateWarranty(e,dw)));
+}
+function matchDateWarranty(e,f){
+  if(!f)return true;
+  var now=new Date(),yr=now.getFullYear();
+  if(f==='purchased-this-year')return !!e.purchaseDate&&new Date(e.purchaseDate).getFullYear()===yr;
+  if(f==='purchased-last-year')return !!e.purchaseDate&&new Date(e.purchaseDate).getFullYear()===yr-1;
+  if(f==='no-warranty')return !e.warrantyExpiry;
+  var wd=warrantyToDate(e.warrantyExpiry);
+  if(f==='warranty-active')return !!wd&&wd>=now;
+  if(f==='warranty-expiring'){if(!wd)return false;var soon=new Date(now);soon.setMonth(soon.getMonth()+2);return wd>=now&&wd<=soon;}
+  if(f==='warranty-expired')return !!wd&&wd<now;
+  return true;
 }
 function renderAssignments(list){
   var assigned=(list||equipment).filter(function(e){return e.assignedTo;});
@@ -2353,8 +2368,8 @@ function updateModelOnBrand(){
   input.style.display='none';select.style.display='none';input.value='';select.value='';
   if(!brand)return;
   var modelMap={
-    Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)',
-      'LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+    Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)',
+      '15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
     Jabra:['Evolve 20'],
     Rapoo:['M20']
   };
@@ -2392,8 +2407,8 @@ function updateModelOnBrand(){
   _populateEquipModel(brand);
 }
 var _equipModelMap={
-  Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)',
-    'LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+  Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)',
+    '15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
   Jabra:['Evolve 20'],
   Rapoo:['M20'],
   Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']
@@ -2670,7 +2685,7 @@ function showPODropdown(){const q=document.getElementById('po-employee-search').
 function hidePODropdown(){document.getElementById('po-employee-dropdown').style.display='none';}
 
 const PO_BRANDS={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo'],'Memory':['Kingston'],'Other':[]};
-const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)','LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
+const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)','15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
 
 function updatePOBrands(typeSelect){
   const row=typeSelect.closest('.po-item-row'),type=typeSelect.value,bs=row.querySelector('.po-item-brand'),ms=row.querySelector('.po-item-model');
@@ -3409,8 +3424,8 @@ function updateNHRowTotal(el){
 var _builtinTypes=['Laptop','Headset','Mouse','Monitor','Memory'];
 var _builtinBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo'],Memory:['Kingston']};
 var _builtinModels={
-  Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','LOQ 15IAX9E (Type 83LK)',
-    'LOQ 15IAX9 (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
+  Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)',
+    '15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
   Jabra:['Evolve 20'],Rapoo:['M20'],'N-Vision':[],
   Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']
 };

@@ -79,13 +79,13 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .search-input{flex:1;min-width:200px;padding:9px 14px;border:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--text);background:var(--navy-mid);outline:none;transition:border-color 0.15s;}
 .search-input:focus{border-color:var(--crimson-dark);box-shadow:0 0 0 2px rgba(196,18,48,0.12);}
 .filter-select{padding:9px 14px;border:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--text2);background:var(--navy-mid);outline:none;cursor:pointer;}
-table{width:100%;border-collapse:collapse;font-size:14px;}
-thead th{padding:10px 14px;text-align:left;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
+table{width:100%;border-collapse:collapse;font-size:15px;}
+thead th{padding:10px 14px;text-align:left;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
 tbody tr{border-bottom:1px solid rgba(26,42,58,0.5);transition:background 0.1s;}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:var(--surface2);}.nolaptop-card:hover{border-color:var(--gold) !important;}
-td{padding:10px 14px;color:var(--text);vertical-align:middle;font-size:14px;text-align:left;}
-.badge{display:inline-flex;align-items:center;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;white-space:nowrap;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
+td{padding:10px 14px;color:var(--text);vertical-align:middle;font-size:15px;text-align:left;}
+.badge{display:inline-flex;align-items:center;padding:4px 14px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-family:'Share Tech Mono',monospace;white-space:nowrap;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%);}
 .badge-green{background:rgba(0,184,96,0.15);color:var(--green);}
 .badge-yellow{background:rgba(192,136,32,0.15);color:var(--gold);}
 .badge-red{background:rgba(196,18,48,0.15);color:var(--crimson);}
@@ -1952,10 +1952,12 @@ function checkConflict(serverModified){
     banner.style.cssText='position:fixed;top:60px;left:0;right:0;background:rgba(212,168,48,0.97);color:#111;padding:10px 20px;z-index:800;display:flex;justify-content:space-between;align-items:center;font-family:Share Tech Mono,monospace;font-size:12px;gap:10px;';
     banner.innerHTML='<span><strong>Warning:</strong> This data was updated from another device or session. Reload to get the latest version?</span>'
       +'<div style="display:flex;gap:8px;flex-shrink:0">'
-      +'<button onclick="location.reload()" style="padding:5px 14px;background:#111;color:#fff;border:none;cursor:pointer;font-family:Share Tech Mono,monospace;font-size:11px;letter-spacing:1px">RELOAD</button>'
-      +'<button onclick="document.getElementById(\"conflict-banner\").remove();_conflictShown=false;" style="padding:5px 12px;background:transparent;border:1px solid #111;cursor:pointer;font-family:Share Tech Mono,monospace;font-size:11px">DISMISS</button>'
+      +'<button onclick="location.reload()" style="padding:5px 14px;background:#111;color:#fff;border:none;cursor:pointer;font-family:Share Tech Mono,monospace;font-size:12px;letter-spacing:1px">RELOAD</button>'
+      +'<button id="conflict-dismiss-btn" style="padding:5px 12px;background:transparent;border:1px solid #111;cursor:pointer;font-family:Share Tech Mono,monospace;font-size:12px">DISMISS</button>'
       +'</div>';
     document.body.appendChild(banner);
+    var _db=document.getElementById('conflict-dismiss-btn');
+    if(_db)_db.addEventListener('click',function(){var b=document.getElementById('conflict-banner');if(b)b.remove();_conflictShown=false;});
   }
 }
 
@@ -2067,14 +2069,14 @@ function getEmployeeName(id){const e=employees.find(e=>e.id===id);return e?e.nam
 function buildEquipRow(eq){
   var id=eq.id;
   return '<tr onclick="openMobileEquipRow(\'' + id + '\')" style="cursor:pointer">'
-    +'<td style="text-align:left"><span style="font-size:12px;font-weight:600;color:var(--text2)">'+eq.type+'</span></td>'
-    +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+(eq.qty&&eq.qty>1?' <span style="font-size:11px;color:var(--gold);font-family:Share Tech Mono,monospace;">×'+eq.qty+'</span>':'')+'</td>'
-    +'<td style="text-align:left;font-size:12px;color:var(--text2)">'+(eq.serial||'&mdash;')+'</td>'
+    +'<td style="text-align:left"><span style="font-size:13px;font-weight:600;color:var(--text2)">'+eq.type+'</span></td>'
+    +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+(eq.qty&&eq.qty>1?' <span style="font-size:12px;color:var(--gold);font-family:Share Tech Mono,monospace;">×'+eq.qty+'</span>':'')+'</td>'
+    +'<td style="text-align:left;font-size:13px;color:var(--text2)">'+(eq.serial||'&mdash;')+'</td>'
     +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
     +'<td style="text-align:left">'+statusBadge(eq.status)+'</td>'
     +'<td style="text-align:left;font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
-    +'<td style="text-align:left;color:var(--text2);font-size:13px">'+(eq.location||'&mdash;')+'</td>'
-    +'<td style="text-align:center;font-size:12px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
+    +'<td style="text-align:left;color:var(--text2);font-size:14px">'+(eq.location||'&mdash;')+'</td>'
+    +'<td style="text-align:center;font-size:13px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
     +'<td style="text-align:left;white-space:nowrap"><div class="actions">'
     +'<button class="btn btn-outline btn-sm equip-edit-btn" data-id="'+id+'" style="height:30px;padding:6px 12px;font-size:10px;line-height:1;box-sizing:border-box;flex-shrink:0;">Edit</button>'
     +'<button class="btn btn-outline btn-sm equip-hist-btn" data-id="'+id+'" style="height:30px;padding:6px 12px;font-size:10px;line-height:1;box-sizing:border-box;flex-shrink:0;">History</button>'
@@ -2479,7 +2481,7 @@ function saveEquipment(){
     if(data.assignedTo){const emp=employees.find(e=>e.id===data.assignedTo);data.history.push({action:'assigned',employeeId:data.assignedTo,employeeName:emp?emp.name:'',date:new Date().toISOString(),note:'Initial assignment'});}
     equipment.push(data);logAudit('ADD','Equipment',data.brand+' '+data.model,'Type: '+data.type+', Serial: '+(data.serial||'none'));addNotif('💻','New equipment added: '+data.brand+' '+data.model,'equipment');logActivity(data.brand+' '+data.model+' added to inventory');
   }
-  saveData();closeModal('equip-modal');renderEquipment();renderDashboard();filterEmployees();
+  saveData();closeModal('equip-modal');filterEquipment();renderDashboard();filterEmployees();
 }
 
 let _pendingDelete=null;

@@ -19,7 +19,7 @@
 <title>Dedale — IT Asset Management</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#141628;--navy-mid:#1a1d38;--accent:#cc2244;--accent-dim:#881630;--teal:#22ccdd;--bg:#141628;--surface:#222646;--surface2:#282c52;--border:#383d72;--border2:#484e8a;--text:#e4e8ff;--text2:#9aa2cc;--text3:#565e90;--green:#22cc88;--green-bg:#0a2a1a;--yellow:#d4a830;--yellow-bg:#2a1e00;--red:#cc2244;--red-bg:#2a0a14;--orange:#e07030;--orange-bg:#2a1200;--gold:#d4a830;--gold-light:#f0c848;--gold-dark:#8a6e18;--crimson:#cc2244;--crimson-dark:#881630;--crimson-glow:#ff2255;--blue:#4488ff;--blue-light:#66aaff;--blue-dark:#1a4499;--purple:#8866ff;--shadow-sm:0 0 16px rgba(68,136,255,0.08);--shadow:0 4px 24px rgba(68,136,255,0.12);--shadow-lg:0 8px 32px rgba(0,0,0,0.7);--radius:2px;}
+:root{--navy:#141628;--navy-mid:#1a1d38;--accent:#cc2244;--accent-dim:#881630;--teal:#22ccdd;--bg:#141628;--surface:#222646;--surface2:#282c52;--border:#383d72;--border2:#484e8a;--text:#e4e8ff;--text2:#b4bce0;--text3:#8088b8;--green:#22cc88;--green-bg:#0a2a1a;--yellow:#d4a830;--yellow-bg:#2a1e00;--red:#cc2244;--red-bg:#2a0a14;--orange:#e07030;--orange-bg:#2a1200;--gold:#d4a830;--gold-light:#f0c848;--gold-dark:#8a6e18;--crimson:#cc2244;--crimson-dark:#881630;--crimson-glow:#ff2255;--blue:#4488ff;--blue-light:#66aaff;--blue-dark:#1a4499;--purple:#8866ff;--shadow-sm:0 0 16px rgba(68,136,255,0.08);--shadow:0 4px 24px rgba(68,136,255,0.12);--shadow-lg:0 8px 32px rgba(0,0,0,0.7);--radius:2px;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:16px;}
 #scanline-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
@@ -79,8 +79,8 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
 .search-input{flex:1;min-width:200px;padding:9px 14px;border:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--text);background:var(--navy-mid);outline:none;transition:border-color 0.15s;}
 .search-input:focus{border-color:var(--crimson-dark);box-shadow:0 0 0 2px rgba(196,18,48,0.12);}
 .filter-select{padding:9px 14px;border:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--text2);background:var(--navy-mid);outline:none;cursor:pointer;}
-table{width:100%;border-collapse:collapse;font-size:13px;}
-thead th{padding:10px 14px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+thead th{padding:10px 14px;text-align:left;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--surface2);border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;}
 tbody tr{border-bottom:1px solid rgba(26,42,58,0.5);transition:background 0.1s;}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:var(--surface2);}.nolaptop-card:hover{border-color:var(--gold) !important;}
@@ -1961,29 +1961,29 @@ function checkConflict(serverModified){
 
 /* ── CHART INSTANCES ── */
 var _chartType=null,_chartStatus=null,_chartSite=null;
-var _chartDefaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9aa2cc',font:{size:11},padding:10}}},scales:{x:{ticks:{color:'#9aa2cc',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#9aa2cc',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}};
+var _chartDefaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#b4bce0',font:{size:11},padding:10}}},scales:{x:{ticks:{color:'#b4bce0',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#b4bce0',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}};
 
 function renderCharts(){
   if(typeof Chart==='undefined')return;
-  Chart.defaults.color='#9aa2cc';
+  Chart.defaults.color='#b4bce0';Chart.defaults.font.size=12;
   /* Equipment by Type — donut */
   var typeData={};equipment.forEach(function(e){typeData[e.type]=(typeData[e.type]||0)+1;});
   var tLabels=Object.keys(typeData),tVals=tLabels.map(function(k){return typeData[k];});
   var tColors=['#cc2244','#d4a830','#4488ff','#22cc88','#8866ff','#ff6633','#ff44aa'];
   var ctxT=document.getElementById('chart-type');
-  if(ctxT){if(_chartType)_chartType.destroy();_chartType=new Chart(ctxT,{type:'doughnut',data:{labels:tLabels,datasets:[{data:tVals,backgroundColor:tColors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#9aa2cc',font:{size:11},padding:8,boxWidth:12}}}}});}
+  if(ctxT){if(_chartType)_chartType.destroy();_chartType=new Chart(ctxT,{type:'doughnut',data:{labels:tLabels,datasets:[{data:tVals,backgroundColor:tColors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#b4bce0',font:{size:11},padding:8,boxWidth:12}}}}});}
   /* Equipment by Status — bar */
   var statuses=['In Use','In Stock','Under Repair','Retired'];
   var sVals=statuses.map(function(s){return equipment.filter(function(e){return e.status===s;}).length;});
   var sColors=['#22cc88','#4488ff','#d4a830','#555577'];
   var ctxS=document.getElementById('chart-status');
-  if(ctxS){if(_chartStatus)_chartStatus.destroy();_chartStatus=new Chart(ctxS,{type:'bar',data:{labels:statuses,datasets:[{data:sVals,backgroundColor:sColors,borderWidth:0,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9aa2cc',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#9aa2cc',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}}});}
+  if(ctxS){if(_chartStatus)_chartStatus.destroy();_chartStatus=new Chart(ctxS,{type:'bar',data:{labels:statuses,datasets:[{data:sVals,backgroundColor:sColors,borderWidth:0,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#b4bce0',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#b4bce0',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}}});}
   /* Equipment by Site — bar */
   var sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'];
   var siVals=sites.map(function(s){return equipment.filter(function(e){return e.location===s;}).length;});
   var siColors=['#cc2244','#d4a830','#4488ff','#8866ff','#22cc88'];
   var ctxSi=document.getElementById('chart-site');
-  if(ctxSi){if(_chartSite)_chartSite.destroy();_chartSite=new Chart(ctxSi,{type:'bar',data:{labels:sites,datasets:[{data:siVals,backgroundColor:siColors,borderWidth:0,borderRadius:4,label:'Equipment'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9aa2cc',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#9aa2cc',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}}});}
+  if(ctxSi){if(_chartSite)_chartSite.destroy();_chartSite=new Chart(ctxSi,{type:'bar',data:{labels:sites,datasets:[{data:siVals,backgroundColor:siColors,borderWidth:0,borderRadius:4,label:'Equipment'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#b4bce0',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#b4bce0',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.05)'}}}}});}
 }
 
 function renderWarrantyAlerts(){
@@ -2067,14 +2067,14 @@ function getEmployeeName(id){const e=employees.find(e=>e.id===id);return e?e.nam
 function buildEquipRow(eq){
   var id=eq.id;
   return '<tr onclick="openMobileEquipRow(\'' + id + '\')" style="cursor:pointer">'
-    +'<td style="text-align:left"><span style="font-size:11px;font-weight:600;color:var(--text3)">'+eq.type+'</span></td>'
-    +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+(eq.qty&&eq.qty>1?' <span style="font-size:10px;color:var(--gold);font-family:Share Tech Mono,monospace;">×'+eq.qty+'</span>':'')+'</td>'
-    +'<td style="text-align:left;font-size:11px;color:var(--text3)">'+(eq.serial||'&mdash;')+'</td>'
+    +'<td style="text-align:left"><span style="font-size:12px;font-weight:600;color:var(--text2)">'+eq.type+'</span></td>'
+    +'<td style="text-align:left"><span style="font-weight:600">'+eq.brand+'</span> '+eq.model+(eq.qty&&eq.qty>1?' <span style="font-size:11px;color:var(--gold);font-family:Share Tech Mono,monospace;">×'+eq.qty+'</span>':'')+'</td>'
+    +'<td style="text-align:left;font-size:12px;color:var(--text2)">'+(eq.serial||'&mdash;')+'</td>'
     +'<td style="text-align:left">'+conditionBadge(eq.condition)+'</td>'
     +'<td style="text-align:left">'+statusBadge(eq.status)+'</td>'
     +'<td style="text-align:left;font-weight:500">'+getEmployeeName(eq.assignedTo)+'</td>'
-    +'<td style="text-align:left;color:var(--text2);font-size:12px">'+(eq.location||'&mdash;')+'</td>'
-    +'<td style="text-align:center;font-size:11px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
+    +'<td style="text-align:left;color:var(--text2);font-size:13px">'+(eq.location||'&mdash;')+'</td>'
+    +'<td style="text-align:center;font-size:12px">'+(eq.warrantyExpiry?'<span style="color:'+warrantyColor(eq.warrantyExpiry)+'">'+eq.warrantyExpiry+'</span>':'&mdash;')+'</td>'
     +'<td style="text-align:left;white-space:nowrap"><div class="actions">'
     +'<button class="btn btn-outline btn-sm equip-edit-btn" data-id="'+id+'" style="height:30px;padding:6px 12px;font-size:10px;line-height:1;box-sizing:border-box;flex-shrink:0;">Edit</button>'
     +'<button class="btn btn-outline btn-sm equip-hist-btn" data-id="'+id+'" style="height:30px;padding:6px 12px;font-size:10px;line-height:1;box-sizing:border-box;flex-shrink:0;">History</button>'

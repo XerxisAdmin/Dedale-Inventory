@@ -2989,7 +2989,7 @@ function renderAnalytics(){
   const unpricedCount=total-pricedItems.length;
   const sites=['PH - Ceb','PH - MNL','PH - DVO','PAR','VN'],types=['Laptop','Monitor','Headset','Mouse'];
   const siteColors={'PH - Ceb':'#cc2244','PH - MNL':'#d4a830','PH - DVO':'#4488ff','PAR':'#8866ff','VN':'#22cc88'};
-  const today=new Date(),soon=new Date();soon.setDate(today.getDate()+30);
+  const today=new Date(),soon=new Date();soon.setMonth(soon.getMonth()+2);
   const threeYearsAgo=new Date();threeYearsAgo.setFullYear(today.getFullYear()-3);
   const costBySite=sites.map(s=>({site:s,cost:equipment.filter(e=>e.location===s).reduce((sum,e)=>sum+(e.price||0),0),count:equipment.filter(e=>e.location===s).length}));
   const maxCost=Math.max(...costBySite.map(s=>s.cost),1);
@@ -3016,15 +3016,101 @@ function showAgingList(){
   document.body.appendChild(overlay);overlay.addEventListener('click',function(e){if(e.target===this)this.remove();});
 }
 function showWarrantyList(){
-  const today=new Date(),soon=new Date();soon.setDate(today.getDate()+30);
+  const today=new Date(),soon=new Date();soon.setMonth(soon.getMonth()+2);
   const expired=equipment.filter(e=>{const d=warrantyToDate(e.warrantyExpiry);return d&&d<today;});
   const expiringSoon=equipment.filter(e=>{const d=warrantyToDate(e.warrantyExpiry);return d&&d>=today&&d<=soon;});
-  const overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;background:rgba(14,15,26,0.88);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
-  overlay.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);padding:26px 28px;width:560px;max-width:92vw;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)"><div style="font-size:15px;font-weight:700;color:var(--crimson)">Warranty Issues ('+(expired.length+expiringSoon.length)+')</div><button onclick="this.closest(\'div[style*=fixed]\').remove()" style="background:var(--surface2);border:1px solid var(--border);padding:6px 12px;font-size:12px;cursor:pointer;color:var(--text2)">Close</button></div>'
-    +(expired.length?'<div style="font-size:11px;font-weight:700;color:var(--crimson);margin-bottom:8px;font-family:\'Share Tech Mono\',monospace;letter-spacing:1px">EXPIRED ('+expired.length+')</div>'+expired.map(e=>'<div style="padding:8px 0;border-bottom:1px solid rgba(46,50,96,0.5)"><div style="font-size:14px;font-weight:600;color:var(--text)">'+e.brand+' '+e.model+'</div><div style="font-size:12px;color:var(--crimson);font-family:\'Share Tech Mono\',monospace">Expired: '+e.warrantyExpiry+'</div></div>').join(''):'')
-    +(expiringSoon.length?'<div style="font-size:11px;font-weight:700;color:var(--gold);margin:12px 0 8px;font-family:\'Share Tech Mono\',monospace;letter-spacing:1px">EXPIRING SOON ('+expiringSoon.length+')</div>'+expiringSoon.map(e=>'<div style="padding:8px 0;border-bottom:1px solid rgba(46,50,96,0.5)"><div style="font-size:14px;font-weight:600;color:var(--text)">'+e.brand+' '+e.model+'</div><div style="font-size:12px;color:var(--gold);font-family:\'Share Tech Mono\',monospace">Expires: '+e.warrantyExpiry+'</div></div>').join(''):'')
+  const overlay=document.createElement('div');overlay.id='warranty-list-overlay';overlay.style.cssText='position:fixed;inset:0;background:rgba(14,15,26,0.88);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  function makeRow(e,color,label){
+    const emp=e.assignedTo?employees.find(x=>x.id===e.assignedTo):null;
+    return '<div data-equip-id="'+e.id+'" style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-bottom:1px solid rgba(46,50,96,0.5);cursor:pointer;border-radius:4px;transition:background 0.15s" '
+      +'onmouseover="this.style.background=\'rgba(196,18,48,0.08)\'" onmouseout="this.style.background=\'transparent\'">'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:13px;font-weight:600;color:var(--text)">'+e.brand+' '+e.model+'</div>'
+        +'<div style="font-size:11px;color:var(--text3);font-family:\'Share Tech Mono\',monospace;margin-top:2px">'+e.type+(e.serial?' \xb7 S/N: '+e.serial:'')+'</div>'
+        +'<div style="font-size:11px;color:'+color+';font-family:\'Share Tech Mono\',monospace;margin-top:2px">'+label+': '+e.warrantyExpiry+'</div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">'
+        +statusBadge(e.status)
+        +(emp?'<span style="font-size:10px;color:var(--text3);font-family:\'Share Tech Mono\',monospace">'+emp.name+'</span>':'<span style="font-size:10px;color:var(--text3);font-family:\'Share Tech Mono\',monospace">Unassigned</span>')
+      +'</div>'
+      +'<svg style="width:13px;height:13px;flex-shrink:0;opacity:0.4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>'
     +'</div>';
-  document.body.appendChild(overlay);overlay.addEventListener('click',function(e){if(e.target===this)this.remove();});
+  }
+  overlay.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);padding:26px 28px;width:580px;max-width:92vw;max-height:82vh;overflow-y:auto;box-shadow:var(--shadow-lg);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--crimson),var(--gold),transparent)"></div>'
+    +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)">'
+      +'<div><div style="font-size:15px;font-weight:700;color:var(--crimson)">Warranty Issues ('+(expired.length+expiringSoon.length)+')</div>'
+      +'<div style="font-size:11px;color:var(--text3);font-family:\'Share Tech Mono\',monospace;margin-top:3px">Click any item to view full details</div></div>'
+      +'<button onclick="this.closest(\'div[style*=fixed]\').remove()" style="background:var(--surface2);border:1px solid var(--border);padding:6px 14px;font-size:11px;cursor:pointer;color:var(--text2);font-family:\'Share Tech Mono\',monospace;flex-shrink:0">Close</button>'
+    +'</div>'
+    +(expired.length?'<div style="font-size:10px;font-weight:700;color:var(--crimson);margin-bottom:8px;font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px">EXPIRED ('+expired.length+')</div>'+expired.map(e=>makeRow(e,'var(--crimson)','Expired')).join(''):'')
+    +(expiringSoon.length?'<div style="font-size:10px;font-weight:700;color:var(--gold);margin:'+(expired.length?'14px':'0')+' 0 8px;font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px">EXPIRING SOON ('+expiringSoon.length+')</div>'+expiringSoon.map(e=>makeRow(e,'var(--gold)','Expires')).join(''):'')
+    +'</div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',function(ev){
+    if(ev.target===this){this.remove();return;}
+    const row=ev.target.closest('[data-equip-id]');
+    if(row){showWarrantyItemDetail(row.getAttribute('data-equip-id'));}
+  });
+}
+
+function showWarrantyItemDetail(equipId){
+  const eq=equipment.find(e=>e.id===equipId);if(!eq)return;
+  const emp=eq.assignedTo?employees.find(e=>e.id===eq.assignedTo):null;
+  const today=new Date();
+  const wd=warrantyToDate(eq.warrantyExpiry);
+  const wExpired=wd&&wd<today;
+  const wColor=wd?(wExpired?'var(--crimson)':'var(--gold)'):'var(--text3)';
+  const wLabel=wd?(wExpired?'EXPIRED':'EXPIRING SOON'):'NO WARRANTY';
+  const ini=emp?emp.name.split(' ').map(n=>n[0]||'').join('').toUpperCase().slice(0,2):'?';
+  const existing=document.getElementById('warranty-detail-overlay');if(existing)existing.remove();
+  const overlay=document.createElement('div');overlay.id='warranty-detail-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(14,15,26,0.92);z-index:600;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  let html='<div style="background:var(--surface);border:1px solid var(--border);width:560px;max-width:92vw;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,'+wColor+',var(--gold),transparent)"></div>'
+    +'<div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px">'
+      +'<div>'
+        +'<div style="font-size:16px;font-weight:700;color:#fff;font-family:\'Orbitron\',monospace">'+eq.brand+' '+eq.model+'</div>'
+        +'<div style="font-size:11px;color:var(--text3);font-family:\'Share Tech Mono\',monospace;margin-top:4px">'+eq.type+(eq.serial?' \xb7 S/N: '+eq.serial:'')+'</div>'
+        +'<div style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 10px;background:rgba(196,18,48,0.12);border:1px solid '+wColor+'">'
+          +'<span style="font-size:10px;font-weight:700;color:'+wColor+';font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px">\u26a0 '+wLabel+'</span>'
+          +'<span style="font-size:11px;color:'+wColor+';font-family:\'Share Tech Mono\',monospace">'+eq.warrantyExpiry+'</span>'
+        +'</div>'
+      +'</div>'
+      +'<button onclick="document.getElementById(\'warranty-detail-overlay\').remove()" style="background:var(--surface2);border:1px solid var(--border);padding:6px 14px;font-size:11px;cursor:pointer;color:var(--text2);font-family:\'Share Tech Mono\',monospace;flex-shrink:0">\u2715 Close</button>'
+    +'</div>'
+    +'<div style="padding:16px 24px;border-bottom:1px solid var(--border)">'
+      +'<div style="font-size:10px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:2px;margin-bottom:10px">EQUIPMENT DETAILS</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+        +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">STATUS</div>'+statusBadge(eq.status)+'</div>'
+        +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">CONDITION</div><div style="font-size:13px;color:var(--text)">'+(eq.condition||'\u2014')+'</div></div>'
+        +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">SITE</div><div style="font-size:13px;color:var(--text)">'+(eq.location||'\u2014')+'</div></div>'
+        +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">PURCHASE DATE</div><div style="font-size:13px;color:var(--text)">'+(eq.purchaseDate||'\u2014')+'</div></div>'
+        +'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid '+wColor+'"><div style="font-size:9px;color:'+wColor+';font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">WARRANTY EXPIRY</div><div style="font-size:13px;font-weight:700;color:'+wColor+'">'+(eq.warrantyExpiry||'\u2014')+'</div></div>'
+        +(eq.price?'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border)"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">PURCHASE PRICE</div><div style="font-size:13px;color:var(--text)">\u20b1'+Number(eq.price).toLocaleString()+'</div></div>':'')
+      +'</div>'
+      +(eq.notes?'<div style="background:var(--navy-mid);padding:9px 12px;border:1px solid var(--border);margin-top:8px"><div style="font-size:9px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:1.5px;margin-bottom:3px">NOTES</div><div style="font-size:12px;color:var(--text2)">'+eq.notes+'</div></div>':'')
+    +'</div>'
+    +'<div style="padding:16px 24px">'
+      +'<div style="font-size:10px;color:var(--gold);font-family:\'Share Tech Mono\',monospace;letter-spacing:2px;margin-bottom:10px">ASSIGNED TO</div>';
+  if(emp){
+    html+='<div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--navy-mid);border:1px solid var(--border)">'
+      +'<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--crimson-dark),var(--crimson));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;font-family:\'Orbitron\',monospace;flex-shrink:0">'+ini+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:14px;font-weight:700;color:#fff">'+emp.name+'</div>'
+        +(emp.role?'<div style="font-size:11px;color:var(--text3);margin-top:2px">'+emp.role+'</div>':'')
+        +(emp.email?'<div style="font-size:11px;color:var(--text3);font-family:\'Share Tech Mono\',monospace;margin-top:2px">'+emp.email+'</div>':'')
+        +(emp.site?'<div style="font-size:11px;color:var(--text3);margin-top:2px">'+emp.site+'</div>':'')
+      +'</div>'
+      +(emp.empid?'<span style="font-size:9px;padding:2px 7px;background:rgba(196,18,48,0.15);color:var(--crimson);font-family:\'Share Tech Mono\',monospace;flex-shrink:0">'+emp.empid+'</span>':'')
+    +'</div>';
+  } else {
+    html+='<div style="padding:14px;background:var(--navy-mid);border:1px solid var(--border);text-align:center;font-size:13px;color:var(--text3);font-family:\'Share Tech Mono\',monospace">UNASSIGNED \u2014 Currently in stock or not allocated</div>';
+  }
+  html+='</div></div>';
+  overlay.innerHTML=html;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',function(e){if(e.target===this)this.remove();});
 }
 
 function openNoLaptopProfile(empId){

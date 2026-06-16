@@ -1406,7 +1406,7 @@ function addNHEquipRow(){
 }
 var _nhEqBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mouse:['Rapoo'],Memory:['Kingston']};
 var _nhEqModels={Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)','15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
-  Jabra:['Evolve 20'],Rapoo:['M20'],'N-Vision':[],Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
+  Jabra:['Evolve 20'],Rapoo:['M20','B20'],'N-Vision':[],Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
 function updateNHEqBrands(typeSelect){
   var row=typeSelect.closest('.nh-equip-row'),type=typeSelect.value;
   var bs=row.querySelector('.nh-eq-brand');
@@ -2371,7 +2371,7 @@ function updateModelOnBrand(){
     Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)',
       '15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
     Jabra:['Evolve 20'],
-    Rapoo:['M20']
+    Rapoo:['M20','B20']
   };
   var models=modelMap[brand]||[];
   if(models.length>0){
@@ -2410,7 +2410,7 @@ var _equipModelMap={
   Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)',
     '15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
   Jabra:['Evolve 20'],
-  Rapoo:['M20'],
+  Rapoo:['M20','B20'],
   Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']
 };
 function _populateEquipModel(brand){
@@ -2685,7 +2685,7 @@ function showPODropdown(){const q=document.getElementById('po-employee-search').
 function hidePODropdown(){document.getElementById('po-employee-dropdown').style.display='none';}
 
 const PO_BRANDS={'Laptop':['Lenovo'],'Monitor':['N-Vision'],'Headset':['Jabra'],'Mouse':['Rapoo'],'Memory':['Kingston'],'Other':[]};
-const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)','15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
+const PO_MODELS={'Lenovo':['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)','15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],'N-Vision':[],'Jabra':['Evolve 20'],'Rapoo':['M20','B20'],'Kingston':['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']};
 
 function updatePOBrands(typeSelect){
   const row=typeSelect.closest('.po-item-row'),type=typeSelect.value,bs=row.querySelector('.po-item-brand'),ms=row.querySelector('.po-item-model');
@@ -2694,8 +2694,8 @@ function updatePOBrands(typeSelect){
 }
 function updatePOModels(brandSelect){
   const row=brandSelect.closest('.po-item-row'),brand=brandSelect.value,ms=row.querySelector('.po-item-model'),models=PO_MODELS[brand]||[];
-  if(models.length>0){ms.innerHTML='<option value="">\u2014 Model \u2014</option>'+models.map(m=>'<option>'+m+'</option>').join('');ms.style.display='';}
-  else{ms.innerHTML='<option value="">\u2014 Model \u2014</option>';ms.style.display='none';}
+  if(models.length>0){ms.innerHTML='<option value="">\u2014 Model \u2014</option>'+models.map(m=>'<option>'+m+'</option>').join('');ms.style.visibility='visible';}
+  else{ms.innerHTML='<option value="">\u2014 Model \u2014</option>';ms.style.visibility='hidden';}
   updatePODesc(row);
 }
 function updatePODesc(row){
@@ -2704,11 +2704,11 @@ function updatePODesc(row){
 }
 function addPOItem(){
   const container=document.getElementById('po-items-container'),div=document.createElement('div');div.className='po-item-row';div.style.cssText='display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:nowrap';
-  div.innerHTML='<select class="po-item-type filter-select" style="flex:0 0 120px;padding:10px 8px;font-size:12px" onchange="updatePOBrands(this)"><option value="">\u2014 Type \u2014</option><option>Laptop</option><option>Monitor</option><option>Headset</option><option>Mouse</option><option>Memory</option><option>Other</option></select>'
-    +'<select class="po-item-brand filter-select" style="flex:0 0 120px;padding:10px 8px;font-size:12px" onchange="updatePOModels(this)"><option value="">\u2014 Brand \u2014</option></select>'
-    +'<select class="po-item-model filter-select" style="flex:0 0 160px;padding:10px 8px;font-size:12px;display:none" onchange="updatePODesc(this.closest(\'.po-item-row\'))"><option value="">\u2014 Model \u2014</option></select>'
-    +'<input autocomplete="new-password" type="number" placeholder="Qty" class="po-item-qty" value="1" min="1" oninput="updatePOTotal()" style="flex:0 0 55px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:\'Share Tech Mono\',monospace;font-size:12px">'
-    +'<input autocomplete="new-password" type="number" placeholder="Unit Price (\u20b1)" class="po-item-price" oninput="updatePOTotal()" style="flex:1;min-width:80px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:\'Share Tech Mono\',monospace;font-size:12px">'
+  div.innerHTML='<select class="po-item-type filter-select" style="flex:0 0 130px;padding:10px 8px;font-size:12px" onchange="updatePOBrands(this)"><option value="">\u2014 Type \u2014</option><option>Laptop</option><option>Monitor</option><option>Headset</option><option>Mouse</option><option>Memory</option><option>Other</option></select>'
+    +'<select class="po-item-brand filter-select" style="flex:0 0 130px;padding:10px 8px;font-size:12px" onchange="updatePOModels(this)"><option value="">\u2014 Brand \u2014</option></select>'
+    +'<select class="po-item-model filter-select" style="flex:1 1 0;min-width:0;padding:10px 8px;font-size:12px;visibility:hidden" onchange="updatePODesc(this.closest(\'.po-item-row\'))"><option value="">\u2014 Model \u2014</option></select>'
+    +'<input autocomplete="new-password" type="number" placeholder="Qty" class="po-item-qty" value="1" min="1" oninput="updatePOTotal()" style="flex:0 0 70px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:\'Share Tech Mono\',monospace;font-size:12px">'
+    +'<input autocomplete="new-password" type="number" placeholder="Unit Price (\u20b1)" class="po-item-price" oninput="updatePOTotal()" style="flex:0 0 150px;padding:10px 8px;border:1px solid var(--border);background:var(--navy-mid);color:var(--text);font-family:\'Share Tech Mono\',monospace;font-size:12px">'
     +'<button class="btn btn-danger btn-sm" onclick="removePOItem(this)" style="flex:0 0 auto;padding:8px 10px">\u00d7</button>'
     +'<input autocomplete="new-password" type="hidden" class="po-item-desc" value="">';
   container.appendChild(div);return div;
@@ -3512,7 +3512,7 @@ var _builtinBrands={Laptop:['Lenovo'],Monitor:['N-Vision'],Headset:['Jabra'],Mou
 var _builtinModels={
   Lenovo:['14ALC7','15IAH8 (Type 83ER)','15IAU7 (Type 82RK)','15IAX9E (LOQ) (Type 83LK)',
     '15IAX9 (LOQ) (Type 83GS)','15IRH8 (Type 83EM)','15IRH10 (Type 83K1)','15IRU8 (Type 82X7)','16IAH8 (Type 83BG)'],
-  Jabra:['Evolve 20'],Rapoo:['M20'],'N-Vision':[],
+  Jabra:['Evolve 20'],Rapoo:['M20','B20'],'N-Vision':[],
   Kingston:['8GB DDR4','16GB DDR4','32GB DDR4','8GB DDR5-5600 SODIMM KVR56S46VS6-8','NV2 256GB SSD','NV2 512GB SSD']
 };
 
